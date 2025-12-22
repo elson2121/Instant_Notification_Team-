@@ -1,67 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" spacing="20"
-      xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.instantnotificationsystem.controller.LoginController"
-      style="-fx-background-color: linear-gradient(to bottom right, #2c3e50, #3498db); -fx-padding: 40;">
+      prefHeight="700.0" prefWidth="1000.0"
+      style="-fx-background-color: white;">
 
-  <!-- Login Card -->
-  <VBox styleClass="login-box" spacing="20" alignment="CENTER" prefWidth="400">
-    <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
-
-    <!-- Title -->
-    <Label text="⚡ Instant Notification System" styleClass="login-title"/>
-    <Label text="Secure Login Portal" styleClass="login-subtitle"/>
-
-    <!-- Spacer -->
-    <Region prefHeight="20"/>
-
-    <!-- Login Form -->
-    <VBox spacing="15" alignment="CENTER">
-      <!-- Username -->
-      <VBox spacing="5">
-        <Label text="Username" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
-        <TextField fx:id="usernameField" promptText="Enter username" prefWidth="300"
-                   prefHeight="40" styleClass="login-field"/>
-      </VBox>
-
-      <!-- Password -->
-      <VBox spacing="5">
-        <Label text="Password" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
-        <PasswordField fx:id="passwordField" promptText="Enter password" prefWidth="300"
-                       prefHeight="40" styleClass="login-field"/>
-      </VBox>
-
-      <!-- Role -->
-      <VBox spacing="5">
-        <Label text="Role" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
-        <ComboBox fx:id="roleComboBox" promptText="Select role" prefWidth="300"
-                  prefHeight="40" styleClass="login-field"/>
-      </VBox>
-
-      <!-- Error Label -->
-      <Label fx:id="errorLabel" styleClass="error-label" visible="false"
-             prefWidth="300" wrapText="true"/>
-
-      <!-- Login Button -->
-      <Button text="Login" onAction="#handleLogin" prefWidth="300"
-              prefHeight="45" styleClass="login-button"/>
-
-      <!-- Register Link -->
-      <HBox spacing="5" alignment="CENTER">
-        <Label text="New user?" style="-fx-text-fill: #7f8c8d;"/>
-        <Label text="Create Account" styleClass="register-link"
-               onMouseClicked="#handleRegister"/>
-      </HBox>
+    <!-- Left Panel: Branding & Features -->
+    <VBox alignment="CENTER_LEFT" spacing="20" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="400"
+          style="-fx-background-color: linear-gradient(to bottom right, #6a11cb, #2575fc); -fx-padding: 40;">
+        
+        <Label text="⚡ Instant Notification System" 
+               style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-wrap-text: true;"/>
+        
+        <Label text="Connect, Communicate, Collaborate." 
+               style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 16px;"/>
+        
+        <Region prefHeight="30"/>
+        
+        <VBox spacing="15">
+            <Label text="✓ Real-time Alerts" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Label text="✓ Secure Authentication" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Label text="✓ Department Broadcasts" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Label text="✓ Analytics Dashboard" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Label text="✓ Multi-platform Support" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        </VBox>
+        
+        <Region VBox.vgrow="ALWAYS"/>
+        
+        <Label text="© 2024 Instant Notification System" style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 12px;"/>
     </VBox>
-  </VBox>
 
-  <!-- Footer -->
-  <Label text="© 2024 Instant Notification System v1.0"
-         style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 12px;"/>
-
-</VBox>
+    <!-- Right Panel: Forms -->
+    <StackPane fx:id="formsContainer" HBox.hgrow="ALWAYS" prefWidth="600" style="-fx-background-color: white;">
+        
+        <!-- Login Form -->
+        <VBox fx:id="loginForm" alignment="CENTER" spacing="20" maxWidth="400">
+            <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+            
+            <Label text="Welcome Back" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+            <Label text="Please login to your account" style="-fx-text-fill: #777;"/>
+            
+            <VBox spacing="15" alignment="CENTER_LEFT" prefWidth="320">
+                <Label text="Username" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <TextField fx:id="loginUsernameField" promptText="Enter your username" prefHeight="40"/>
+                
+                <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <StackPane alignment="CENTER_RIGHT">
+                    <PasswordField fx:id="loginPasswordField" promptText="Enter your password" prefHeight="40"/>
+                    <TextField fx:id="loginPasswordFieldVisible" promptText="Enter your password" prefHeight="40" visible="false"/>
+                </StackPane>
+                <CheckBox fx:id="showLoginPasswordCheckbox" text="Show Password"/>
+                
+                <Label text="Role" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <ComboBox fx:id="loginRoleComboBox" prefWidth="320" prefHeight="40"/>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <CheckBox text="Remember me"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Hyperlink text="Forgot Password?" style="-fx-text-fill: #2575fc;"/>
+                </HBox>
+            </VBox>
+            
+            <Label fx:id="loginErrorLabel" textFill="red" visible="false" wrapText="true"/>
+            
+            <Button text="Login" onAction="#handleLogin" prefWidth="320" prefHeight="45"
+                    style="-fx-background-color: #2575fc; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            
+            <HBox alignment="CENTER" spacing="5">
+                <Label text="New here?"/>
+                <Hyperlink text="Create an account" onAction="#showRegisterView" style="-fx-text-fill: #2575fc; -fx-font-weight: bold;"/>
+            </HBox>
+            
+            <Label fx:id="dbStatusLabel" text="Database: Checking..." style="-fx-font-size: 10px; -fx-text-fill: #999;"/>
+        </VBox>
+        
+        <!-- Register Form -->
+        <VBox fx:id="registerForm" alignment="CENTER" spacing="15" maxWidth="450" visible="false">
+            <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+            
+            <Label text="Create Account" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+            <Label text="Join us today!" style="-fx-text-fill: #777;"/>
+            
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+                <content>
+                    <VBox spacing="10" alignment="CENTER_LEFT">
+                        <padding><Insets right="10"/></padding>
+                        
+                        <Label text="Full Name *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <TextField fx:id="regFullNameField" prefHeight="35"/>
+                        
+                        <Label text="Username *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <TextField fx:id="regUsernameField" prefHeight="35"/>
+                        
+                        <Label text="Password *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <StackPane alignment="CENTER_RIGHT">
+                            <PasswordField fx:id="regPasswordField" prefHeight="35"/>
+                            <TextField fx:id="regPasswordFieldVisible" prefHeight="35" visible="false"/>
+                        </StackPane>
+                        <CheckBox fx:id="showRegPasswordCheckbox" text="Show Password"/>
+                        
+                        <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <TextField fx:id="regPhoneField" prefHeight="35"/>
+                        
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+                            
+                            <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="Employee ID" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                                <TextField fx:id="regEmployeeIdField" prefHeight="35"/>
+                            </VBox>
+                            
+                            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="Role" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                                <ComboBox fx:id="regRoleComboBox" prefWidth="Infinity" prefHeight="35"/>
+                            </VBox>
+                            
+                            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label text="Sex" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                                <ComboBox fx:id="regSexComboBox" prefWidth="Infinity" prefHeight="35"/>
+                            </VBox>
+                            
+                            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label text="Shift" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                                <ComboBox fx:id="regShiftComboBox" prefWidth="Infinity" prefHeight="35"/>
+                            </VBox>
+                        </GridPane>
+                        
+                        <Label text="Department" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <ComboBox fx:id="regDepartmentComboBox" prefWidth="Infinity" prefHeight="35"/>
+                        
+                    </VBox>
+                </content>
+            </ScrollPane>
+            
+            <Label fx:id="regErrorLabel" textFill="red" visible="false" wrapText="true"/>
+            
+            <Button text="Register" onAction="#handleRegister" prefWidth="320" prefHeight="45"
+                    style="-fx-background-color: #2575fc; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            
+            <HBox alignment="CENTER_LEFT" prefWidth="320">
+                <Button text="Back to Sign In" onAction="#showLoginView" 
+                        style="-fx-background-color: transparent; -fx-text-fill: #777; -fx-cursor: hand; -fx-font-size: 14px;"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</HBox>
