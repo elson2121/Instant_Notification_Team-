@@ -1,0 +1,31 @@
+/* style.css */
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15 8 15;
+    -fx-background-radius: 4;
+}
+
+.button:hover {
+    -fx-background-color: #1084e3;
+}
+
+.label {
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-padding: 8;
+    -fx-background-radius: 4;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4;
+}
+
+.text-field:focused {
+    -fx-border-color: #0078d7;
+}
