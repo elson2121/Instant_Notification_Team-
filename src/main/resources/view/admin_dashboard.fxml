@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane fx:id="mainBorderPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.instantnotificationsystem.controller.AdminDashboardController"
-            prefHeight="400.0" prefWidth="600.0">
+            stylesheets="@../resources/style.css">
 
-</AnchorPane>
+    <top>
+        <HBox styleClass="header" spacing="10" alignment="CENTER_LEFT">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="⚡ Instant Notification System" styleClass="header-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" text="Welcome, Admin!" styleClass="welcome-label"/>
+            <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox fx:id="sidebar" prefWidth="250" spacing="10" styleClass="sidebar">
+            <padding><Insets top="20" right="15" bottom="20" left="15"/></padding>
+
+            <!-- Sidebar Header -->
+            <Label text="Navigation" styleClass="sidebar-title"/>
+            <Separator/>
+
+            <!-- Sidebar Buttons -->
+            <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button" maxWidth="Infinity"/>
+            <Button fx:id="btnSendNotification" text="✉️ Send Notification" styleClass="sidebar-button" maxWidth="Infinity"/>
+            <Button fx:id="btnViewUsers" text="👥 View Users" styleClass="sidebar-button" maxWidth="Infinity"/>
+            <Button fx:id="btnAnalytics" text="📈 Analytics" styleClass="sidebar-button" maxWidth="Infinity"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Quick Stats -->
+            <VBox spacing="5" styleClass="quick-stats">
+                <Label text="Quick Stats" styleClass="quick-stats-title"/>
+                <HBox spacing="10">
+                    <VBox spacing="2">
+                        <Label text="245" styleClass="stat-number"/>
+                        <Label text="Today" styleClass="stat-label"/>
+                    </VBox>
+                    <VBox spacing="2">
+                        <Label text="85%" styleClass="stat-number"/>
+                        <Label text="Seen Rate" styleClass="stat-label"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <!-- Dynamic content will be loaded here -->
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" styleClass="footer">
+            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+            <Label text="© 2024 Instant Notification System v1.0 | Admin Dashboard"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

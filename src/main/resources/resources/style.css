@@ -1,31 +1,212 @@
-/* style.css */
+/* Main styles */
 .root {
-    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #f5f7fa;
 }
 
-.button {
-    -fx-background-color: #0078d7;
+/* Header */
+.header {
+    -fx-background-color: linear-gradient(to right, #2c3e50, #34495e);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+.header-title {
     -fx-text-fill: white;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-padding: 8 15 8 15;
-    -fx-background-radius: 4;
 }
 
-.button:hover {
-    -fx-background-color: #1084e3;
-}
-
-.label {
+.welcome-label {
+    -fx-text-fill: #ecf0f1;
     -fx-font-size: 14px;
 }
 
-.text-field {
-    -fx-padding: 8;
-    -fx-background-radius: 4;
-    -fx-border-color: #cccccc;
-    -fx-border-radius: 4;
+.logout-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-background-radius: 5px;
 }
 
-.text-field:focused {
-    -fx-border-color: #0078d7;
+.logout-button:hover {
+    -fx-background-color: #c0392b;
+    -fx-cursor: hand;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.sidebar-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #34495e;
+    -fx-font-size: 14px;
+    -fx-padding: 12 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:focused {
+    -fx-background-color: #2980b9;
+    -fx-text-fill: white;
+}
+
+/* Content Area */
+.content-area {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20;
+}
+
+/* Quick Stats */
+.quick-stats {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 15;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 10px;
+}
+
+.quick-stats-title {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.stat-number {
+    -fx-text-fill: #3498db;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.stat-label {
+    -fx-text-fill: #95a5a6;
+    -fx-font-size: 12px;
+}
+
+/* Footer */
+.footer {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1 0 0 0;
+}
+
+.footer Label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+}
+
+/* Table Styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 1);
+}
+
+.table-view .column-header {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-cursor: hand;
+}
+
+/* Form Elements */
+.text-field, .text-area, .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 5px;
+    -fx-padding: 8;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: #3498db;
+    -fx-effect: dropshadow(three-pass-box, rgba(52,152,219,0.2), 5, 0, 0, 1);
+}
+
+.button {
+    -fx-background-radius: 5px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+}
+
+/* Login Page Specific */
+.login-container {
+    -fx-background-color: linear-gradient(to bottom right, #2c3e50, #3498db);
+}
+
+.login-box {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 5);
+}
+
+.login-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitle {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14px;
+}
+
+.login-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 12 30;
+}
+
+.login-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.register-link {
+    -fx-text-fill: #3498db;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.register-link:hover {
+    -fx-text-fill: #2980b9;
+}
+
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0;
 }

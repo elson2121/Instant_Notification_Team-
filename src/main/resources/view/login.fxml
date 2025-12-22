@@ -1,16 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.instantnotificationsystem.controller.LoginController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-  </padding>
+<VBox alignment="CENTER" spacing="20"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.instantnotificationsystem.controller.LoginController"
+      style="-fx-background-color: linear-gradient(to bottom right, #2c3e50, #3498db); -fx-padding: 40;">
 
-  <Label fx:id="welcomeText"/>
-  <Button text="Hello!" onAction="#onHelloButtonClick"/>
+  <!-- Login Card -->
+  <VBox styleClass="login-box" spacing="20" alignment="CENTER" prefWidth="400">
+    <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+
+    <!-- Title -->
+    <Label text="⚡ Instant Notification System" styleClass="login-title"/>
+    <Label text="Secure Login Portal" styleClass="login-subtitle"/>
+
+    <!-- Spacer -->
+    <Region prefHeight="20"/>
+
+    <!-- Login Form -->
+    <VBox spacing="15" alignment="CENTER">
+      <!-- Username -->
+      <VBox spacing="5">
+        <Label text="Username" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
+        <TextField fx:id="usernameField" promptText="Enter username" prefWidth="300"
+                   prefHeight="40" styleClass="login-field"/>
+      </VBox>
+
+      <!-- Password -->
+      <VBox spacing="5">
+        <Label text="Password" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
+        <PasswordField fx:id="passwordField" promptText="Enter password" prefWidth="300"
+                       prefHeight="40" styleClass="login-field"/>
+      </VBox>
+
+      <!-- Role -->
+      <VBox spacing="5">
+        <Label text="Role" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
+        <ComboBox fx:id="roleComboBox" promptText="Select role" prefWidth="300"
+                  prefHeight="40" styleClass="login-field"/>
+      </VBox>
+
+      <!-- Error Label -->
+      <Label fx:id="errorLabel" styleClass="error-label" visible="false"
+             prefWidth="300" wrapText="true"/>
+
+      <!-- Login Button -->
+      <Button text="Login" onAction="#handleLogin" prefWidth="300"
+              prefHeight="45" styleClass="login-button"/>
+
+      <!-- Register Link -->
+      <HBox spacing="5" alignment="CENTER">
+        <Label text="New user?" style="-fx-text-fill: #7f8c8d;"/>
+        <Label text="Create Account" styleClass="register-link"
+               onMouseClicked="#handleRegister"/>
+      </HBox>
+    </VBox>
+  </VBox>
+
+  <!-- Footer -->
+  <Label text="© 2024 Instant Notification System v1.0"
+         style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 12px;"/>
+
 </VBox>

@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.instantnotificationsystem.controller.UserDashboardController"
-            prefHeight="400.0" prefWidth="600.0">
-    <ListView fx:id="notificationsListView" layoutX="14.0" layoutY="14.0" prefHeight="372.0" prefWidth="572.0" />
-</AnchorPane>
+            stylesheets="@../resources/style.css">
+
+    <top>
+        <HBox styleClass="header" spacing="10" alignment="CENTER_LEFT">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="⚡ Instant Notification System" styleClass="header-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" text="Welcome, User!" styleClass="welcome-label"/>
+            <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER">
+            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+            <Label text="Your Notifications" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <ListView fx:id="notificationsList" prefHeight="400" prefWidth="600">
+                <cellFactory>
+                    <ListCell<String>>
+                    <item>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="{item}" styleClass="notification-item"/>
+                        </HBox>
+                    </item>
+                </ListCell>
+                </cellFactory>
+            </ListView>
+        </VBox>
+    </center>
+</BorderPane>

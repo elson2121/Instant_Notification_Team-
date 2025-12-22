@@ -1,70 +1,39 @@
-// UserDashboardController.java (Partial - seen status logic)
 package com.instantnotificationsystem.controller;
 
-import com.instantnotificationsystem.dao.NotificationDAO;
-import com.instantnotificationsystem.model.Notification;
+import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 
 public class UserDashboardController {
 
     @FXML
-    private ListView<Notification> notificationsListView;
+    private Label welcomeLabel;
 
-    private NotificationDAO notificationDAO;
-    private int currentUserId;
+    @FXML
+    private Button btnLogout;
 
+    @FXML
+    private ListView<String> notificationsList;
+
+    @FXML
     public void initialize() {
-        notificationDAO = new NotificationDAO();
+        welcomeLabel.setText("Welcome, User!");
 
-        // Custom cell factory for automatic seen status
-        notificationsListView.setCellFactory(param -> new ListCell<Notification>() {
-            @Override
-            protected void updateItem(Notification notification, boolean empty) {
-                super.updateItem(notification, empty);
+        // Setup logout button
+        btnLogout.setOnAction(e -> SceneSwitcher.switchToLogin());
 
-                if (empty || notification == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    // Create custom notification display
-                    setText(notification.getTitle());
-
-                    // Mark as seen when it appears in list
-                    if (!notification.isSeen()) {
-                        markAsSeen(notification.getId());
-                        notification.setSeen(true);
-                    }
-                }
-            }
-        });
-
-        // Handle notification selection
-        notificationsListView.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        showNotificationDetails(newValue);
-                        // Ensure it's marked as seen when opened
-                        markAsSeen(newValue.getId());
-                    }
-                });
+        // Load user notifications
+        loadNotifications();
     }
 
-    private void markAsSeen(int notificationId) {
-        new Thread(() -> {
-            boolean success = notificationDAO.markNotificationAsSeen(currentUserId, notificationId);
-            if (success) {
-                System.out.println("✓ Notification " + notificationId + " marked as seen");
-            }
-        }).start();
-    }
-
-    private void showNotificationDetails(Notification notification) {
-        // Show detailed view and automatically mark as seen
-        markAsSeen(notification.getId());
-
-        // Update UI to show details
-        // ...
+    private void loadNotifications() {
+        // TODO: Load actual notifications from database
+        notificationsList.getItems().addAll(
+                "📢 System Maintenance - Tonight 2 AM",
+                "🎉 Company Meeting - Tomorrow 10 AM",
+                "⚠️ Security Alert - Update Your Password",
+                "📅 Performance Review - Next Week",
+                "🏆 Employee of the Month Announcement"
+        );
     }
 }
