@@ -2,6 +2,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane fx:id="mainBorderPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
