@@ -19,6 +19,11 @@ public class LoginController {
     @FXML private StackPane formsContainer;
     @FXML private VBox loginForm;
     @FXML private VBox registerForm;
+    
+    // --- Registration Steps ---
+    @FXML private VBox regStep1;
+    @FXML private VBox regStep2;
+    @FXML private Label regStepLabel;
 
     // --- Login Fields ---
     @FXML private TextField loginUsernameField;
@@ -27,84 +32,73 @@ public class LoginController {
     @FXML private CheckBox showLoginPasswordCheckbox;
     @FXML private ComboBox<String> loginRoleComboBox;
     @FXML private Label loginErrorLabel;
-    @FXML private Label dbStatusLabel;
 
-    // --- Register Fields ---
+    // --- Register Fields (Step 1) ---
     @FXML private TextField regFullNameField;
     @FXML private TextField regUsernameField;
     @FXML private PasswordField regPasswordField;
     @FXML private TextField regPasswordFieldVisible;
-    @FXML private CheckBox showRegPasswordCheckbox;
+    @FXML private PasswordField regConfirmPasswordField;
+    @FXML private TextField regConfirmPasswordFieldVisible;
     @FXML private TextField regPhoneField;
+    
+    // --- Register Fields (Step 2) ---
     @FXML private TextField regEmployeeIdField;
     @FXML private ComboBox<String> regRoleComboBox;
     @FXML private ComboBox<String> regSexComboBox;
     @FXML private ComboBox<String> regShiftComboBox;
     @FXML private ComboBox<String> regDepartmentComboBox;
+    
+    @FXML private CheckBox showRegPasswordCheckbox;
     @FXML private Label regErrorLabel;
 
     private AuthService authService;
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^[+]?[0-9]{10,15}$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^(\\+251|0)(9|7)\\d{8}$");
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{3,20}$");
+    private static final Pattern FULLNAME_PATTERN = Pattern.compile("^[a-zA-Z\\s]{3,50}$");
 
     @FXML
     public void initialize() {
         authService = new AuthService();
 
         // Setup Login Role
-        loginRoleComboBox.getItems().addAll("USER", "ADMIN");
-        loginRoleComboBox.setValue("USER");
+        if (loginRoleComboBox != null) {
+            loginRoleComboBox.getItems().addAll("USER", "ADMIN");
+            loginRoleComboBox.setValue("USER");
+        }
 
         // Setup Register Combos
         setupRegisterComboBoxes();
 
-        // Setup Password Visibility Toggles
+        // Setup Password Visibility
         setupPasswordVisibility(loginPasswordField, loginPasswordFieldVisible, showLoginPasswordCheckbox);
         setupPasswordVisibility(regPasswordField, regPasswordFieldVisible, showRegPasswordCheckbox);
+        setupPasswordVisibility(regConfirmPasswordField, regConfirmPasswordFieldVisible, showRegPasswordCheckbox);
 
-        // Check DB connection
-        checkDbConnection();
-        
         // Ensure Login is shown first
         showLoginView();
     }
 
     private void setupRegisterComboBoxes() {
-        regRoleComboBox.getItems().addAll("USER", "ADMIN");
+        regRoleComboBox.getItems().addAll("User", "Admin");
         regSexComboBox.getItems().addAll("Male", "Female");
-        regShiftComboBox.getItems().addAll("Day", "Night", "Flexible");
+        regShiftComboBox.getItems().addAll("Morning", "Afternoon", "Night", "Rotating");
         regDepartmentComboBox.getItems().addAll(
-                "Human Resources", "Information Technology", "Finance",
-                "Operations", "Marketing", "Sales", "Research & Development"
+                "IT", "Human Resources", "Finance",
+                "Operations", "Marketing", "Sales"
         );
-
-        // Set defaults
-        regRoleComboBox.setValue("USER");
-        regSexComboBox.setValue("Male");
-        regShiftComboBox.setValue("Day");
-        regDepartmentComboBox.setValue("Information Technology");
     }
 
     private void setupPasswordVisibility(PasswordField passField, TextField textField, CheckBox checkBox) {
-        // Bind text properties
+        if (passField == null || textField == null || checkBox == null) return;
+        
         textField.managedProperty().bind(checkBox.selectedProperty());
         textField.visibleProperty().bind(checkBox.selectedProperty());
         
         passField.managedProperty().bind(checkBox.selectedProperty().not());
         passField.visibleProperty().bind(checkBox.selectedProperty().not());
 
-        // Sync text
         textField.textProperty().bindBidirectional(passField.textProperty());
-    }
-
-    private void checkDbConnection() {
-        if (DBConnection.testConnection()) {
-            dbStatusLabel.setText("Database: Connected ✅");
-            dbStatusLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 12px; -fx-font-weight: bold;");
-        } else {
-            dbStatusLabel.setText("Database: Disconnected ❌");
-            dbStatusLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12px; -fx-font-weight: bold;");
-        }
     }
 
     // --- Navigation ---
@@ -112,11 +106,38 @@ public class LoginController {
     @FXML
     private void showRegisterView() {
         animateTransition(loginForm, registerForm);
+        resetRegisterSteps();
     }
 
     @FXML
     private void showLoginView() {
         animateTransition(registerForm, loginForm);
+    }
+    
+    private void resetRegisterSteps() {
+        regStep1.setVisible(true);
+        regStep2.setVisible(false);
+        regStepLabel.setText("Step 1 of 2");
+        regErrorLabel.setVisible(false);
+    }
+
+    @FXML
+    private void handleNextStep() {
+        // Bypass validation for Step 1 as requested
+        // if (validateStep1()) {
+            regStep1.setVisible(false);
+            regStep2.setVisible(true);
+            regStepLabel.setText("Step 2 of 2");
+            regErrorLabel.setVisible(false);
+        // }
+    }
+
+    @FXML
+    private void handlePrevStep() {
+        regStep2.setVisible(false);
+        regStep1.setVisible(true);
+        regStepLabel.setText("Step 1 of 2");
+        regErrorLabel.setVisible(false);
     }
 
     private void animateTransition(VBox from, VBox to) {
@@ -140,7 +161,7 @@ public class LoginController {
     private void handleLogin() {
         String username = loginUsernameField.getText().trim();
         String password = loginPasswordField.getText().trim();
-        String role = loginRoleComboBox.getValue();
+        String role = (loginRoleComboBox != null && loginRoleComboBox.getValue() != null) ? loginRoleComboBox.getValue() : "USER";
 
         if (username.isEmpty() || password.isEmpty()) {
             showLoginError("Please enter username and password");
@@ -152,7 +173,8 @@ public class LoginController {
         User user = authService.authenticate(username, password);
 
         if (user != null) {
-            if (user.getRole().equalsIgnoreCase(role)) {
+            // Check role (case-insensitive)
+            if (loginRoleComboBox == null || user.getRole().equalsIgnoreCase(role)) {
                 if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                     SceneSwitcher.switchToAdminDashboard();
                 } else {
@@ -175,45 +197,84 @@ public class LoginController {
 
     @FXML
     private void handleRegister() {
-        if (validateRegisterInput()) {
+        if (validateStep2()) {
             User user = createUserFromInput();
 
             if (authService.registerUser(user)) {
                 showRegisterSuccess("Registration successful! Please login.");
                 clearRegisterForm();
-                // Optional: Auto switch to login after delay
             } else {
                 showRegisterError("Registration failed. Username may already exist.");
             }
         }
     }
 
-    private boolean validateRegisterInput() {
-        if (regFullNameField.getText().trim().isEmpty()) {
+    private boolean validateStep1() {
+        // Full Name
+        String fullName = regFullNameField.getText().trim();
+        if (fullName.isEmpty()) {
             showRegisterError("Full name is required");
             return false;
         }
+        if (!FULLNAME_PATTERN.matcher(fullName).matches()) {
+            showRegisterError("Full Name must contain only letters and spaces (min 3 chars)");
+            return false;
+        }
 
+        // Username
         if (!USERNAME_PATTERN.matcher(regUsernameField.getText()).matches()) {
             showRegisterError("Username must be 3-20 chars (letters, numbers, _)");
             return false;
         }
 
-        if (regPasswordField.getText().length() < 6) {
+        // Password
+        String password = regPasswordField.getText();
+        if (password.length() < 6) {
             showRegisterError("Password must be at least 6 characters");
             return false;
         }
+        
+        // Confirm Password
+        if (!password.equals(regConfirmPasswordField.getText())) {
+            showRegisterError("Passwords do not match");
+            return false;
+        }
 
+        // Phone
         String phone = regPhoneField.getText().trim();
         if (phone.isEmpty()) {
-            showRegisterError("Phone number is mandatory");
+            showRegisterError("Phone number is required");
             return false;
         }
         if (!PHONE_PATTERN.matcher(phone).matches()) {
-            showRegisterError("Invalid phone format");
+            showRegisterError("Invalid Ethiopian phone (e.g., 0911... or +2519...)");
             return false;
         }
 
+        return true;
+    }
+    
+    private boolean validateStep2() {
+        if (regEmployeeIdField.getText().trim().isEmpty()) {
+            showRegisterError("Employee ID is required");
+            return false;
+        }
+        if (regRoleComboBox.getValue() == null) {
+            showRegisterError("Role is required");
+            return false;
+        }
+        if (regSexComboBox.getValue() == null) {
+            showRegisterError("Sex is required");
+            return false;
+        }
+        if (regShiftComboBox.getValue() == null) {
+            showRegisterError("Shift is required");
+            return false;
+        }
+        if (regDepartmentComboBox.getValue() == null) {
+            showRegisterError("Department is required");
+            return false;
+        }
         return true;
     }
 
@@ -223,7 +284,7 @@ public class LoginController {
         user.setUsername(regUsernameField.getText().trim());
         user.setPassword(regPasswordField.getText());
         user.setPhoneNumber(regPhoneField.getText().trim());
-        user.setEmployeeId(regEmployeeIdField.getText().trim().isEmpty() ? null : regEmployeeIdField.getText().trim());
+        user.setEmployeeId(regEmployeeIdField.getText().trim());
         user.setRole(regRoleComboBox.getValue());
         user.setSex(regSexComboBox.getValue());
         user.setShift(regShiftComboBox.getValue());
@@ -247,11 +308,13 @@ public class LoginController {
         regFullNameField.clear();
         regUsernameField.clear();
         regPasswordField.clear();
+        regConfirmPasswordField.clear();
         regPhoneField.clear();
         regEmployeeIdField.clear();
-        regRoleComboBox.setValue("USER");
+        regRoleComboBox.setValue("User");
         regSexComboBox.setValue("Male");
-        regShiftComboBox.setValue("Day");
-        regDepartmentComboBox.setValue("Information Technology");
+        regShiftComboBox.setValue("Morning");
+        regDepartmentComboBox.setValue("IT");
+        resetRegisterSteps();
     }
 }

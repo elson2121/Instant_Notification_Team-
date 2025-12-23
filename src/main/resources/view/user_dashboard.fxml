@@ -1,30 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.instantnotificationsystem.controller.UserDashboardController"
-            stylesheets="@../resources/style.css">
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.instantnotificationsystem.controller.UserDashboardController"
+      prefHeight="700.0" prefWidth="1000.0"
+      style="-fx-background-color: #f4f7f6;">
 
-    <top>
-        <HBox styleClass="header" spacing="10" alignment="CENTER_LEFT">
-            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
-            <Label text="⚡ Instant Notification System" styleClass="header-title"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="welcomeLabel" text="Welcome, User!" styleClass="welcome-label"/>
-            <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+    <!-- Left Sidebar -->
+    <VBox prefWidth="260" spacing="20" style="-fx-background-color: linear-gradient(to bottom, #2980b9, #2c3e50);">
+        <padding><Insets top="40" right="20" bottom="40" left="20"/></padding>
+
+        <!-- Branding -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="⚡" style="-fx-font-size: 24px; -fx-text-fill: white;"/>
+            <Label text="Notifonts" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
         </HBox>
-    </top>
 
-    <center>
-        <VBox spacing="20" alignment="TOP_CENTER">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+        <Separator style="-fx-opacity: 0.3;"/>
 
-            <Label text="Your Notifications" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-
-            <ListView fx:id="notificationsList" prefHeight="400" prefWidth="600"/>
+        <!-- Menu Items -->
+        <VBox spacing="10">
+            <Button text="🏠  Dashboard" maxWidth="Infinity" alignment="BASELINE_LEFT"
+                    style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-padding: 12 15; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            
+            <Button text="💬  Messages" maxWidth="Infinity" alignment="BASELINE_LEFT"
+                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;"/>
+            
+            <Button text="⚙️  Settings" maxWidth="Infinity" alignment="BASELINE_LEFT"
+                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;"/>
         </VBox>
-    </center>
-</BorderPane>
+        
+        <Region VBox.vgrow="ALWAYS"/>
+        
+        <!-- User Profile Mini -->
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: rgba(0,0,0,0.2); -fx-padding: 10; -fx-background-radius: 10;">
+            <Circle radius="15" fill="white"/>
+            <VBox>
+                <Label fx:id="welcomeLabel" text="User" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Label text="Online" style="-fx-text-fill: #2ecc71; -fx-font-size: 10px;"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <VBox HBox.hgrow="ALWAYS" spacing="25">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Dashboard" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Welcome back to your notification center" style="-fx-text-fill: #7f8c8d;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#handleLogout" 
+                    style="-fx-background-color: white; -fx-text-fill: #e74c3c; -fx-border-color: #e74c3c; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Tabs / Categories -->
+        <HBox spacing="15">
+            <Button text="Fisht" onAction="#handleTabSwitch"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 25; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            <Button text="Easy" onAction="#handleTabSwitch"
+                    style="-fx-background-color: white; -fx-text-fill: #7f8c8d; -fx-background-radius: 20; -fx-padding: 8 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);"/>
+            <Button text="Lazy" onAction="#handleTabSwitch"
+                    style="-fx-background-color: white; -fx-text-fill: #7f8c8d; -fx-background-radius: 20; -fx-padding: 8 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);"/>
+            <Button text="Flone" onAction="#handleTabSwitch"
+                    style="-fx-background-color: white; -fx-text-fill: #7f8c8d; -fx-background-radius: 20; -fx-padding: 8 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);"/>
+        </HBox>
+
+        <!-- Notification List -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox fx:id="notificationContainer" spacing="15">
+                    <padding><Insets bottom="10" right="10"/></padding>
+                    <!-- Cards will be added here dynamically -->
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+
+</HBox>
