@@ -5,9 +5,9 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3307/instant_notification_system";
+    private static final String URL = "jdbc:mysql://localhost:3306/instant_notification_system";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Compa@2017#2025"; // Change this
+    private static final String PASSWORD = "system"; // Change this
 
     private static Connection connection = null;
 
