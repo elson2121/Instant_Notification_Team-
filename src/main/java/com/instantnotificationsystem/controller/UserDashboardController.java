@@ -1,89 +1,102 @@
 package com.instantnotificationsystem.controller;
 
 import com.instantnotificationsystem.utils.SceneSwitcher;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.chart.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class UserDashboardController {
 
-    @FXML
-    private Label welcomeLabel;
-
-    @FXML
-    private VBox notificationContainer;
+    @FXML private Label welcomeLabel;
+    @FXML private VBox notificationsListContainer;
+    @FXML private PieChart departmentChart;
+    @FXML private LineChart<String, Number> activityChart;
+    @FXML private CheckBox emailToggle;
+    @FXML private CheckBox smsToggle;
 
     @FXML
     public void initialize() {
-        welcomeLabel.setText("Welcome, User!");
-        
-        // Load default tab content
-        loadNotifications("Fisht");
+        welcomeLabel.setText("User"); // Placeholder
+
+        loadRecentNotifications();
+        setupCharts();
     }
 
-    @FXML
-    private void handleTabSwitch(ActionEvent event) {
-        Button clickedBtn = (Button) event.getSource();
-        String category = clickedBtn.getText();
-        loadNotifications(category);
+    private void loadRecentNotifications() {
+        if (notificationsListContainer == null) return;
+        notificationsListContainer.getChildren().clear();
+        
+        addNotificationItem("HR Department", "Policy Update", "10 mins ago", "New");
+        addNotificationItem("IT Support", "System Maintenance", "2 hours ago", "Read");
+        addNotificationItem("Marketing", "New Campaign Launch", "1 day ago", "Read");
+        addNotificationItem("Finance", "Payroll Processed", "2 days ago", "Read");
+    }
+
+    private void addNotificationItem(String source, String title, String time, String status) {
+        HBox item = new HBox(15);
+        item.setAlignment(Pos.CENTER_LEFT);
+        item.setPadding(new Insets(12));
+        item.setStyle("-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 10;");
+
+        // Icon/Avatar placeholder
+        StackPane iconStack = new StackPane();
+        Circle icon = new Circle(20, Color.web("#3498db"));
+        Label iconLabel = new Label(source.substring(0, 1));
+        iconLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        iconStack.getChildren().addAll(icon, iconLabel);
+
+        VBox content = new VBox(3);
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+        Label sourceLabel = new Label(source + " • " + time);
+        sourceLabel.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 11px;");
+        content.getChildren().addAll(titleLabel, sourceLabel);
+        
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label statusLabel = new Label(status);
+        String statusColor = status.equals("New") ? "#e74c3c" : "#2ecc71";
+        statusLabel.setStyle("-fx-background-color: " + statusColor + "; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 15; -fx-font-size: 10px; -fx-font-weight: bold;");
+
+        item.getChildren().addAll(iconStack, content, spacer, statusLabel);
+        notificationsListContainer.getChildren().add(item);
+    }
+
+    private void setupCharts() {
+        // Donut Chart (PieChart)
+        if (departmentChart != null) {
+            departmentChart.getData().addAll(
+                new PieChart.Data("HR", 30),
+                new PieChart.Data("IT", 40),
+                new PieChart.Data("Marketing", 20),
+                new PieChart.Data("Finance", 10)
+            );
+            departmentChart.setLegendVisible(true);
+            departmentChart.setLabelsVisible(false);
+        }
+
+        // Line Chart
+        if (activityChart != null) {
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Notifications");
+            series.getData().add(new XYChart.Data<>("Mon", 5));
+            series.getData().add(new XYChart.Data<>("Tue", 12));
+            series.getData().add(new XYChart.Data<>("Wed", 8));
+            series.getData().add(new XYChart.Data<>("Thu", 15));
+            series.getData().add(new XYChart.Data<>("Fri", 10));
+            activityChart.getData().add(series);
+            activityChart.setLegendVisible(false);
+        }
     }
 
     @FXML
     private void handleLogout() {
         SceneSwitcher.switchToLogin();
-    }
-
-    private void loadNotifications(String category) {
-        if (notificationContainer == null) return;
-        
-        notificationContainer.getChildren().clear();
-        
-        // Mock data based on category
-        // In a real app, this would query the DB based on the category/filter
-        for (int i = 1; i <= 6; i++) {
-            notificationContainer.getChildren().add(createNotificationCard(category + " Update " + i));
-        }
-    }
-
-    private HBox createNotificationCard(String title) {
-        HBox card = new HBox(15);
-        card.setPadding(new Insets(20));
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);");
-        card.setAlignment(Pos.CENTER_LEFT);
-        
-        // Icon/Image placeholder
-        StackPane iconPane = new StackPane();
-        Circle bg = new Circle(25, Color.web("#e3f2fd"));
-        Label icon = new Label("🔔"); // Changed back to Bell
-        icon.setStyle("-fx-font-size: 20px;");
-        iconPane.getChildren().addAll(bg, icon);
-        
-        // Content
-        VBox content = new VBox(5);
-        Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
-        
-        Label descLabel = new Label("This is a sample notification description for " + title + ". It contains important information.");
-        descLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-wrap-text: true;");
-        
-        content.getChildren().addAll(titleLabel, descLabel);
-        HBox.setHgrow(content, Priority.ALWAYS);
-        
-        // Action Button
-        Button actionBtn = new Button("Amroll Here");
-        actionBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: bold;");
-        
-        card.getChildren().addAll(iconPane, content, actionBtn);
-        
-        return card;
     }
 }

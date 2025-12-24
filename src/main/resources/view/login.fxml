@@ -125,22 +125,22 @@
                 <VBox fx:id="regStep1" spacing="20" maxWidth="400">
                     <VBox spacing="5">
                         <Label text="Full Name *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                        <TextField fx:id="regFullNameField" promptText="John Doe" prefHeight="40"
+                        <TextField fx:id="regFullNameField" promptText="Enter your full name" prefHeight="40"
                                    style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
                     </VBox>
                     
                     <VBox spacing="5">
                         <Label text="Username *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                        <TextField fx:id="regUsernameField" promptText="johndoe" prefHeight="40"
+                        <TextField fx:id="regUsernameField" promptText="Choose a username" prefHeight="40"
                                    style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
                     </VBox>
                     
                     <VBox spacing="5">
                         <Label text="Password *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <StackPane alignment="CENTER_RIGHT">
-                            <PasswordField fx:id="regPasswordField" promptText="••••••••" prefHeight="40"
+                            <PasswordField fx:id="regPasswordField" promptText="Create a password" prefHeight="40"
                                            style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
-                            <TextField fx:id="regPasswordFieldVisible" promptText="••••••••" prefHeight="40" visible="false"
+                            <TextField fx:id="regPasswordFieldVisible" promptText="Create a password" prefHeight="40" visible="false"
                                        style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
                         </StackPane>
                     </VBox>
@@ -148,9 +148,9 @@
                     <VBox spacing="5">
                         <Label text="Confirm Password *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <StackPane alignment="CENTER_RIGHT">
-                            <PasswordField fx:id="regConfirmPasswordField" promptText="••••••••" prefHeight="40"
+                            <PasswordField fx:id="regConfirmPasswordField" promptText="Re-enter your password" prefHeight="40"
                                            style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
-                            <TextField fx:id="regConfirmPasswordFieldVisible" promptText="••••••••" prefHeight="40" visible="false"
+                            <TextField fx:id="regConfirmPasswordFieldVisible" promptText="Re-enter your password" prefHeight="40" visible="false"
                                        style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
                         </StackPane>
                     </VBox>
@@ -159,7 +159,7 @@
                     
                     <VBox spacing="5">
                         <Label text="Phone *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                        <TextField fx:id="regPhoneField" promptText="e.g., 0911223344" prefHeight="40"
+                        <TextField fx:id="regPhoneField" promptText="Enter your phone number" prefHeight="40"
                                    style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
                     </VBox>
                     
@@ -213,7 +213,7 @@
                     </HBox>
                 </VBox>
             </StackPane>
-            
+
             <!-- Error Label moved outside of steps to be visible in both -->
             <Label fx:id="regErrorLabel" textFill="#ef4444" visible="false" wrapText="true" style="-fx-padding: 10 0 0 0;"/>
         </VBox>
