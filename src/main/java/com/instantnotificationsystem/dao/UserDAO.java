@@ -25,6 +25,22 @@ public class UserDAO {
         return null;
     }
 
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                users.add(mapResultSetToUser(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
