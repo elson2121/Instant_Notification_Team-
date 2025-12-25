@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
 
 <BorderPane fx:id="mainBorderPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -14,8 +15,17 @@
             <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
             <Label text="⚡ Instant Notification System" styleClass="header-title"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="welcomeLabel" text="Welcome, Admin!" styleClass="welcome-label"/>
-            <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <StackPane>
+                    <Button text="🔔" styleClass="icon-button"/>
+                    <Label text="3" styleClass="badge" StackPane.alignment="TOP_RIGHT" translateX="5" translateY="-5"/>
+                </StackPane>
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Label fx:id="welcomeLabel" text="Admin" styleClass="welcome-label"/>
+                    <Circle fx:id="avatar" radius="20" styleClass="avatar"/>
+                </HBox>
+                <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+            </HBox>
         </HBox>
     </top>
 
@@ -29,26 +39,22 @@
 
             <!-- Sidebar Buttons -->
             <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button" maxWidth="Infinity"/>
-            <Button fx:id="btnSendNotification" text="✉️ Send Notification" styleClass="sidebar-button" maxWidth="Infinity"/>
-            <Button fx:id="btnViewUsers" text="👥 View Users" styleClass="sidebar-button" maxWidth="Infinity"/>
+            <Button fx:id="btnUsers" text="👥 Users" styleClass="sidebar-button" maxWidth="Infinity"/>
+            <Button fx:id="btnNotifications" text="✉️ Notifications" styleClass="sidebar-button" maxWidth="Infinity"/>
             <Button fx:id="btnAnalytics" text="📈 Analytics" styleClass="sidebar-button" maxWidth="Infinity"/>
+            
+            <!-- Settings Menu -->
+            <TitledPane text="⚙️ Settings" styleClass="sidebar-titled-pane" expanded="false">
+                <VBox spacing="5" styleClass="sidebar-submenu">
+                    <Button text="👤 Profile" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
+                    <Button text="⚙️ Preference" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
+                    <Button text="❓ Help" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
+                    <Button text="ℹ️ About" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
+                </VBox>
+            </TitledPane>
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <!-- Quick Stats -->
-            <VBox spacing="5" styleClass="quick-stats">
-                <Label text="Quick Stats" styleClass="quick-stats-title"/>
-                <HBox spacing="10">
-                    <VBox spacing="2">
-                        <Label text="245" styleClass="stat-number"/>
-                        <Label text="Today" styleClass="stat-label"/>
-                    </VBox>
-                    <VBox spacing="2">
-                        <Label text="85%" styleClass="stat-number"/>
-                        <Label text="Seen Rate" styleClass="stat-label"/>
-                    </VBox>
-                </HBox>
-            </VBox>
         </VBox>
     </left>
 
