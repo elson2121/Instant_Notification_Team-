@@ -8,6 +8,25 @@ import java.util.List;
 
 public class UserDAO {
 
+    public User getUserByUsernameAndPassword(String username, String password) {
+        // In a real app, you should hash the password before comparing!
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public User getUserByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -65,6 +84,20 @@ public class UserDAO {
         }
     }
 
+    public int getTotalUserCount() {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
@@ -78,6 +111,25 @@ public class UserDAO {
         user.setShift(rs.getString("shift"));
         user.setDepartmentName(rs.getString("department_name"));
         return user;
+    }
+
+    public List<User> getUsersByNotificationSeenStatus(boolean seen) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.* FROM users u " +
+                     "JOIN user_notifications un ON u.id = un.user_id " +
+                     "WHERE un.seen = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, seen);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     public List<User> getUsersByCriteria(Integer departmentId, String sex, String shift, List<Integer> specificUserIds) {

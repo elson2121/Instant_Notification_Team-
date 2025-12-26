@@ -1,302 +1,155 @@
+/* dashboard_styles.css */
+
 /* Main styles */
 .root {
     -fx-font-family: "Segoe UI", Arial, sans-serif;
-    -fx-background-color: #f5f7fa;
+    -fx-background-color: #F8FAFC;
 }
 
 /* Header */
 .header {
-    -fx-background-color: #2c3e50; /* Dark slate */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-padding: 15 30;
 }
 
 .header-title {
-    -fx-text-fill: white;
-    -fx-font-size: 20px;
+    -fx-text-fill: #111827;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
 
 .welcome-label {
-    -fx-text-fill: #ecf0f1;
+    -fx-text-fill: #111827;
     -fx-font-size: 14px;
-}
-
-.logout-button {
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8 15;
-    -fx-background-radius: 5px;
-}
-
-.logout-button:hover {
-    -fx-background-color: #c0392b;
-    -fx-cursor: hand;
-}
-
-.icon-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-cursor: hand;
-    -fx-padding: 5;
-}
-
-.icon-button:hover {
-    -fx-background-color: rgba(255,255,255,0.1);
-    -fx-background-radius: 50%;
-}
-
-.badge {
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-padding: 1 5;
-    -fx-min-width: 18px;
-    -fx-alignment: center;
-}
-
-.avatar {
-    -fx-fill: #3498db; /* Placeholder color */
 }
 
 /* Sidebar */
 .sidebar {
-    -fx-background-color: #2c3e50; /* Dark slate matching header */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
-}
-
-.sidebar-title {
-    -fx-text-fill: #ecf0f1; /* Light gray text */
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);
+    -fx-padding: 30 15;
 }
 
 .sidebar-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #bdc3c7; /* Light gray text */
+    -fx-text-fill: #4b5563;
     -fx-font-size: 14px;
-    -fx-padding: 12 15;
-    -fx-alignment: CENTER_LEFT;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-padding: 12 20;
+    -fx-alignment: BASELINE_LEFT;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
 }
 
 .sidebar-button:hover {
-    -fx-background-color: #34495e; /* Slightly lighter dark slate */
-    -fx-text-fill: white;
-    -fx-cursor: hand;
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
 }
 
 .active-sidebar-button {
-    -fx-background-color: #3498db; /* Blue accent */
-    -fx-text-fill: white;
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
+    -fx-font-weight: bold;
 }
 
-.active-sidebar-button:hover {
-    -fx-background-color: #2980b9;
-    -fx-text-fill: white;
+.logout-button {
+    -fx-text-fill: #ef4444;
 }
 
-/* Sidebar TitledPane */
-.sidebar-titled-pane {
-    -fx-background-color: transparent;
-    -fx-text-fill: #bdc3c7;
+.logout-button:hover {
+    -fx-background-color: #FEF2F2;
+    -fx-text-fill: #DC2626;
 }
 
-.sidebar-titled-pane > .title {
-    -fx-background-color: transparent;
-    -fx-padding: 12 15;
-    -fx-font-size: 14px;
-}
-
-.sidebar-titled-pane > .title > .arrow-button .arrow {
-    -fx-background-color: #bdc3c7;
-}
-
-.sidebar-titled-pane:hover {
-    -fx-background-color: #34495e;
-}
-
-.sidebar-titled-pane > .title:hover {
-    -fx-text-fill: white;
-}
-
-.sidebar-submenu {
-    -fx-background-color: #2c3e50;
-    -fx-padding: 5 0 5 20; /* Indent submenu items */
-}
-
-.sidebar-submenu-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #bdc3c7;
-    -fx-font-size: 13px;
-    -fx-padding: 8 15;
-    -fx-alignment: CENTER_LEFT;
-}
-
-.sidebar-submenu-button:hover {
-    -fx-background-color: #34495e;
-    -fx-text-fill: white;
-}
-
-
-/* Content Area */
-.content-area {
-    -fx-background-color: #f8f9fa;
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
     -fx-padding: 20;
 }
 
-/* Quick Stats */
-.quick-stats {
-    -fx-background-color: #34495e; /* Darker background for stats in dark sidebar */
-    -fx-padding: 15;
-    -fx-background-radius: 10px;
-    -fx-border-color: #2c3e50;
-    -fx-border-radius: 10px;
+/* Today Card with vibrant blue */
+.today-card {
+    -fx-background-color: #2D62ED; /* Vibrant blue from login page */
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 5);
+    -fx-padding: 30;
 }
 
-.quick-stats-title {
-    -fx-text-fill: #bdc3c7;
-    -fx-font-size: 12px;
+.today-label {
+    -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
 }
 
-.stat-number {
-    -fx-text-fill: #3498db;
+.date-label {
+    -fx-text-fill: white;
     -fx-font-size: 24px;
     -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
 }
 
-.stat-label {
-    -fx-text-fill: #95a5a6;
-    -fx-font-size: 12px;
+.year-label {
+    -fx-text-fill: rgba(255,255,255,0.9);
+    -fx-font-size: 18px;
 }
 
-/* Footer */
-.footer {
-    -fx-background-color: #ecf0f1;
-    -fx-border-color: #bdc3c7;
-    -fx-border-width: 1 0 0 0;
+/* Notification List */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
 }
 
-.footer Label {
-    -fx-text-fill: #7f8c8d;
-    -fx-font-size: 12px;
-}
-
-/* Table Styling */
-.table-view {
+.list-cell {
     -fx-background-color: white;
-    -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 1);
+    -fx-padding: 10px;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+    -fx-text-fill: #374151;
 }
 
-.table-view .column-header {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-}
-
-.table-row-cell {
+.list-cell:odd {
     -fx-background-color: white;
+}
+
+.list-cell:hover {
+    -fx-background-color: #F9FAFB;
+    -fx-cursor: hand;
+}
+
+.list-cell:selected {
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
-.table-row-cell:odd {
-    -fx-background-color: #f8f9fa;
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
 }
 
-.table-row-cell:hover {
-    -fx-background-color: #e3f2fd;
-    -fx-cursor: hand;
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
 }
 
-/* Form Elements */
-.text-field, .text-area, .combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-    -fx-padding: 8;
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
 }
 
-.text-field:focused, .text-area:focused, .combo-box:focused {
-    -fx-border-color: #3498db;
-    -fx-effect: dropshadow(three-pass-box, rgba(52,152,219,0.2), 5, 0, 0, 1);
+.scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 4px;
 }
 
-.button {
-    -fx-background-radius: 5px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-}
-
-.button:hover {
-    -fx-opacity: 0.9;
-}
-
-/* Toggle Button */
-.toggle-button {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-    -fx-text-fill: #7f8c8d;
-}
-
-.toggle-button:selected {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-border-color: #3498db;
-}
-
-/* Login Page Specific */
-.login-container {
-    -fx-background-color: linear-gradient(to bottom right, #2c3e50, #3498db);
-}
-
-.login-box {
-    -fx-background-color: white;
-    -fx-background-radius: 15px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 5);
-}
-
-.login-title {
-    -fx-text-fill: #2c3e50;
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-}
-
-.login-subtitle {
-    -fx-text-fill: #7f8c8d;
-    -fx-font-size: 14px;
-}
-
-.login-button {
-    -fx-background-color: #2ecc71;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 12 30;
-}
-
-.login-button:hover {
-    -fx-background-color: #27ae60;
-}
-
-.register-link {
-    -fx-text-fill: #3498db;
-    -fx-underline: true;
-    -fx-cursor: hand;
-}
-
-.register-link:hover {
-    -fx-text-fill: #2980b9;
-}
-
-.error-label {
-    -fx-text-fill: #e74c3c;
-    -fx-font-weight: bold;
-    -fx-padding: 10 0;
+.scroll-bar:vertical .thumb:hover, .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #94a3b8;
 }
