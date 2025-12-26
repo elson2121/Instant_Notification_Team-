@@ -1,5 +1,6 @@
 package com.instantnotificationsystem.controller;
 
+import com.instantnotificationsystem.dao.NotificationDAO;
 import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.User;
 import com.instantnotificationsystem.utils.SceneSwitcher;
@@ -8,10 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
@@ -42,10 +39,12 @@ public class AdminDashboardController {
     private StackPane contentArea;
 
     private UserDAO userDAO;
+    private NotificationDAO notificationDAO;
 
     @FXML
     public void initialize() {
         userDAO = new UserDAO();
+        notificationDAO = new NotificationDAO();
 
         // Set welcome message
         if (welcomeLabel != null) {
@@ -129,10 +128,13 @@ public class AdminDashboardController {
         statsGrid.setVgap(20);
         statsGrid.setAlignment(Pos.CENTER); // Center the grid
         
+        // Get real counts from DB
+        int totalUsers = userDAO.getTotalUserCount();
+        int sentNotifications = notificationDAO.getSentCount();
+
         // Stat cards with full color background and icons
-        // Removed Active Users and Pending Alerts
-        addStatCard(statsGrid, "Total Users", "1,245", 0, 0, "#2ecc71", "👥"); // Green
-        addStatCard(statsGrid, "Notifications Sent", "5,678", 0, 1, "#3498db", "✉️"); // Blue
+        addStatCard(statsGrid, "Total Users", String.valueOf(totalUsers), 0, 0, "#2ecc71", "👥"); // Green
+        addStatCard(statsGrid, "Notifications Sent", String.valueOf(sentNotifications), 0, 1, "#3498db", "✉️"); // Blue
 
         // Main content layout
         VBox mainContent = new VBox(20);

@@ -1,7 +1,9 @@
 package com.instantnotificationsystem.dao;
 
+import com.instantnotificationsystem.config.DBConnection;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
+import java.sql.*;
 import java.util.List;
 
 public class NotificationDAO {
@@ -18,5 +20,19 @@ public class NotificationDAO {
     }
 
     public void createUserNotifications(int notificationId, List<User> targetUsers) {
+    }
+
+    public int getSentCount() {
+        String sql = "SELECT COUNT(*) FROM notifications";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
