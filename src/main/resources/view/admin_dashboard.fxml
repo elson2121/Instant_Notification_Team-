@@ -16,10 +16,6 @@
             <Label text="⚡ Instant Notification System" styleClass="header-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox spacing="15" alignment="CENTER_RIGHT">
-                <StackPane>
-                    <Button text="🔔" styleClass="icon-button"/>
-                    <Label text="3" styleClass="badge" StackPane.alignment="TOP_RIGHT" translateX="5" translateY="-5"/>
-                </StackPane>
                 <HBox alignment="CENTER_RIGHT" spacing="10">
                     <Label fx:id="welcomeLabel" text="Admin" styleClass="welcome-label"/>
                     <Circle fx:id="avatar" radius="20" styleClass="avatar"/>
@@ -41,17 +37,6 @@
             <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button" maxWidth="Infinity"/>
             <Button fx:id="btnUsers" text="👥 Users" styleClass="sidebar-button" maxWidth="Infinity"/>
             <Button fx:id="btnNotifications" text="✉️ Notifications" styleClass="sidebar-button" maxWidth="Infinity"/>
-            <Button fx:id="btnAnalytics" text="📈 Analytics" styleClass="sidebar-button" maxWidth="Infinity"/>
-            
-            <!-- Settings Menu -->
-            <TitledPane text="⚙️ Settings" styleClass="sidebar-titled-pane" expanded="false">
-                <VBox spacing="5" styleClass="sidebar-submenu">
-                    <Button text="👤 Profile" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
-                    <Button text="⚙️ Preference" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
-                    <Button text="❓ Help" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
-                    <Button text="ℹ️ About" styleClass="sidebar-submenu-button" maxWidth="Infinity"/>
-                </VBox>
-            </TitledPane>
 
             <Region VBox.vgrow="ALWAYS"/>
 

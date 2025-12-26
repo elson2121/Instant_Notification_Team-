@@ -33,12 +33,6 @@ public class AdminDashboardController {
     private Button btnNotifications;
 
     @FXML
-    private Button btnAnalytics;
-
-    @FXML
-    private Button btnSettings;
-
-    @FXML
     private Button btnLogout;
 
     @FXML
@@ -90,22 +84,6 @@ public class AdminDashboardController {
             });
         }
 
-        // Analytics button
-        if (btnAnalytics != null) {
-            btnAnalytics.setOnAction(e -> {
-                setActiveButton(btnAnalytics);
-                loadAnalyticsContent();
-            });
-        }
-
-        // Settings button
-        if (btnSettings != null) {
-            btnSettings.setOnAction(e -> {
-                setActiveButton(btnSettings);
-                // loadSettingsContent(); // Placeholder
-            });
-        }
-
         // Logout button
         if (btnLogout != null) {
             btnLogout.setOnAction(e -> {
@@ -128,8 +106,6 @@ public class AdminDashboardController {
         if (btnDashboard != null) btnDashboard.getStyleClass().remove("active-sidebar-button");
         if (btnUsers != null) btnUsers.getStyleClass().remove("active-sidebar-button");
         if (btnNotifications != null) btnNotifications.getStyleClass().remove("active-sidebar-button");
-        if (btnAnalytics != null) btnAnalytics.getStyleClass().remove("active-sidebar-button");
-        if (btnSettings != null) btnSettings.getStyleClass().remove("active-sidebar-button");
 
         if (activeButton != null) {
             activeButton.getStyleClass().add("active-sidebar-button");
@@ -151,12 +127,12 @@ public class AdminDashboardController {
         GridPane statsGrid = new GridPane();
         statsGrid.setHgap(20);
         statsGrid.setVgap(20);
+        statsGrid.setAlignment(Pos.CENTER); // Center the grid
         
         // Stat cards with full color background and icons
+        // Removed Active Users and Pending Alerts
         addStatCard(statsGrid, "Total Users", "1,245", 0, 0, "#2ecc71", "👥"); // Green
         addStatCard(statsGrid, "Notifications Sent", "5,678", 0, 1, "#3498db", "✉️"); // Blue
-        addStatCard(statsGrid, "Active Users", "342", 0, 2, "#e67e22", "⚡"); // Orange
-        addStatCard(statsGrid, "Pending Alerts", "14", 0, 3, "#9b59b6", "⚠️"); // Purple
 
         // Main content layout
         VBox mainContent = new VBox(20);
@@ -182,15 +158,15 @@ public class AdminDashboardController {
         // Full color background
         card.setStyle("-fx-background-color: " + colorHex + "; -fx-background-radius: 10px; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);");
-        card.setPrefWidth(250);
-        card.setPrefHeight(100);
+        card.setPrefWidth(400); // Increased width for better centering
+        card.setPrefHeight(120); // Increased height slightly
 
         // Icon container
         StackPane iconPane = new StackPane();
-        iconPane.setPrefSize(50, 50);
+        iconPane.setPrefSize(60, 60);
         iconPane.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 50%;");
         Label iconLabel = new Label(icon);
-        iconLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+        iconLabel.setStyle("-fx-font-size: 28px; -fx-text-fill: white;");
         iconPane.getChildren().add(iconLabel);
 
         // Text container
@@ -198,10 +174,10 @@ public class AdminDashboardController {
         textContainer.setAlignment(Pos.CENTER_LEFT);
         
         Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
+        valueLabel.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;");
 
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.9);");
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: rgba(255,255,255,0.9);");
         
         textContainer.getChildren().addAll(valueLabel, titleLabel);
 
@@ -244,50 +220,6 @@ public class AdminDashboardController {
         return formBox;
     }
     
-    private VBox createNotificationChart() {
-        VBox chartBox = new VBox(10);
-        chartBox.setPadding(new Insets(15));
-        chartBox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
-        
-        Label titleLabel = new Label("Notification Overview");
-        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setPrefHeight(300); // Increased height slightly for better visibility
-        lineChart.setLegendVisible(true);
-        
-        XYChart.Series<String, Number> sentSeries = new XYChart.Series<>();
-        sentSeries.setName("Sent");
-        sentSeries.getData().add(new XYChart.Data<>("Mon", 20));
-        sentSeries.getData().add(new XYChart.Data<>("Tue", 35));
-        sentSeries.getData().add(new XYChart.Data<>("Wed", 40));
-        sentSeries.getData().add(new XYChart.Data<>("Thu", 30));
-        sentSeries.getData().add(new XYChart.Data<>("Fri", 50));
-        
-        XYChart.Series<String, Number> deliveredSeries = new XYChart.Series<>();
-        deliveredSeries.setName("Delivered");
-        deliveredSeries.getData().add(new XYChart.Data<>("Mon", 18));
-        deliveredSeries.getData().add(new XYChart.Data<>("Tue", 32));
-        deliveredSeries.getData().add(new XYChart.Data<>("Wed", 38));
-        deliveredSeries.getData().add(new XYChart.Data<>("Thu", 28));
-        deliveredSeries.getData().add(new XYChart.Data<>("Fri", 48));
-        
-        XYChart.Series<String, Number> failedSeries = new XYChart.Series<>();
-        failedSeries.setName("Failed");
-        failedSeries.getData().add(new XYChart.Data<>("Mon", 2));
-        failedSeries.getData().add(new XYChart.Data<>("Tue", 3));
-        failedSeries.getData().add(new XYChart.Data<>("Wed", 2));
-        failedSeries.getData().add(new XYChart.Data<>("Thu", 2));
-        failedSeries.getData().add(new XYChart.Data<>("Fri", 2));
-        
-        lineChart.getData().addAll(sentSeries, deliveredSeries, failedSeries);
-        
-        chartBox.getChildren().addAll(titleLabel, lineChart);
-        return chartBox;
-    }
-    
     private VBox createRecentNotificationsBox() {
         VBox box = new VBox(10);
         box.setPadding(new Insets(15));
@@ -297,7 +229,7 @@ public class AdminDashboardController {
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         
         TableView<NotificationMock> table = new TableView<>();
-        table.setPrefHeight(250); // Increased height slightly
+        table.setPrefHeight(300); // Increased height
         
         TableColumn<NotificationMock, String> titleCol = new TableColumn<>("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -421,20 +353,5 @@ public class AdminDashboardController {
         usersContent.getChildren().addAll(titleLabel, searchBox, usersTable);
         contentArea.getChildren().clear();
         contentArea.getChildren().add(usersContent);
-    }
-
-    private void loadAnalyticsContent() {
-        if (contentArea == null) return;
-
-        VBox analyticsContent = new VBox(20);
-        analyticsContent.setPadding(new Insets(20));
-
-        Label titleLabel = new Label("Analytics Dashboard");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        
-        analyticsContent.getChildren().addAll(titleLabel, createNotificationChart());
-
-        contentArea.getChildren().clear();
-        contentArea.getChildren().add(analyticsContent);
     }
 }
