@@ -186,37 +186,74 @@ public class AdminDashboardController {
     }
     
     private VBox createMiniSendForm() {
-        VBox formBox = new VBox(15);
-        formBox.setPadding(new Insets(20));
+        VBox formBox = new VBox(20); // Increased spacing
+        formBox.setPadding(new Insets(30)); // Increased padding
         formBox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+        formBox.setAlignment(Pos.TOP_CENTER); // Center alignment
         
         Label titleLabel = new Label("Send Notification");
-        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         
+        // Input Container
+        VBox inputContainer = new VBox(15);
+        inputContainer.setMaxWidth(600); // Limit width for better readability
+        inputContainer.setAlignment(Pos.CENTER_LEFT);
+
+        // Title Field
+        VBox titleBox = new VBox(5);
+        Label subjectLabel = new Label("Subject");
+        subjectLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #34495e;");
         TextField titleField = new TextField();
-        titleField.setPromptText("Notification Title");
+        titleField.setPromptText("Enter Subject...");
+        titleField.setPrefHeight(40);
+        titleField.setStyle("-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;");
+        titleBox.getChildren().addAll(subjectLabel, titleField);
         
+        // Message Area
+        VBox messageBox = new VBox(5);
+        Label messageLabel = new Label("Message");
+        messageLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #34495e;");
         TextArea messageArea = new TextArea();
-        messageArea.setPromptText("Message content...");
-        messageArea.setPrefRowCount(3);
+        messageArea.setPromptText("Type message here...");
+        messageArea.setPrefRowCount(5);
+        messageArea.setStyle("-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;");
+        messageBox.getChildren().addAll(messageLabel, messageArea);
         
+        // Recipient Selection
+        VBox recipientBox = new VBox(5);
+        Label recipientLabel = new Label("Send To");
+        recipientLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #34495e;");
         ComboBox<String> sendToCombo = new ComboBox<>();
         sendToCombo.getItems().addAll("All Users", "Specific Department", "Specific User");
         sendToCombo.setValue("All Users");
         sendToCombo.setMaxWidth(Double.MAX_VALUE);
+        sendToCombo.setPrefHeight(40);
+        sendToCombo.setStyle("-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-color: white;");
+        recipientBox.getChildren().addAll(recipientLabel, sendToCombo);
+
+        // Delivery Channels (Checkboxes)
+        HBox channelBox = new HBox(20);
+        channelBox.setAlignment(Pos.CENTER_LEFT);
+        Label channelLabel = new Label("Delivery Method:");
+        channelLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #34495e;");
         
-        HBox channelBox = new HBox(10);
-        ToggleButton emailBtn = new ToggleButton("Email");
-        ToggleButton smsBtn = new ToggleButton("SMS");
-        ToggleButton pushBtn = new ToggleButton("Push Notification");
+        CheckBox emailCheck = new CheckBox("Email");
+        emailCheck.setStyle("-fx-font-size: 14px;");
         
-        channelBox.getChildren().addAll(emailBtn, smsBtn, pushBtn);
+        CheckBox smsCheck = new CheckBox("SMS");
+        smsCheck.setStyle("-fx-font-size: 14px;");
         
+        channelBox.getChildren().addAll(channelLabel, emailCheck, smsCheck);
+        
+        inputContainer.getChildren().addAll(titleBox, messageBox, recipientBox, channelBox);
+        
+        // Send Button
         Button sendBtn = new Button("Send Notification");
-        sendBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
-        sendBtn.setMaxWidth(Double.MAX_VALUE);
+        sendBtn.setStyle("-fx-background-color: #2D62ED; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 8; -fx-cursor: hand;");
+        sendBtn.setPrefWidth(200);
+        sendBtn.setPrefHeight(45);
         
-        formBox.getChildren().addAll(titleLabel, titleField, messageArea, sendToCombo, channelBox, sendBtn);
+        formBox.getChildren().addAll(titleLabel, inputContainer, sendBtn);
         return formBox;
     }
     
@@ -292,12 +329,9 @@ public class AdminDashboardController {
 
         VBox notificationForm = new VBox(15);
         notificationForm.setPadding(new Insets(20));
+        notificationForm.setAlignment(Pos.TOP_CENTER); // Center the form in the view
 
-        Label titleLabel = new Label("Send New Notification");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        
         // Reusing the mini form logic but expanded if needed, for now just placeholder
-        notificationForm.getChildren().add(titleLabel);
         notificationForm.getChildren().add(createMiniSendForm());
         
         contentArea.getChildren().clear();
