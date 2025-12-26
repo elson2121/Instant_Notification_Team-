@@ -29,7 +29,7 @@ public class NotificationService {
                 return result;
             }
 
-            // 2. Save notification to database
+            // 2. Save notification to database and get the new ID
             int notificationId = notificationDAO.createNotification(notification);
             if (notificationId <= 0) {
                 result.setSuccess(false);
@@ -37,15 +37,12 @@ public class NotificationService {
                 return result;
             }
 
-            // 3. Save channels
-            notificationDAO.saveChannels(notificationId, channels);
-
-            // 4. Create user notification records
+            // 3. Link the notification to the target users
             notificationDAO.createUserNotifications(notificationId, targetUsers);
 
-            // 5. Simulate delivery through channels
-            if (notification.getScheduledTime() == null ||
-                    notification.getScheduledTime().isBefore(LocalDateTime.now())) {
+            // 4. Simulate delivery through channels
+            if (notification.getSentAt() == null ||
+                    notification.getSentAt().isBefore(LocalDateTime.now())) {
                 deliverNotification(notification, targetUsers, channels);
             }
 
@@ -79,7 +76,7 @@ public class NotificationService {
                 case "SMS":
                     simulateSMSDelivery(notification, users);
                     break;
-                case "EMAIL":
+                case "Email": // Corrected to match checkbox text
                     simulateEmailDelivery(notification, users);
                     break;
                 case "TELEGRAM":

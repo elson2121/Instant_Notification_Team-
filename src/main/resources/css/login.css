@@ -1,0 +1,49 @@
+.root {
+    -fx-font-family: 'System';
+}
+
+.glass-button {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 1.1em;
+    -fx-font-weight: bold;
+    -fx-padding: 15 25;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.glass-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.action-pane-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 20, 0, 0, 10);
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(to right, #4A00E0, #8E2DE2);
+    -fx-text-fill: white;
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+    -fx-padding: 12 30;
+    -fx-background-radius: 10;
+}
+
+.primary-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 3);
+}
+
+.text-field, .password-field {
+    -fx-background-color: #f0f2f5;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 1.1em;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #4A00E0;
+}

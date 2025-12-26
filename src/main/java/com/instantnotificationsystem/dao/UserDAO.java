@@ -113,6 +113,25 @@ public class UserDAO {
         return user;
     }
 
+    public List<User> getUsersByNotificationSeenStatus(boolean seen) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.* FROM users u " +
+                     "JOIN user_notifications un ON u.id = un.user_id " +
+                     "WHERE un.seen = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, seen);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     public List<User> getUsersByCriteria(Integer departmentId, String sex, String shift, List<Integer> specificUserIds) {
         return new ArrayList<>();
     }

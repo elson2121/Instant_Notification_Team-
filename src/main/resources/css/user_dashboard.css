@@ -1,0 +1,29 @@
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4b5563;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 4;
+    -fx-background-radius: 0;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: #2D62ED;
+}
+
+.sidebar-button:focused, .sidebar-button-active {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: #2D62ED;
+    -fx-border-color: #2D62ED;
+}
+
+.sidebar-button-logout {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}

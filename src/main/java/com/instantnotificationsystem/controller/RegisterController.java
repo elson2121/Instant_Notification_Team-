@@ -14,6 +14,8 @@ public class RegisterController {
     @FXML private TextField fullNameField;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField passwordFieldVisible;
+    @FXML private CheckBox showPasswordCheckbox;
     @FXML private TextField phoneField;
     @FXML private TextField employeeIdField;
     @FXML private ComboBox<String> roleComboBox;
@@ -28,6 +30,18 @@ public class RegisterController {
     public void initialize() {
         userDAO = new UserDAO();
         setupComboBoxes();
+        setupPasswordVisibilityToggle();
+    }
+
+    private void setupPasswordVisibilityToggle() {
+        // Bind the visibility of the two fields
+        passwordFieldVisible.managedProperty().bind(showPasswordCheckbox.selectedProperty());
+        passwordFieldVisible.visibleProperty().bind(showPasswordCheckbox.selectedProperty());
+        passwordField.managedProperty().bind(showPasswordCheckbox.selectedProperty().not());
+        passwordField.visibleProperty().bind(showPasswordCheckbox.selectedProperty().not());
+
+        // Bind the text content of the two fields together
+        passwordFieldVisible.textProperty().bindBidirectional(passwordField.textProperty());
     }
 
     private void setupComboBoxes() {

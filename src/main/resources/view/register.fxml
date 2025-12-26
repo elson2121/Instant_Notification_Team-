@@ -79,38 +79,44 @@
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2">
                     <Label text="Password *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                    <PasswordField fx:id="passwordField" promptText="Create a strong password" prefHeight="40"
+                    <StackPane>
+                        <PasswordField fx:id="passwordField" promptText="Create a strong password" prefHeight="40"
+                                       style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                        <TextField fx:id="passwordFieldVisible" managed="false" visible="false" promptText="Create a strong password" prefHeight="40"
                                    style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                    </StackPane>
                 </VBox>
 
-                <!-- Employment Info Section -->
-                <Label text="Employment Details" style="-fx-font-weight: bold; -fx-text-fill: #2563eb; -fx-font-size: 14px;" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+                <CheckBox fx:id="showPasswordCheckbox" text="Show password" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
 
-                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                <!-- Employment Info Section -->
+                <Label text="Employment Details" style="-fx-font-weight: bold; -fx-text-fill: #2563eb; -fx-font-size: 14px;" GridPane.columnSpan="2" GridPane.rowIndex="5"/>
+
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6">
                     <Label text="Employee ID" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <TextField fx:id="employeeIdField" promptText="e.g. EMP-001" prefHeight="40"
                                style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
 
-                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <Label text="Department *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <ComboBox fx:id="departmentComboBox" promptText="Select Dept" prefHeight="40" maxWidth="Infinity"
                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
 
-                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="7">
                     <Label text="Role *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <ComboBox fx:id="roleComboBox" promptText="Select Role" prefHeight="40" maxWidth="Infinity"
                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
 
-                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="7">
                     <Label text="Shift *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <ComboBox fx:id="shiftComboBox" promptText="Select Shift" prefHeight="40" maxWidth="Infinity"
                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
 
-                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="8">
                     <Label text="Sex" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <ComboBox fx:id="sexComboBox" promptText="Select Sex" prefHeight="40" maxWidth="Infinity"
                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>

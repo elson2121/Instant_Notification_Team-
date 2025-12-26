@@ -1,58 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.shape.Circle?>
 
-<BorderPane fx:id="mainBorderPane" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.instantnotificationsystem.controller.AdminDashboardController"
-            stylesheets="@../resources/style.css">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="mainBorderPane" stylesheets="@../css/admin_dashboard.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.instantnotificationsystem.controller.AdminDashboardController">
 
     <top>
-        <HBox styleClass="header" spacing="10" alignment="CENTER_LEFT">
-            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
-            <Label text="⚡ Instant Notification System" styleClass="header-title"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <HBox spacing="15" alignment="CENTER_RIGHT">
-                <HBox alignment="CENTER_RIGHT" spacing="10">
-                    <Label fx:id="welcomeLabel" text="Admin" styleClass="welcome-label"/>
-                    <Circle fx:id="avatar" radius="20" styleClass="avatar"/>
-                </HBox>
-                <Button fx:id="btnLogout" text="Logout" styleClass="logout-button"/>
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-blue">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="15" />
+            </padding>
+            <Label styleClass="header-title" text="⚡ Admin Dashboard" />
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Label fx:id="welcomeLabel" styleClass="welcome-label" text="Welcome, Administrator!" />
+                <Button fx:id="btnLogout" styleClass="logout-button" text="Logout" />
             </HBox>
         </HBox>
     </top>
 
     <left>
         <VBox fx:id="sidebar" prefWidth="250" spacing="10" styleClass="sidebar">
-            <padding><Insets top="20" right="15" bottom="20" left="15"/></padding>
-
-            <!-- Sidebar Header -->
-            <Label text="Navigation" styleClass="sidebar-title"/>
-            <Separator/>
-
-            <!-- Sidebar Buttons -->
-            <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button" maxWidth="Infinity"/>
-            <Button fx:id="btnUsers" text="👥 Users" styleClass="sidebar-button" maxWidth="Infinity"/>
-            <Button fx:id="btnNotifications" text="✉️ Notifications" styleClass="sidebar-button" maxWidth="Infinity"/>
-
-            <Region VBox.vgrow="ALWAYS"/>
-
+            <padding>
+                <Insets bottom="20" left="15" right="15" top="20" />
+            </padding>
+            <Label styleClass="sidebar-title" text="Navigation" />
+            <Separator />
+            <Button fx:id="btnDashboard" maxWidth="Infinity" styleClass="sidebar-button" text="📊 Dashboard" />
+            <Button fx:id="btnUsers" maxWidth="Infinity" styleClass="sidebar-button" text="👥 Users" />
+            <Button fx:id="btnNotifications" maxWidth="Infinity" styleClass="sidebar-button" text="✉️ Notifications" />
+            <Region VBox.vgrow="ALWAYS" />
         </VBox>
     </left>
 
     <center>
         <StackPane fx:id="contentArea" styleClass="content-area">
-            <!-- Dynamic content will be loaded here -->
+            <!-- This VBox is the main dashboard view, now defined in FXML -->
+            <VBox fx:id="dashboardView" alignment="TOP_CENTER" spacing="20">
+                <padding>
+                    <Insets bottom="20" left="20" right="20" top="20" />
+                </padding>
+                <Label style="-fx-font-size: 1.5em; -fx-font-weight: bold;" text="Admin / Dashboard" />
+
+                <FlowPane fx:id="statsPane" hgap="20" vgap="20" alignment="CENTER" />
+
+                <VBox styleClass="table-container">
+                    <Label text="Recent Notifications" style="-fx-font-size: 1.2em; -fx-padding: 0 0 10 0;" />
+                    <TableView fx:id="recentNotificationsTable" />
+                </VBox>
+            </VBox>
         </StackPane>
     </center>
 
     <bottom>
         <HBox alignment="CENTER" styleClass="footer">
-            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
-            <Label text="© 2024 Instant Notification System v1.0 | Admin Dashboard"/>
+            <padding>
+                <Insets bottom="10" left="20" right="20" top="10" />
+            </padding>
+            <Label text="© 2024 Instant Notification System v1.0" />
         </HBox>
     </bottom>
 
