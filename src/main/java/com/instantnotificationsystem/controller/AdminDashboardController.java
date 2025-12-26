@@ -157,11 +157,10 @@ public class AdminDashboardController {
         HBox card = new HBox(15);
         card.setPadding(new Insets(20));
         card.setAlignment(Pos.CENTER_LEFT);
-        // Full color background
-        card.setStyle("-fx-background-color: " + colorHex + "; -fx-background-radius: 10px; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);");
-        card.setPrefWidth(400); // Increased width for better centering
-        card.setPrefHeight(120); // Increased height slightly
+        card.getStyleClass().add("stat-card");
+        card.setStyle("-fx-background-color: " + colorHex + "; -fx-background-radius: 12px;");
+        card.setPrefWidth(400);
+        card.setPrefHeight(120);
 
         // Icon container
         StackPane iconPane = new StackPane();
@@ -190,7 +189,7 @@ public class AdminDashboardController {
     private VBox createMiniSendForm() {
         VBox formBox = new VBox(20); // Increased spacing
         formBox.setPadding(new Insets(30)); // Increased padding
-        formBox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+        formBox.setStyle("-fx-background-color: white; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
         formBox.setAlignment(Pos.TOP_CENTER); // Center alignment
         
         Label titleLabel = new Label("Send Notification");
@@ -262,13 +261,15 @@ public class AdminDashboardController {
     private VBox createRecentNotificationsBox() {
         VBox box = new VBox(10);
         box.setPadding(new Insets(15));
-        box.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+        box.setStyle("-fx-background-color: white; -fx-background-radius: 12px;");
+        box.getStyleClass().add("table-view-container");
 
         Label titleLabel = new Label("Recent Notifications");
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         
         TableView<NotificationMock> table = new TableView<>();
-        table.setPrefHeight(300); // Increased height
+        table.setPrefHeight(300);
+        table.getStyleClass().add("table-view");
         
         TableColumn<NotificationMock, String> titleCol = new TableColumn<>("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -284,12 +285,19 @@ public class AdminDashboardController {
                     setStyle("");
                 } else {
                     setText(item);
-                    if (item.equals("Delivered")) {
-                        setTextFill(Color.GREEN);
-                    } else if (item.equals("Failed")) {
-                        setTextFill(Color.RED);
-                    } else {
-                        setTextFill(Color.BLUE);
+                    switch (item) {
+                        case "Delivered":
+                            setTextFill(Color.GREEN);
+                            break;
+                        case "Sent":
+                            setTextFill(Color.BLUE);
+                            break;
+                        case "Failed":
+                            setTextFill(Color.RED);
+                            break;
+                        default:
+                            setTextFill(Color.BLACK);
+                            break;
                     }
                     setStyle("-fx-font-weight: bold;");
                 }
