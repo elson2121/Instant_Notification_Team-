@@ -11,40 +11,35 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.instantnotificationsystem.controller.UserDashboardController"
             prefHeight="800.0" prefWidth="1200.0"
-            style="-fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);">
+            style="-fx-background-color: #f9fafb;">
 
     <!-- Top Header -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: rgba(255,255,255,0.05); -fx-padding: 15 30;">
-            <Label text="INSTANT NOTIFICATION SYSTEM" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;"/>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: white; -fx-padding: 15 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+            <Label text="INSTANT NOTIFICATION SYSTEM" style="-fx-text-fill: #111827; -fx-font-weight: bold; -fx-font-size: 18px;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox alignment="CENTER" spacing="10">
                 <VBox alignment="CENTER_RIGHT">
-                    <Label fx:id="welcomeLabel" text="User" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                    <Label text="Online" style="-fx-text-fill: #2ecc71; -fx-font-size: 10px;"/>
+                    <Label fx:id="welcomeLabel" text="Welcome, User" style="-fx-text-fill: #111827; -fx-font-weight: bold;"/>
                 </VBox>
-                <Circle radius="18" fill="#3498db"/>
+                <Circle radius="18" fill="#3b82f6"/>
             </HBox>
         </HBox>
     </top>
 
     <!-- Left Sidebar -->
     <left>
-        <VBox spacing="10" prefWidth="250" style="-fx-background-color: rgba(0,0,0,0.2); -fx-padding: 30 15;">
+        <VBox spacing="10" prefWidth="250" style="-fx-background-color: white; -fx-padding: 30 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);">
             <Button text="📊  Dashboard" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-padding: 12 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    style="-fx-background-color: #eff6ff; -fx-text-fill: #2563eb; -fx-padding: 12 20; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
             <Button text="🔔  Notifications" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 20; -fx-cursor: hand;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #4b5563; -fx-padding: 12 20; -fx-cursor: hand;"/>
             <Button text="📩  My Notifications" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 20; -fx-cursor: hand;"/>
-            <Button text="⚙️  Account Settings" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 20; -fx-cursor: hand;"/>
-            <Button text="📈  Analytics" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 20; -fx-cursor: hand;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #4b5563; -fx-padding: 12 20; -fx-cursor: hand;"/>
             
             <Region VBox.vgrow="ALWAYS"/>
-            <Button fx:id="btnLogout" text="🚪  Logout" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-padding: 12 20; -fx-cursor: hand;"/>
+            <Button fx:id="btnLogout" text="🚪  Logout" onAction="#handleLogout" maxWidth="Infinity" alignment="BASELINE_LEFT"
+                    style="-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-padding: 12 20; -fx-cursor: hand;"/>
         </VBox>
     </left>
 
@@ -53,56 +48,43 @@
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
             <VBox spacing="25" style="-fx-padding: 30;">
                 
-                <!-- Top Row: Notifications & Preferences -->
+                <!-- Top Row: Notifications & Date -->
                 <HBox spacing="25">
                     <!-- My Notifications Panel -->
-                    <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
-                        <Label text="My Notifications" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="300" style="-fx-background-color: transparent;"/>
+                    <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                        <Label text="My Notifications" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="400" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
                     </VBox>
 
-                    <!-- Preferences Panel -->
+                    <!-- Date & Info Panel -->
                     <VBox prefWidth="300" spacing="20">
-                        <!-- Notification Preferences -->
-                        <VBox spacing="15" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
-                            <Label text="Preferences" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label text="Email Notifications" style="-fx-text-fill: #bdc3c7;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                <CheckBox fx:id="emailToggle" selected="true"/>
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label text="SMS Notifications" style="-fx-text-fill: #bdc3c7;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                <CheckBox fx:id="smsToggle"/>
-                            </HBox>
+                        <!-- Date Card -->
+                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #2563eb); -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                            <Label text="TODAY" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
+                            <Label fx:id="dateLabel" text="Monday, Oct 23" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                            <Label text="2024" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 18px;"/>
                         </VBox>
 
-                        <!-- Departments Filter -->
-                        <VBox spacing="10" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
-                            <Label text="Departments" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                            <CheckBox text="Human Resources" selected="true" style="-fx-text-fill: #bdc3c7;"/>
-                            <CheckBox text="IT Support" selected="true" style="-fx-text-fill: #bdc3c7;"/>
-                            <CheckBox text="Marketing" selected="true" style="-fx-text-fill: #bdc3c7;"/>
-                            <CheckBox text="Finance" style="-fx-text-fill: #bdc3c7;"/>
+                        <!-- Quick Stats (Optional Placeholder) -->
+                        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                            <Label text="Quick Stats" style="-fx-text-fill: #111827; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Circle radius="5" fill="#22c55e"/>
+                                <Label text="System Online" style="-fx-text-fill: #4b5563;"/>
+                            </HBox>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Circle radius="5" fill="#3b82f6"/>
+                                <Label text="Notifications Active" style="-fx-text-fill: #4b5563;"/>
+                            </HBox>
                         </VBox>
                     </VBox>
                 </HBox>
 
-                <!-- Bottom Row: Analytics -->
-                <VBox spacing="15" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
-                    <Label text="Analytics Snapshot" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <!-- Bottom Row: Analytics (Simplified) -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                    <Label text="Distribution by Department" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
                     <HBox spacing="30" alignment="CENTER">
-                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                            <Label text="Distribution by Department" style="-fx-text-fill: #bdc3c7; -fx-font-size: 12px;"/>
-                            <PieChart fx:id="departmentChart" prefHeight="250" legendVisible="true"/>
-                        </VBox>
-                        <Separator orientation="VERTICAL"/>
-                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                            <Label text="Notifications Over Time" style="-fx-text-fill: #bdc3c7; -fx-font-size: 12px;"/>
-                            <LineChart fx:id="activityChart" prefHeight="250">
-                                <xAxis><CategoryAxis label="Day" tickLabelFill="white"/></xAxis>
-                                <yAxis><NumberAxis label="Count" tickLabelFill="white"/></yAxis>
-                            </LineChart>
-                        </VBox>
+                        <PieChart fx:id="departmentChart" prefHeight="250" legendVisible="true" style="-fx-background-color: transparent;"/>
                     </HBox>
                 </VBox>
 

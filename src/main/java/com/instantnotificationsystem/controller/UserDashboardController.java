@@ -11,6 +11,8 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class UserDashboardController {
 
@@ -19,6 +21,9 @@ public class UserDashboardController {
     
     @FXML
     private Label welcomeLabel;
+    
+    @FXML
+    private Label dateLabel;
 
     @FXML
     private Button btnLogout;
@@ -30,7 +35,12 @@ public class UserDashboardController {
         notificationDAO = new NotificationDAO();
         
         if (welcomeLabel != null) {
-            welcomeLabel.setText("Welcome, User!");
+            welcomeLabel.setText("Welcome, User"); // Placeholder, should be set from login context
+        }
+        
+        if (dateLabel != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d");
+            dateLabel.setText(LocalDate.now().format(formatter));
         }
 
         if (notificationsListView != null) {
