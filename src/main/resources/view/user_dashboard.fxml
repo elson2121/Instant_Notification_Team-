@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -13,16 +10,15 @@
             prefHeight="800.0" prefWidth="1200.0"
             style="-fx-background-color: #f9fafb;">
 
-    <!-- Top Header -->
+    <!-- Top Header (Online status REMOVED) -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: white; -fx-padding: 15 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
             <Label text="INSTANT NOTIFICATION SYSTEM" style="-fx-text-fill: #111827; -fx-font-weight: bold; -fx-font-size: 18px;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox alignment="CENTER" spacing="10">
                 <VBox alignment="CENTER_RIGHT">
-                    <Label fx:id="welcomeLabel" text="Welcome, User" style="-fx-text-fill: #111827; -fx-font-weight: bold;"/>
+                    <Label fx:id="welcomeLabel" text="Welcome" style="-fx-text-fill: #111827; -fx-font-weight: bold;"/>
                 </VBox>
-                <Circle radius="18" fill="#3b82f6"/>
             </HBox>
         </HBox>
     </top>
@@ -31,12 +27,12 @@
     <left>
         <VBox spacing="10" prefWidth="250" style="-fx-background-color: white; -fx-padding: 30 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);">
             <Button text="📊  Dashboard" maxWidth="Infinity" alignment="BASELINE_LEFT"
-                    style="-fx-background-color: #eff6ff; -fx-text-fill: #2563eb; -fx-padding: 12 20; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    style="-fx-background-color: #eff6ff; -fx-text-fill: #2D62ED; -fx-padding: 12 20; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
             <Button text="🔔  Notifications" maxWidth="Infinity" alignment="BASELINE_LEFT"
                     style="-fx-background-color: transparent; -fx-text-fill: #4b5563; -fx-padding: 12 20; -fx-cursor: hand;"/>
             <Button text="📩  My Notifications" maxWidth="Infinity" alignment="BASELINE_LEFT"
                     style="-fx-background-color: transparent; -fx-text-fill: #4b5563; -fx-padding: 12 20; -fx-cursor: hand;"/>
-            
+
             <Region VBox.vgrow="ALWAYS"/>
             <Button fx:id="btnLogout" text="🚪  Logout" onAction="#handleLogout" maxWidth="Infinity" alignment="BASELINE_LEFT"
                     style="-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-padding: 12 20; -fx-cursor: hand;"/>
@@ -47,22 +43,22 @@
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
             <VBox spacing="25" style="-fx-padding: 30;">
-                
-                <!-- Top Row: Notifications & Date -->
+
+                <!-- Single Row: Expanded Notifications & Date Card -->
                 <HBox spacing="25">
-                    <!-- My Notifications Panel -->
-                    <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                    <!-- My Notifications Panel - EXPANDED with 20px radius -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                         <Label text="My Notifications" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="600" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="650" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
                     </VBox>
 
-                    <!-- Date & Info Panel -->
+                    <!-- Date Card -->
                     <VBox prefWidth="300" spacing="20">
-                        <!-- Date Card -->
-                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #2563eb); -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                        <!-- Today Card with EXACT #2D62ED and 20px radius -->
+                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #2D62ED; -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 5);">
                             <Label text="TODAY" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
-                            <Label fx:id="dateLabel" text="Monday, Oct 23" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
-                            <Label text="2024" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 18px;"/>
+                            <Label fx:id="dateLabel" text="Monday, Oct 23, 2024" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold; wrap-text: true; -fx-text-alignment: center;"/>
+                            <Label fx:id="yearLabel" text="2024" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 18px;"/>
                         </VBox>
                     </VBox>
                 </HBox>

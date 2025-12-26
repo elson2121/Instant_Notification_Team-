@@ -208,7 +208,7 @@
                     <HBox spacing="15">
                         <Button text="Previous" onAction="#handlePrevStep" prefHeight="45" prefWidth="120"
                                 style="-fx-background-color: #9ca3af; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-                        <Button text="Create Account" onAction="#handleRegister" prefHeight="45" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                        <Button text="Create Account" onAction="#handleCompleteRegistration" prefHeight="45" HBox.hgrow="ALWAYS" maxWidth="Infinity"
                                 style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
                     </HBox>
                 </VBox>
