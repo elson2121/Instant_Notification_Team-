@@ -53,7 +53,7 @@
                     <!-- My Notifications Panel -->
                     <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                         <Label text="My Notifications" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="400" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="600" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
                     </VBox>
 
                     <!-- Date & Info Panel -->
@@ -64,29 +64,8 @@
                             <Label fx:id="dateLabel" text="Monday, Oct 23" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
                             <Label text="2024" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 18px;"/>
                         </VBox>
-
-                        <!-- Quick Stats (Optional Placeholder) -->
-                        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-                            <Label text="Quick Stats" style="-fx-text-fill: #111827; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Circle radius="5" fill="#22c55e"/>
-                                <Label text="System Online" style="-fx-text-fill: #4b5563;"/>
-                            </HBox>
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Circle radius="5" fill="#3b82f6"/>
-                                <Label text="Notifications Active" style="-fx-text-fill: #4b5563;"/>
-                            </HBox>
-                        </VBox>
                     </VBox>
                 </HBox>
-
-                <!-- Bottom Row: Analytics (Simplified) -->
-                <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-                    <Label text="Distribution by Department" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                    <HBox spacing="30" alignment="CENTER">
-                        <PieChart fx:id="departmentChart" prefHeight="250" legendVisible="true" style="-fx-background-color: transparent;"/>
-                    </HBox>
-                </VBox>
 
             </VBox>
         </ScrollPane>
