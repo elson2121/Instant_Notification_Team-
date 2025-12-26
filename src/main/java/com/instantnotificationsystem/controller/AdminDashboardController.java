@@ -7,31 +7,34 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
 public class AdminDashboardController {
 
     @FXML
-    private BorderPane mainBorderPane;
-
-    @FXML
-    private VBox sidebar;
-
-    @FXML
     private Button btnDashboard;
 
     @FXML
-    private Button btnSendNotification;
+    private Button btnUsers;
 
     @FXML
-    private Button btnViewUsers;
+    private Button btnNotifications;
 
     @FXML
     private Button btnAnalytics;
+
+    @FXML
+    private Button btnSettings;
 
     @FXML
     private Button btnLogout;
@@ -60,19 +63,66 @@ public class AdminDashboardController {
 
     private void setupSidebarButtons() {
         // Dashboard button
-        btnDashboard.setOnAction(e -> loadDashboardContent());
+        if (btnDashboard != null) {
+            btnDashboard.setOnAction(e -> {
+                setActiveButton(btnDashboard);
+                loadDashboardContent();
+            });
+        }
 
-        // Send Notification button
-        btnSendNotification.setOnAction(e -> loadSendNotificationContent());
+        // Users button
+        if (btnUsers != null) {
+            btnUsers.setOnAction(e -> {
+                setActiveButton(btnUsers);
+                loadUsersContent();
+            });
+        }
 
-        // View Users button
-        btnViewUsers.setOnAction(e -> loadUsersContent());
+        // Notifications button
+        if (btnNotifications != null) {
+            btnNotifications.setOnAction(e -> {
+                setActiveButton(btnNotifications);
+                loadSendNotificationContent();
+            });
+        }
 
         // Analytics button
-        btnAnalytics.setOnAction(e -> loadAnalyticsContent());
+        if (btnAnalytics != null) {
+            btnAnalytics.setOnAction(e -> {
+                setActiveButton(btnAnalytics);
+                loadAnalyticsContent();
+            });
+        }
+
+        // Settings button
+        if (btnSettings != null) {
+            btnSettings.setOnAction(e -> {
+                setActiveButton(btnSettings);
+                // loadSettingsContent(); // Placeholder
+            });
+        }
 
         // Logout button
-        btnLogout.setOnAction(e -> SceneSwitcher.switchToLogin());
+        if (btnLogout != null) {
+            btnLogout.setOnAction(e -> SceneSwitcher.switchToLogin());
+        }
+        
+        // Set initial active button
+        if (btnDashboard != null) {
+            setActiveButton(btnDashboard);
+        }
+    }
+    
+    private void setActiveButton(Button activeButton) {
+        if (btnDashboard != null) btnDashboard.getStyleClass().remove("active-sidebar-button");
+        if (btnUsers != null) btnUsers.getStyleClass().remove("active-sidebar-button");
+        if (btnNotifications != null) btnNotifications.getStyleClass().remove("active-sidebar-button");
+        if (btnAnalytics != null) btnAnalytics.getStyleClass().remove("active-sidebar-button");
+        if (btnSettings != null) btnSettings.getStyleClass().remove("active-sidebar-button");
+
+        if (activeButton != null) {
+            activeButton.getStyleClass().add("active-sidebar-button");
+        }
     }
 
     private void loadDashboardContent() {
@@ -80,71 +130,216 @@ public class AdminDashboardController {
         VBox dashboardContent = new VBox(20);
         dashboardContent.setPadding(new Insets(20));
 
-        // Title
-        Label titleLabel = new Label("Admin Dashboard Overview");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        // Breadcrumb
+        Label breadcrumb = new Label("Admin / Dashboard");
+        breadcrumb.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 14px;");
 
         // Stats grid
         GridPane statsGrid = new GridPane();
         statsGrid.setHgap(20);
         statsGrid.setVgap(20);
-        statsGrid.setPadding(new Insets(20, 0, 20, 0));
+        
+        // Stat cards with full color background and icons
+        addStatCard(statsGrid, "Total Users", "1,245", 0, 0, "#2ecc71", "👥"); // Green
+        addStatCard(statsGrid, "Notifications Sent", "5,678", 0, 1, "#3498db", "✉️"); // Blue
+        addStatCard(statsGrid, "Active Users", "342", 0, 2, "#e67e22", "⚡"); // Orange
+        addStatCard(statsGrid, "Pending Alerts", "14", 0, 3, "#9b59b6", "⚠️"); // Purple
 
-        // Stat cards
-        addStatCard(statsGrid, "Total Users", "1,245", 0, 0);
-        addStatCard(statsGrid, "Total Notifications", "5,678", 0, 1);
-        addStatCard(statsGrid, "Seen Rate", "85%", 0, 2);
-        addStatCard(statsGrid, "Pending Notifications", "23", 1, 0);
-        addStatCard(statsGrid, "Active Today", "342", 1, 1);
-        addStatCard(statsGrid, "Departments", "8", 1, 2);
+        // Main content layout
+        VBox mainContent = new VBox(20);
+        mainContent.setPrefWidth(1000);
 
-        // Recent notifications
-        Label recentLabel = new Label("Recent Notifications");
-        recentLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #34495e;");
+        // Recent notifications (Full Width)
+        VBox recentNotificationsBox = createRecentNotificationsBox();
+        recentNotificationsBox.setMaxWidth(Double.MAX_VALUE);
+        
+        mainContent.getChildren().addAll(recentNotificationsBox);
 
-        TableView<String> notificationsTable = createNotificationsTable();
-
-        dashboardContent.getChildren().addAll(titleLabel, statsGrid, recentLabel, notificationsTable);
+        dashboardContent.getChildren().addAll(breadcrumb, statsGrid, mainContent);
 
         // Set content
         contentArea.getChildren().clear();
         contentArea.getChildren().add(dashboardContent);
     }
 
-    private void addStatCard(GridPane grid, String title, String value, int row, int col) {
-        VBox card = new VBox(10);
-        card.setPadding(new Insets(15));
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 10px; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);");
-        card.setPrefSize(200, 100);
+    private void addStatCard(GridPane grid, String title, String value, int row, int col, String colorHex, String icon) {
+        HBox card = new HBox(15);
+        card.setPadding(new Insets(20));
+        card.setAlignment(Pos.CENTER_LEFT);
+        // Full color background
+        card.setStyle("-fx-background-color: " + colorHex + "; -fx-background-radius: 10px; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);");
+        card.setPrefWidth(250);
+        card.setPrefHeight(100);
 
+        // Icon container
+        StackPane iconPane = new StackPane();
+        iconPane.setPrefSize(50, 50);
+        iconPane.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 50%;");
+        Label iconLabel = new Label(icon);
+        iconLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+        iconPane.getChildren().add(iconLabel);
+
+        // Text container
+        VBox textContainer = new VBox(5);
+        textContainer.setAlignment(Pos.CENTER_LEFT);
+        
         Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #3498db;");
+        valueLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
 
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #7f8c8d;");
+        titleLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.9);");
+        
+        textContainer.getChildren().addAll(valueLabel, titleLabel);
 
-        card.getChildren().addAll(valueLabel, titleLabel);
+        card.getChildren().addAll(iconPane, textContainer);
         grid.add(card, col, row);
     }
+    
+    private VBox createMiniSendForm() {
+        VBox formBox = new VBox(15);
+        formBox.setPadding(new Insets(20));
+        formBox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+        
+        Label titleLabel = new Label("Send Notification");
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        TextField titleField = new TextField();
+        titleField.setPromptText("Notification Title");
+        
+        TextArea messageArea = new TextArea();
+        messageArea.setPromptText("Message content...");
+        messageArea.setPrefRowCount(3);
+        
+        ComboBox<String> sendToCombo = new ComboBox<>();
+        sendToCombo.getItems().addAll("All Users", "Specific Department", "Specific User");
+        sendToCombo.setValue("All Users");
+        sendToCombo.setMaxWidth(Double.MAX_VALUE);
+        
+        HBox channelBox = new HBox(10);
+        ToggleButton emailBtn = new ToggleButton("Email");
+        ToggleButton smsBtn = new ToggleButton("SMS");
+        ToggleButton pushBtn = new ToggleButton("Push Notification");
+        
+        channelBox.getChildren().addAll(emailBtn, smsBtn, pushBtn);
+        
+        Button sendBtn = new Button("Send Notification");
+        sendBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+        sendBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        formBox.getChildren().addAll(titleLabel, titleField, messageArea, sendToCombo, channelBox, sendBtn);
+        return formBox;
+    }
+    
+    private VBox createNotificationChart() {
+        VBox chartBox = new VBox(10);
+        chartBox.setPadding(new Insets(15));
+        chartBox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+        
+        Label titleLabel = new Label("Notification Overview");
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setPrefHeight(300); // Increased height slightly for better visibility
+        lineChart.setLegendVisible(true);
+        
+        XYChart.Series<String, Number> sentSeries = new XYChart.Series<>();
+        sentSeries.setName("Sent");
+        sentSeries.getData().add(new XYChart.Data<>("Mon", 20));
+        sentSeries.getData().add(new XYChart.Data<>("Tue", 35));
+        sentSeries.getData().add(new XYChart.Data<>("Wed", 40));
+        sentSeries.getData().add(new XYChart.Data<>("Thu", 30));
+        sentSeries.getData().add(new XYChart.Data<>("Fri", 50));
+        
+        XYChart.Series<String, Number> deliveredSeries = new XYChart.Series<>();
+        deliveredSeries.setName("Delivered");
+        deliveredSeries.getData().add(new XYChart.Data<>("Mon", 18));
+        deliveredSeries.getData().add(new XYChart.Data<>("Tue", 32));
+        deliveredSeries.getData().add(new XYChart.Data<>("Wed", 38));
+        deliveredSeries.getData().add(new XYChart.Data<>("Thu", 28));
+        deliveredSeries.getData().add(new XYChart.Data<>("Fri", 48));
+        
+        XYChart.Series<String, Number> failedSeries = new XYChart.Series<>();
+        failedSeries.setName("Failed");
+        failedSeries.getData().add(new XYChart.Data<>("Mon", 2));
+        failedSeries.getData().add(new XYChart.Data<>("Tue", 3));
+        failedSeries.getData().add(new XYChart.Data<>("Wed", 2));
+        failedSeries.getData().add(new XYChart.Data<>("Thu", 2));
+        failedSeries.getData().add(new XYChart.Data<>("Fri", 2));
+        
+        lineChart.getData().addAll(sentSeries, deliveredSeries, failedSeries);
+        
+        chartBox.getChildren().addAll(titleLabel, lineChart);
+        return chartBox;
+    }
+    
+    private VBox createRecentNotificationsBox() {
+        VBox box = new VBox(10);
+        box.setPadding(new Insets(15));
+        box.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
 
-    private TableView<String> createNotificationsTable() {
-        TableView<String> table = new TableView<>();
-        table.setPrefHeight(300);
-
-        TableColumn<String, String> titleCol = new TableColumn<>("Title");
-        TableColumn<String, String> dateCol = new TableColumn<>("Date");
-        TableColumn<String, String> statusCol = new TableColumn<>("Status");
-        TableColumn<String, String> seenCol = new TableColumn<>("Seen %");
-
-        titleCol.setPrefWidth(250);
-        dateCol.setPrefWidth(150);
-        statusCol.setPrefWidth(100);
-        seenCol.setPrefWidth(100);
-
-        table.getColumns().addAll(titleCol, dateCol, statusCol, seenCol);
-
-        return table;
+        Label titleLabel = new Label("Recent Notifications");
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        TableView<NotificationMock> table = new TableView<>();
+        table.setPrefHeight(250); // Increased height slightly
+        
+        TableColumn<NotificationMock, String> titleCol = new TableColumn<>("Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        
+        TableColumn<NotificationMock, String> statusCol = new TableColumn<>("Status");
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setCellFactory(column -> new TableCell<NotificationMock, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (item.equals("Delivered")) {
+                        setTextFill(Color.GREEN);
+                    } else if (item.equals("Failed")) {
+                        setTextFill(Color.RED);
+                    } else {
+                        setTextFill(Color.BLUE);
+                    }
+                    setStyle("-fx-font-weight: bold;");
+                }
+            }
+        });
+        
+        table.getColumns().addAll(titleCol, statusCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
+        ObservableList<NotificationMock> data = FXCollections.observableArrayList(
+            new NotificationMock("System Update", "Delivered"),
+            new NotificationMock("Meeting Alert", "Sent"),
+            new NotificationMock("Server Down", "Failed"),
+            new NotificationMock("Welcome Email", "Delivered")
+        );
+        
+        table.setItems(data);
+        
+        box.getChildren().addAll(titleLabel, table);
+        return box;
+    }
+    
+    // Mock class for table
+    public static class NotificationMock {
+        private String title;
+        private String status;
+        
+        public NotificationMock(String title, String status) {
+            this.title = title;
+            this.status = status;
+        }
+        
+        public String getTitle() { return title; }
+        public String getStatus() { return status; }
     }
 
     private void loadSendNotificationContent() {
@@ -153,8 +348,13 @@ public class AdminDashboardController {
 
         Label titleLabel = new Label("Send New Notification");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-
-        // ... (rest of the method is unchanged)
+        
+        // Reusing the mini form logic but expanded if needed, for now just placeholder
+        notificationForm.getChildren().add(titleLabel);
+        notificationForm.getChildren().add(createMiniSendForm());
+        
+        contentArea.getChildren().clear();
+        contentArea.getChildren().add(notificationForm);
     }
 
     private void loadUsersContent() {
@@ -212,7 +412,10 @@ public class AdminDashboardController {
 
         Label titleLabel = new Label("Analytics Dashboard");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        analyticsContent.getChildren().addAll(titleLabel, createNotificationChart());
 
-        // ... (rest of the method is unchanged)
+        contentArea.getChildren().clear();
+        contentArea.getChildren().add(analyticsContent);
     }
 }
