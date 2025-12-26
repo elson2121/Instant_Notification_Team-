@@ -1,11 +1,13 @@
-// RegisterController.java
 package com.instantnotificationsystem.controller;
 
+import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.User;
-import com.instantnotificationsystem.service.AuthService;
+import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.util.regex.Pattern;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class RegisterController {
 
@@ -20,116 +22,100 @@ public class RegisterController {
     @FXML private ComboBox<String> departmentComboBox;
     @FXML private Label errorLabel;
 
-    private AuthService authService;
-
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^[+]?[0-9]{10,15}$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{3,20}$");
+    private UserDAO userDAO;
 
     @FXML
     public void initialize() {
-        authService = new AuthService();
+        userDAO = new UserDAO();
         setupComboBoxes();
     }
 
     private void setupComboBoxes() {
-        roleComboBox.getItems().addAll("USER", "ADMIN");
-        sexComboBox.getItems().addAll("Male", "Female", "Other");
-        shiftComboBox.getItems().addAll("Day", "Night", "Flexible");
-        departmentComboBox.getItems().addAll(
-                "Human Resources", "Information Technology", "Finance",
-                "Operations", "Marketing", "Sales", "Research & Development"
-        );
-
-        // Set defaults
-        roleComboBox.setValue("USER");
-        sexComboBox.setValue("Male");
-        shiftComboBox.setValue("Day");
-        departmentComboBox.setValue("Information Technology");
+        if (roleComboBox != null) {
+            roleComboBox.getItems().addAll("USER", "ADMIN");
+            roleComboBox.setValue("USER");
+        }
+        if (sexComboBox != null) {
+            sexComboBox.getItems().addAll("Male", "Female", "Other");
+            sexComboBox.setValue("Male");
+        }
+        if (shiftComboBox != null) {
+            shiftComboBox.getItems().addAll("Day", "Night", "Flexible");
+            shiftComboBox.setValue("Day");
+        }
+        if (departmentComboBox != null) {
+            departmentComboBox.getItems().addAll(
+                    "Human Resources", "Information Technology", "Finance",
+                    "Operations", "Marketing", "Sales", "Research & Development"
+            );
+            departmentComboBox.setValue("Information Technology");
+        }
     }
 
     @FXML
     private void handleRegister() {
-        if (validateInput()) {
-            User user = createUserFromInput();
-
-            if (authService.registerUser(user)) {
-                showSuccess("Registration successful! Please login.");
-                clearForm();
-            } else {
-                showError("Registration failed. Username may already exist.");
-            }
-        }
-    }
-
-    private boolean validateInput() {
-        // Check mandatory fields
-        if (fullNameField.getText().trim().isEmpty()) {
-            showError("Full name is required");
-            return false;
+        // 1. Get text from fields
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+        String department = departmentComboBox.getValue();
+        
+        // Basic validation
+        if (username.isEmpty() || password.isEmpty()) {
+            showError("Username and Password are required.");
+            return;
         }
 
-        if (!USERNAME_PATTERN.matcher(usernameField.getText()).matches()) {
-            showError("Username must be 3-20 characters (letters, numbers, underscore)");
-            return false;
-        }
-
-        if (passwordField.getText().length() < 6) {
-            showError("Password must be at least 6 characters");
-            return false;
-        }
-
-        // Phone validation (mandatory)
-        String phone = phoneField.getText().trim();
-        if (phone.isEmpty()) {
-            showError("Phone number is mandatory");
-            return false;
-        }
-        if (!PHONE_PATTERN.matcher(phone).matches()) {
-            showError("Invalid phone number format (10-15 digits, + allowed)");
-            return false;
-        }
-
-        return true;
-    }
-
-    private User createUserFromInput() {
+        // 2. Create User object
         User user = new User();
-        user.setFullName(fullNameField.getText().trim());
-        user.setUsername(usernameField.getText().trim());
-        user.setPassword(passwordField.getText());
-        user.setPhoneNumber(phoneField.getText().trim());
-        user.setEmployeeId(employeeIdField.getText().trim().isEmpty() ? null : employeeIdField.getText().trim());
-        user.setRole(roleComboBox.getValue());
-        user.setSex(sexComboBox.getValue());
-        user.setShift(shiftComboBox.getValue());
-        user.setDepartmentName(departmentComboBox.getValue());
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setDepartmentName(department);
+        
+        // Set other fields if available, handling potential nulls
+        if (fullNameField != null) user.setFullName(fullNameField.getText().trim());
+        if (phoneField != null) user.setPhoneNumber(phoneField.getText().trim());
+        if (employeeIdField != null) user.setEmployeeId(employeeIdField.getText().trim());
+        if (roleComboBox != null) user.setRole(roleComboBox.getValue());
+        if (sexComboBox != null) user.setSex(sexComboBox.getValue());
+        if (shiftComboBox != null) user.setShift(shiftComboBox.getValue());
 
-        return user;
+        // 3. Save to database
+        if (userDAO.createUser(user)) {
+            // 4. Show success and redirect
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Registration Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("User registered successfully! Redirecting to login...");
+            alert.showAndWait();
+
+            handleBackToLogin();
+        } else {
+            showError("Registration failed. Username might already exist.");
+        }
+    }
+
+    @FXML
+    private void handleBackToLogin() {
+        try {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            SceneSwitcher.switchScene(stage, "/view/login.fxml");
+            stage.setTitle("Instant Notification System - Login");
+        } catch (Exception e) {
+            showError("Failed to redirect to login: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void showError(String message) {
-        errorLabel.setText(message);
-        errorLabel.getStyleClass().remove("success-label");
-        errorLabel.getStyleClass().add("error-label");
-        errorLabel.setVisible(true);
-    }
-
-    private void showSuccess(String message) {
-        errorLabel.setText(message);
-        errorLabel.getStyleClass().remove("error-label");
-        errorLabel.getStyleClass().add("success-label");
-        errorLabel.setVisible(true);
-    }
-
-    private void clearForm() {
-        fullNameField.clear();
-        usernameField.clear();
-        passwordField.clear();
-        phoneField.clear();
-        employeeIdField.clear();
-        roleComboBox.setValue("USER");
-        sexComboBox.setValue("Male");
-        shiftComboBox.setValue("Day");
-        departmentComboBox.setValue("Information Technology");
+        if (errorLabel != null) {
+            errorLabel.setText(message);
+            errorLabel.setVisible(true);
+            errorLabel.setStyle("-fx-text-fill: red; -fx-background-color: #fee2e2; -fx-padding: 10; -fx-background-radius: 6;");
+        } else {
+            // Fallback if label is missing
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText(message);
+            alert.show();
+        }
     }
 }

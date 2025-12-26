@@ -43,7 +43,7 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-padding: 12 20; -fx-cursor: hand;"/>
             
             <Region VBox.vgrow="ALWAYS"/>
-            <Button text="🚪  Logout" onAction="#handleLogout" maxWidth="Infinity" alignment="BASELINE_LEFT"
+            <Button fx:id="btnLogout" text="🚪  Logout" maxWidth="Infinity" alignment="BASELINE_LEFT"
                     style="-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-padding: 12 20; -fx-cursor: hand;"/>
         </VBox>
     </left>
@@ -58,7 +58,7 @@
                     <!-- My Notifications Panel -->
                     <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
                         <Label text="My Notifications" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        <VBox fx:id="notificationsListContainer" spacing="10"/>
+                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="300" style="-fx-background-color: transparent;"/>
                     </VBox>
 
                     <!-- Preferences Panel -->

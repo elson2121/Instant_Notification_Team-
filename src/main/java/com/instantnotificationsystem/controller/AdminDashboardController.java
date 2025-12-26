@@ -16,7 +16,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AdminDashboardController {
@@ -52,7 +54,9 @@ public class AdminDashboardController {
         userDAO = new UserDAO();
 
         // Set welcome message
-        welcomeLabel.setText("Welcome, Admin!");
+        if (welcomeLabel != null) {
+            welcomeLabel.setText("Welcome, Admin!");
+        }
 
         // Initialize sidebar buttons
         setupSidebarButtons();
@@ -104,7 +108,14 @@ public class AdminDashboardController {
 
         // Logout button
         if (btnLogout != null) {
-            btnLogout.setOnAction(e -> SceneSwitcher.switchToLogin());
+            btnLogout.setOnAction(e -> {
+                try {
+                    Stage stage = (Stage) btnLogout.getScene().getWindow();
+                    SceneSwitcher.switchScene(stage, "/view/login.fxml");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
         }
         
         // Set initial active button
@@ -126,6 +137,8 @@ public class AdminDashboardController {
     }
 
     private void loadDashboardContent() {
+        if (contentArea == null) return;
+
         // Create dashboard content
         VBox dashboardContent = new VBox(20);
         dashboardContent.setPadding(new Insets(20));
@@ -343,6 +356,8 @@ public class AdminDashboardController {
     }
 
     private void loadSendNotificationContent() {
+        if (contentArea == null) return;
+
         VBox notificationForm = new VBox(15);
         notificationForm.setPadding(new Insets(20));
 
@@ -358,6 +373,8 @@ public class AdminDashboardController {
     }
 
     private void loadUsersContent() {
+        if (contentArea == null) return;
+
         VBox usersContent = new VBox(20);
         usersContent.setPadding(new Insets(20));
 
@@ -407,6 +424,8 @@ public class AdminDashboardController {
     }
 
     private void loadAnalyticsContent() {
+        if (contentArea == null) return;
+
         VBox analyticsContent = new VBox(20);
         analyticsContent.setPadding(new Insets(20));
 
