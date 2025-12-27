@@ -4,6 +4,7 @@ import com.instantnotificationsystem.dao.NotificationDAO;
 import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
+import com.instantnotificationsystem.model.UserNotificationDetail;
 import com.instantnotificationsystem.service.SessionManager;
 import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.collections.FXCollections;
@@ -263,6 +264,11 @@ public class AdminDashboardController {
     }
 
     private void loadNotificationsByStatus(String status) {
+        if ("Seen".equals(status) || "Unseen".equals(status)) {
+            loadSeenUnseenNotifications(status);
+            return;
+        }
+
         TableView<Notification> table = new TableView<>();
         TableColumn<Notification, String> titleCol = new TableColumn<>("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -276,15 +282,56 @@ public class AdminDashboardController {
         if (status == null) {
             notifications = notificationDAO.getAllNotifications();
             title = "All Sent Notifications";
-        } else if ("Seen".equals(status) || "Unseen".equals(status)) {
-            notifications = notificationDAO.getNotificationsBySeenStatus("Seen".equals(status));
-            title = "Notifications: " + status;
         } else {
             notifications = notificationDAO.getNotificationsByDeliveryStatus(status);
             title = "Notifications: " + status;
         }
 
         table.setItems(FXCollections.observableArrayList(notifications));
+
+        VBox contentView = new VBox(20, new Label(title), table);
+        contentView.setPadding(new Insets(20));
+        showContent(contentView);
+    }
+
+    private void loadSeenUnseenNotifications(String status) {
+        TableView<UserNotificationDetail> table = new TableView<>();
+        
+        TableColumn<UserNotificationDetail, String> userCol = new TableColumn<>("User Name");
+        userCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        
+        TableColumn<UserNotificationDetail, String> titleCol = new TableColumn<>("Notification Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("notificationTitle"));
+        
+        TableColumn<UserNotificationDetail, String> statusCol = new TableColumn<>("Status");
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if ("Seen".equalsIgnoreCase(item)) {
+                        setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                    } else if ("Unseen".equalsIgnoreCase(item)) {
+                        setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
+
+        table.getColumns().addAll(userCol, titleCol, statusCol);
+
+        boolean isSeen = "Seen".equals(status);
+        List<UserNotificationDetail> details = notificationDAO.getUserNotificationDetailsBySeenStatus(isSeen);
+        String title = "Notifications: " + status;
+
+        table.setItems(FXCollections.observableArrayList(details));
 
         VBox contentView = new VBox(20, new Label(title), table);
         contentView.setPadding(new Insets(20));

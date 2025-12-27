@@ -4,6 +4,7 @@ import com.instantnotificationsystem.config.DBConnection;
 import com.instantnotificationsystem.model.Analytics;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
+import com.instantnotificationsystem.model.UserNotificationDetail;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,35 @@ public class NotificationDAO {
             e.printStackTrace();
         }
         return notifications;
+    }
+
+    public List<UserNotificationDetail> getUserNotificationDetailsBySeenStatus(boolean isSeen) {
+        List<UserNotificationDetail> details = new ArrayList<>();
+        String sql = "SELECT u.full_name, n.title, un.seen " +
+                     "FROM user_notifications un " +
+                     "JOIN users u ON un.user_id = u.id " +
+                     "JOIN notifications n ON un.notification_id = n.id " +
+                     "WHERE un.seen = ? " +
+                     "ORDER BY n.created_at DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setBoolean(1, isSeen);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                String userName = rs.getString("full_name");
+                String title = rs.getString("title");
+                boolean seen = rs.getBoolean("seen");
+                String status = seen ? "Seen" : "Unseen";
+                
+                details.add(new UserNotificationDetail(userName, title, status));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return details;
     }
 
     public List<Notification> getNotificationsByDeliveryStatus(String status) {
