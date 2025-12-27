@@ -59,7 +59,10 @@ public class NotificationDAO {
 
     public List<Notification> getAllNotifications() {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT * FROM notifications ORDER BY created_at DESC";
+        String sql = "SELECT n.*, " +
+                     "(SELECT COUNT(*) FROM user_notifications un WHERE un.notification_id = n.id AND un.seen = TRUE) as seen_count, " +
+                     "(SELECT COUNT(*) FROM user_notifications un WHERE un.notification_id = n.id) as total_recipients " +
+                     "FROM notifications n ORDER BY created_at DESC";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -73,6 +76,8 @@ public class NotificationDAO {
                 if (timestamp != null) {
                     notification.setSentAt(timestamp.toLocalDateTime());
                 }
+                notification.setSeenCount(rs.getInt("seen_count"));
+                notification.setTotalRecipients(rs.getInt("total_recipients"));
                 notifications.add(notification);
             }
         } catch (SQLException e) {

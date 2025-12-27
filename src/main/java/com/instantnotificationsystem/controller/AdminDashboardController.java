@@ -190,7 +190,40 @@ public class AdminDashboardController {
                     }
                 }
             });
-            recentNotificationsTable.getColumns().addAll(titleCol, statusCol);
+
+            TableColumn<Notification, Void> seenProgressCol = new TableColumn<>("Seen Progress");
+            seenProgressCol.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        Notification notification = getTableView().getItems().get(getIndex());
+                        int seen = notification.getSeenCount();
+                        int total = notification.getTotalRecipients();
+                        
+                        if (total > 0) {
+                            double percentage = ((double) seen / total) * 100;
+                            setText(String.format("%.1f%%", percentage));
+                            
+                            if (percentage < 30) {
+                                setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                            } else if (percentage <= 70) {
+                                setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+                            } else {
+                                setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                            }
+                        } else {
+                            setText("0.0%");
+                            setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        }
+                    }
+                }
+            });
+
+            recentNotificationsTable.getColumns().addAll(titleCol, statusCol, seenProgressCol);
         }
 
         // Fetch real notification data from the database
