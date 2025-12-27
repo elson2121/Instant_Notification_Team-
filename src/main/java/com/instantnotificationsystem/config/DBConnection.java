@@ -69,6 +69,40 @@ public class DBConnection {
                 }
             }
 
+            // Create notifications table if not exists
+            String createNotificationsTable = "CREATE TABLE IF NOT EXISTS notifications (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "title VARCHAR(255) NOT NULL, " +
+                    "message TEXT NOT NULL, " +
+                    "send_email BOOLEAN DEFAULT FALSE, " +
+                    "send_sms BOOLEAN DEFAULT FALSE, " +
+                    "notification_type VARCHAR(50), " +
+                    "sender_id INT, " +
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                    "scheduled_at TIMESTAMP NULL, " +
+                    "FOREIGN KEY (sender_id) REFERENCES users(id)" +
+                    ")";
+            stmt.execute(createNotificationsTable);
+
+            // Check for missing columns in notifications table
+            try (ResultSet rsCol = meta.getColumns(null, null, "notifications", "scheduled_at")) {
+                if (!rsCol.next()) {
+                    System.out.println("Adding missing column scheduled_at to notifications table...");
+                    stmt.execute("ALTER TABLE notifications ADD COLUMN scheduled_at TIMESTAMP NULL");
+                }
+            }
+
+            // Create user_notifications table if not exists
+            String createUserNotificationsTable = "CREATE TABLE IF NOT EXISTS user_notifications (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "user_id INT NOT NULL, " +
+                    "notification_id INT NOT NULL, " +
+                    "seen BOOLEAN DEFAULT FALSE, " +
+                    "FOREIGN KEY (user_id) REFERENCES users(id), " +
+                    "FOREIGN KEY (notification_id) REFERENCES notifications(id)" +
+                    ")";
+            stmt.execute(createUserNotificationsTable);
+
             // Create default admin if not exists
             String checkAdmin = "SELECT COUNT(*) FROM users WHERE username = 'admin'";
             ResultSet rs = stmt.executeQuery(checkAdmin);

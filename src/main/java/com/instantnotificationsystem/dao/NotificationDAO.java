@@ -15,7 +15,7 @@ public class NotificationDAO {
         if (notification.getSenderId() <= 0) {
             throw new IllegalStateException("Sender ID is invalid. A real user must be logged in.");
         }
-        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id, scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -28,6 +28,12 @@ public class NotificationDAO {
             pstmt.setBoolean(4, sendSms);
             pstmt.setString(5, notification.getNotificationType());
             pstmt.setInt(6, notification.getSenderId());
+            
+            if (notification.getScheduledAt() != null) {
+                pstmt.setTimestamp(7, Timestamp.valueOf(notification.getScheduledAt()));
+            } else {
+                pstmt.setNull(7, Types.TIMESTAMP);
+            }
             
             if (pstmt.executeUpdate() > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
@@ -75,6 +81,10 @@ public class NotificationDAO {
                 Timestamp timestamp = rs.getTimestamp("created_at");
                 if (timestamp != null) {
                     notification.setSentAt(timestamp.toLocalDateTime());
+                }
+                Timestamp scheduledTimestamp = rs.getTimestamp("scheduled_at");
+                if (scheduledTimestamp != null) {
+                    notification.setScheduledAt(scheduledTimestamp.toLocalDateTime());
                 }
                 notification.setSeenCount(rs.getInt("seen_count"));
                 notification.setTotalRecipients(rs.getInt("total_recipients"));
@@ -190,7 +200,8 @@ public class NotificationDAO {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT n.id, n.title, n.message, n.created_at, un.seen, n.notification_type, n.send_email, n.send_sms " +
                      "FROM notifications n JOIN user_notifications un ON n.id = un.notification_id " +
-                     "WHERE un.user_id = ? ORDER BY n.created_at DESC";
+                     "WHERE un.user_id = ? AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW()) " +
+                     "ORDER BY n.created_at DESC";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -250,7 +261,8 @@ public class NotificationDAO {
     }
 
     public int getUnreadNotificationCount(int userId) {
-        String sql = "SELECT COUNT(*) FROM user_notifications WHERE user_id = ? AND seen = FALSE";
+        String sql = "SELECT COUNT(*) FROM user_notifications un JOIN notifications n ON un.notification_id = n.id " +
+                     "WHERE un.user_id = ? AND un.seen = FALSE AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW())";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);

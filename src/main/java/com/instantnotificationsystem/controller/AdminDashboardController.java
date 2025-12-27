@@ -20,6 +20,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,16 @@ public class AdminDashboardController {
     @FXML private VBox dashboardView;
     @FXML private FlowPane statsPane;
     @FXML private TableView<Notification> recentNotificationsTable; // Corrected to use Notification model
+    
+    // New Filter Fields
+    @FXML private ComboBox<String> departmentCombo;
+    @FXML private ComboBox<String> roleCombo;
+    @FXML private ComboBox<String> sexCombo;
+    @FXML private ComboBox<String> shiftCombo;
+    
+    // Scheduling Fields
+    @FXML private DatePicker scheduleDate;
+    @FXML private Spinner<Integer> scheduleTime;
     //</editor-fold>
 
     private UserDAO userDAO;
@@ -168,6 +181,7 @@ public class AdminDashboardController {
             // Correctly define the TableColumn type and set the PropertyValueFactory
             TableColumn<Notification, String> statusCol = new TableColumn<>("Status");
             statusCol.setCellValueFactory(new PropertyValueFactory<>("status")); // FORCE BINDING
+            statusCol.setStyle("-fx-alignment: CENTER-LEFT;"); // Center align content
             
             statusCol.setCellFactory(column -> new TableCell<>() {
                 @Override
@@ -192,6 +206,7 @@ public class AdminDashboardController {
             });
 
             TableColumn<Notification, Void> seenProgressCol = new TableColumn<>("Seen Progress");
+            seenProgressCol.setStyle("-fx-alignment: CENTER-LEFT;"); // Center align content
             seenProgressCol.setCellFactory(column -> new TableCell<>() {
                 @Override
                 protected void updateItem(Void item, boolean empty) {
@@ -248,11 +263,26 @@ public class AdminDashboardController {
         if (smsCheckbox.isSelected()) channels.add("SMS");
         newNotification.setChannels(channels);
 
+        // Scheduling Logic
+        if (scheduleDate.getValue() != null) {
+            LocalDate date = scheduleDate.getValue();
+            int hour = scheduleTime.getValue() != null ? scheduleTime.getValue() : 0;
+            LocalDateTime scheduledDateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
+            newNotification.setScheduledAt(scheduledDateTime);
+        }
+
         int notificationId = notificationDAO.createNotification(newNotification);
 
         if (notificationId > 0) {
-            List<User> targetUsers = userDAO.getAllUsers();
+            // Filter Logic
+            String department = departmentCombo.getValue();
+            String role = roleCombo.getValue();
+            String sex = sexCombo.getValue();
+            String shift = shiftCombo.getValue();
+
+            List<User> targetUsers = userDAO.getUsersByCriteria(department, role, sex, shift);
             notificationDAO.createUserNotifications(notificationId, targetUsers);
+            
             new Alert(Alert.AlertType.INFORMATION, "Notification sent successfully!").showAndWait();
             loadDashboardContent();
         } else {
@@ -265,9 +295,36 @@ public class AdminDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin_notifications.fxml"));
             loader.setController(this);
             VBox notificationView = loader.load();
+            
+            // Initialize ComboBoxes and Spinner after loading FXML
+            initializeFilterControls();
+            
             showContent(notificationView);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void initializeFilterControls() {
+        if (departmentCombo != null) {
+            departmentCombo.setItems(FXCollections.observableArrayList("All Departments", "HR", "IT", "Sales", "Marketing"));
+            departmentCombo.getSelectionModel().selectFirst();
+        }
+        if (roleCombo != null) {
+            roleCombo.setItems(FXCollections.observableArrayList("All Roles", "Manager", "Employee", "Intern"));
+            roleCombo.getSelectionModel().selectFirst();
+        }
+        if (sexCombo != null) {
+            sexCombo.setItems(FXCollections.observableArrayList("All", "Male", "Female"));
+            sexCombo.getSelectionModel().selectFirst();
+        }
+        if (shiftCombo != null) {
+            shiftCombo.setItems(FXCollections.observableArrayList("All Shifts", "Morning", "Night"));
+            shiftCombo.getSelectionModel().selectFirst();
+        }
+        if (scheduleTime != null) {
+            SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12);
+            scheduleTime.setValueFactory(valueFactory);
         }
     }
 
@@ -336,6 +393,7 @@ public class AdminDashboardController {
         
         TableColumn<UserNotificationDetail, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setStyle("-fx-alignment: CENTER-LEFT;");
         statusCol.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {

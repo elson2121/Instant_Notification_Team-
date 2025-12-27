@@ -6,7 +6,8 @@ public class NotificationTarget {
     private int notificationId;
     private int userId;
     private boolean seen;
-    private Integer departmentId;
+    private String department; // Changed from Integer departmentId to String department
+    private String role; // Added role field
     private String sex;
     private String shift;
     private List<Integer> specificUserIds;
@@ -35,12 +36,20 @@ public class NotificationTarget {
         this.seen = seen;
     }
 
-    public Integer getDepartmentId() {
-        return departmentId;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getSex() {

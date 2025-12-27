@@ -49,8 +49,9 @@
 }
 
 .sidebar-button:hover {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #e7f0ff;
     -fx-text-fill: #2D62ED;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 0);
 }
 
 .active-sidebar-button {
@@ -58,7 +59,7 @@
     -fx-text-fill: #2D62ED;
     -fx-font-weight: bold;
     -fx-border-color: transparent transparent transparent #2D62ED; /* White left border */
-    -fx-effect: innershadow(gaussian, rgba(45, 98, 237, 0.2), 20, 0, 0, 0); /* Soft glow */
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 0);
 }
 
 /* --- Stat Cards (Glassmorphism) --- */
@@ -71,7 +72,7 @@
 .stat-card:hover {
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
-    -fx-translate-y: -5;
+    -fx-effect: dropshadow(gaussian, rgba(45, 98, 237, 0.5), 15, 0, 0, 0);
 }
 
 .card-icon {
@@ -100,6 +101,8 @@
 .table-view {
     -fx-background-color: transparent;
     -fx-background-radius: 12px;
+    -fx-control-inner-background: white;
+    -fx-control-inner-background-alt: #f5f7fa; /* Light Grey for alternating rows */
 }
 
 .table-view .column-header-background { -fx-background-color: transparent; }
@@ -111,6 +114,7 @@
 .table-view .cell {
     -fx-border-color: transparent;
     -fx-padding: 12px;
+    -fx-alignment: CENTER_LEFT;
 }
 
 /* Row Hover Effect */
@@ -120,6 +124,14 @@
 .table-row-cell:selected {
     -fx-background-color: #e7f0ff;
     -fx-text-fill: #2D62ED;
+}
+
+/* Alternating Row Colors */
+.table-row-cell:odd {
+    -fx-background-color: #f5f7fa;
+}
+.table-row-cell:even {
+    -fx-background-color: white;
 }
 
 /* Status Indicator Colors */

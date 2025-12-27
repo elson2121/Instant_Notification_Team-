@@ -132,7 +132,43 @@ public class UserDAO {
         return users;
     }
 
-    public List<User> getUsersByCriteria(Integer departmentId, String sex, String shift, List<Integer> specificUserIds) {
-        return new ArrayList<>();
+    public List<User> getUsersByCriteria(String department, String role, String sex, String shift) {
+        List<User> users = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (department != null && !department.isEmpty() && !"All Departments".equals(department)) {
+            sql.append(" AND department_name = ?");
+            params.add(department);
+        }
+        if (role != null && !role.isEmpty() && !"All Roles".equals(role)) {
+            sql.append(" AND role = ?");
+            params.add(role);
+        }
+        if (sex != null && !sex.isEmpty() && !"All".equals(sex)) {
+            sql.append(" AND sex = ?");
+            params.add(sex);
+        }
+        if (shift != null && !shift.isEmpty() && !"All Shifts".equals(shift)) {
+            sql.append(" AND shift = ?");
+            params.add(shift);
+        }
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 }

@@ -61,10 +61,10 @@ public class NotificationService {
 
     private List<User> resolveTargetUsers(NotificationTarget target) {
         return userDAO.getUsersByCriteria(
-                target.getDepartmentId(),
+                target.getDepartment(),
+                target.getRole(),
                 target.getSex(),
-                target.getShift(),
-                target.getSpecificUserIds()
+                target.getShift()
         );
     }
 
