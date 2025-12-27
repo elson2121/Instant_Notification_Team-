@@ -291,8 +291,7 @@ public class AdminDashboardController {
         }
         usersTable.setItems(FXCollections.observableArrayList(users));
 
-        VBox userContentView = new VBox(20, new Label(title), usersTable);
-        userContentView.setPadding(new Insets(20));
+        VBox userContentView = createContentViewWithBack(title, usersTable);
         showContent(userContentView);
     }
 
@@ -322,8 +321,7 @@ public class AdminDashboardController {
 
         table.setItems(FXCollections.observableArrayList(notifications));
 
-        VBox contentView = new VBox(20, new Label(title), table);
-        contentView.setPadding(new Insets(20));
+        VBox contentView = createContentViewWithBack(title, table);
         showContent(contentView);
     }
 
@@ -366,8 +364,30 @@ public class AdminDashboardController {
 
         table.setItems(FXCollections.observableArrayList(details));
 
-        VBox contentView = new VBox(20, new Label(title), table);
-        contentView.setPadding(new Insets(20));
+        VBox contentView = createContentViewWithBack(title, table);
         showContent(contentView);
+    }
+
+    private VBox createContentViewWithBack(String title, Node content) {
+        Button backButton = new Button("Back to Overview");
+        backButton.getStyleClass().add("back-button");
+        backButton.setOnAction(e -> {
+            setActiveButton(btnDashboard);
+            loadDashboardContent();
+        });
+
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        header.getChildren().addAll(titleLabel, spacer, backButton);
+
+        VBox container = new VBox(20, header, content);
+        container.setPadding(new Insets(20));
+        return container;
     }
 }

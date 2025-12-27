@@ -82,11 +82,11 @@
     -fx-background-radius: 50%;
 }
 
-.card-users { -fx-background-color: linear-gradient(to right, #28a745, #218838); }
-.card-sent { -fx-background-color: linear-gradient(to right, #007bff, #0069d9); }
-.card-delivered { -fx-background-color: linear-gradient(to right, #ffc107, #e0a800); }
-.card-seen { -fx-background-color: linear-gradient(to right, #17a2b8, #138496); }
-.card-unseen { -fx-background-color: linear-gradient(to right, #dc3545, #c82333); }
+.card-green { -fx-background-color: linear-gradient(to right, #28a745, #218838); }
+.card-blue { -fx-background-color: linear-gradient(to right, #007bff, #0069d9); }
+.card-yellow { -fx-background-color: linear-gradient(to right, #ffc107, #e0a800); }
+.card-teal { -fx-background-color: linear-gradient(to right, #17a2b8, #138496); }
+.card-red { -fx-background-color: linear-gradient(to right, #dc3545, #c82333); }
 
 
 /* --- Table Styling --- */
@@ -111,6 +111,15 @@
 .table-view .cell {
     -fx-border-color: transparent;
     -fx-padding: 12px;
+}
+
+/* Row Hover Effect */
+.table-row-cell:hover {
+    -fx-background-color: #f0f2f5;
+}
+.table-row-cell:selected {
+    -fx-background-color: #e7f0ff;
+    -fx-text-fill: #2D62ED;
 }
 
 /* Status Indicator Colors */
@@ -144,4 +153,18 @@
 }
 .footer {
     -fx-background-color: #f0f2f5;
+}
+
+/* Back Button */
+.back-button {
+    -fx-background-color: #f0f2f5;
+    -fx-text-fill: #2D62ED;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-border-color: #2D62ED;
+    -fx-border-radius: 8px;
+}
+.back-button:hover {
+    -fx-background-color: #e7f0ff;
 }
