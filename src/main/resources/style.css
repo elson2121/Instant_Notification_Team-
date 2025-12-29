@@ -27,6 +27,12 @@
     -fx-text-fill: -fx-heading-text;
 }
 
+.content-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-green-primary;
+}
+
 /* ---------- BUTTONS ---------- */
 .button, .primary-button, .glass-button {
     -fx-background-radius: 14;
@@ -62,7 +68,7 @@
 }
 
 /* ---------- INPUTS ---------- */
-.text-field, .password-field, .combo-box {
+.text-field, .password-field, .combo-box, .date-picker {
     -fx-background-radius: 10;
     -fx-border-radius: 10;
     -fx-border-color: #e1e8e2;
@@ -70,7 +76,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
 }
 
-.text-field:focused, .password-field:focused, .combo-box:focused {
+.text-field:focused, .password-field:focused, .combo-box:focused, .date-picker:focused {
     -fx-border-color: -fx-green-primary;
     -fx-border-width: 2;
 }
@@ -95,7 +101,7 @@
 
 .sidebar-button {
     -fx-background-color: transparent;
-    -fx-text-fill: -fx-text-main;
+    -fx-text-fill: -fx-green-muted;
     -fx-font-weight: bold;
     -fx-padding: 14 24;
     -fx-border-width: 0 0 0 4;
@@ -109,25 +115,68 @@
 }
 
 .sidebar-button-active {
-    -fx-background-color: #e6f3e9; /* Soft mint-green */
+    -fx-background-color: #f0f9f1;
+    -fx-background-radius: 12;
     -fx-text-fill: -fx-green-deep;
-    -fx-border-color: -fx-green-primary;
+    -fx-border-color: #2a8c4a;
+    -fx-border-width: 0 0 0 4;
 }
 
-/* Logout stays red (UX standard) */
 .sidebar-button-logout {
-    -fx-text-fill: #ef4444;
+    -fx-text-fill: -fx-green-muted;
+    -fx-border-color: -fx-green-soft;
+    -fx-border-width: 1px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.sidebar-button-logout:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #ef4444;
+    -fx-border-color: #ef4444;
+}
+
+/* ---------- TOP BAR ---------- */
+.header-green {
+    -fx-background-color: rgba(42, 140, 74, 0.15);
+}
+
+.welcome-label {
+    -fx-text-fill: -fx-green-deep;
+    -fx-font-weight: bold;
 }
 
 /* ---------- CARDS ---------- */
-.stat-card, .manage-card {
-    -fx-background-color: rgba(255, 255, 255, 0.8);
+.stat-card {
+    -fx-background-color: #f0f9f1; /* Light Mint Green */
     -fx-background-radius: 15;
     -fx-border-radius: 15;
-    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-border-color: rgba(0, 0, 0, 0.05);
     -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 15, 0, 0, 8);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
     -fx-transition: all 0.2s ease-in-out;
+}
+
+.stat-card .label {
+    -fx-text-fill: -fx-green-deep;
+}
+
+.stat-card .value-label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a5c2a; /* Deep Corporate Green */
+}
+
+.manage-card {
+    -fx-background-color: linear-gradient(to right, #2a8c4a, #1a5c2a);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.manage-card .label {
+    -fx-text-fill: white;
 }
 
 .stat-card:hover, .manage-card:hover {
@@ -136,12 +185,58 @@
     -fx-border-color: -fx-green-primary;
 }
 
-.manage-card {
-    -fx-background-color: linear-gradient(
-        to right,
-        rgba(42,140,74,0.8),
-        rgba(26,92,42,0.8)
-    );
+.card-icon {
+    -fx-text-fill: -fx-green-deep;
+}
+
+/* ---------- TABLE ---------- */
+.table-view {
+    -fx-border-color: -fx-green-soft;
+    -fx-border-width: 2px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f0f9f1;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-green-deep;
+    -fx-font-weight: bold;
+}
+
+.status-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.progress-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.progress-low {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.progress-medium {
+    -fx-text-fill: orange;
+    -fx-font-weight: bold;
+}
+
+.progress-high {
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}
+
+.status-seen {
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}
+
+.status-unseen {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
 }
 
 /* ---------- NOTIFICATION LIST ---------- */
@@ -151,7 +246,7 @@
 }
 
 .delete-icon {
-    -fx-fill: -fx-text-main;
+    -fx-fill: -fx-green-muted;
     -fx-cursor: hand;
     -fx-transition: all 0.2s ease-in-out;
 }

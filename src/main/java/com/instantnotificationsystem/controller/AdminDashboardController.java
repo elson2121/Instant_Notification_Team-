@@ -122,12 +122,12 @@ public class AdminDashboardController {
 
         statsPane.getChildren().clear();
 
-        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "👥", false);
-        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "✉️", false);
-        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "🚚", false);
-        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "👀", false);
-        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "🙈", false);
-        StackPane userManagementCard = addStatCard(statsPane, "User Management", "Manage", "⚙️", true);
+        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "👥");
+        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "✉️");
+        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "🚚");
+        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "👀");
+        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "🙈");
+        StackPane userManagementCard = addStatCard(statsPane, "User Management", "3", "⚙️");
 
 
         usersCard.setOnMouseClicked(e -> {
@@ -158,27 +158,22 @@ public class AdminDashboardController {
         populateRecentNotificationsTable();
     }
 
-    private StackPane addStatCard(Pane parent, String title, String value, String icon, boolean isManageCard) {
+    private StackPane addStatCard(Pane parent, String title, String value, String icon) {
         StackPane card = new StackPane();
-        if (isManageCard) {
-            card.getStyleClass().add("manage-card");
-        } else {
-            card.getStyleClass().add("stat-card");
-        }
+        card.getStyleClass().add("stat-card");
         card.setCursor(Cursor.HAND);
 
         Label iconLabel = new Label(icon);
         iconLabel.getStyleClass().add("card-icon");
-        StackPane.setAlignment(iconLabel, Pos.TOP_RIGHT);
+        StackPane.setAlignment(iconLabel, Pos.CENTER);
         StackPane.setMargin(iconLabel, new Insets(15));
 
         VBox textContainer = new VBox(5);
         textContainer.setAlignment(Pos.BOTTOM_LEFT);
         textContainer.setPadding(new Insets(20));
         Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white;");
+        valueLabel.getStyleClass().add("value-label");
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
         textContainer.getChildren().addAll(valueLabel, titleLabel);
 
         card.getChildren().addAll(textContainer, iconLabel);
@@ -195,7 +190,7 @@ public class AdminDashboardController {
             // Correctly define the TableColumn type and set the PropertyValueFactory
             TableColumn<Notification, String> statusCol = new TableColumn<>("Status");
             statusCol.setCellValueFactory(new PropertyValueFactory<>("status")); // FORCE BINDING
-            statusCol.setStyle("-fx-alignment: CENTER-LEFT;"); // Center align content
+            statusCol.getStyleClass().add("status-column");
             
             statusCol.setCellFactory(column -> new TableCell<>() {
                 @Override
@@ -220,14 +215,14 @@ public class AdminDashboardController {
             });
 
             TableColumn<Notification, Void> seenProgressCol = new TableColumn<>("Seen Progress");
-            seenProgressCol.setStyle("-fx-alignment: CENTER-LEFT;"); // Center align content
+            seenProgressCol.getStyleClass().add("progress-column");
             seenProgressCol.setCellFactory(column -> new TableCell<>() {
                 @Override
                 protected void updateItem(Void item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setText(null);
-                        setStyle("");
+                        getStyleClass().removeAll("progress-low", "progress-medium", "progress-high");
                     } else {
                         Notification notification = getTableView().getItems().get(getIndex());
                         int seen = notification.getSeenCount();
@@ -237,16 +232,17 @@ public class AdminDashboardController {
                             double percentage = ((double) seen / total) * 100;
                             setText(String.format("%.1f%%", percentage));
                             
+                            getStyleClass().removeAll("progress-low", "progress-medium", "progress-high");
                             if (percentage < 30) {
-                                setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                                getStyleClass().add("progress-low");
                             } else if (percentage <= 70) {
-                                setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+                                getStyleClass().add("progress-medium");
                             } else {
-                                setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                                getStyleClass().add("progress-high");
                             }
                         } else {
                             setText("0.0%");
-                            setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                            getStyleClass().add("progress-low");
                         }
                     }
                 }
@@ -441,22 +437,21 @@ public class AdminDashboardController {
         
         TableColumn<UserNotificationDetail, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        statusCol.setStyle("-fx-alignment: CENTER-LEFT;");
+        statusCol.getStyleClass().add("status-column");
         statusCol.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
-                    setStyle("");
+                    getStyleClass().removeAll("status-seen", "status-unseen");
                 } else {
                     setText(item);
+                    getStyleClass().removeAll("status-seen", "status-unseen");
                     if ("Seen".equalsIgnoreCase(item)) {
-                        setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        getStyleClass().add("status-seen");
                     } else if ("Unseen".equalsIgnoreCase(item)) {
-                        setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-                    } else {
-                        setStyle("");
+                        getStyleClass().add("status-unseen");
                     }
                 }
             }
@@ -497,7 +492,7 @@ public class AdminDashboardController {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("content-title");
         
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
