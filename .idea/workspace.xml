@@ -6,18 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="020501dc-fc42-4b97-96f8-330d450088ca" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/config/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/config/DBConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/AdminDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/RegisterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/dao/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/utils/SceneSwitcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/utils/SceneSwitcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/css/user_dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/user_dashboard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/user_dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/user_dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
