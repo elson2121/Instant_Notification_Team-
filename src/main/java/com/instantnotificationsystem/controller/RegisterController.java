@@ -1,8 +1,8 @@
 package com.instantnotificationsystem.controller;
 
+import com.instantnotificationsystem.Main;
 import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.User;
-import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -46,23 +46,24 @@ public class RegisterController {
 
     private void setupComboBoxes() {
         if (roleComboBox != null) {
-            roleComboBox.getItems().addAll("USER", "ADMIN");
-            roleComboBox.setValue("USER");
+            roleComboBox.getItems().clear();
+            roleComboBox.getItems().addAll("Manager", "Employee", "Intern");
+            roleComboBox.setValue("Employee");
         }
         if (sexComboBox != null) {
-            sexComboBox.getItems().addAll("Male", "Female", "Other");
+            sexComboBox.getItems().clear();
+            sexComboBox.getItems().addAll("Male", "Female");
             sexComboBox.setValue("Male");
         }
         if (shiftComboBox != null) {
-            shiftComboBox.getItems().addAll("Day", "Night", "Flexible");
+            shiftComboBox.getItems().clear();
+            shiftComboBox.getItems().addAll("Day", "Night");
             shiftComboBox.setValue("Day");
         }
         if (departmentComboBox != null) {
-            departmentComboBox.getItems().addAll(
-                    "Human Resources", "Information Technology", "Finance",
-                    "Operations", "Marketing", "Sales", "Research & Development"
-            );
-            departmentComboBox.setValue("Information Technology");
+            departmentComboBox.getItems().clear();
+            departmentComboBox.getItems().addAll("HR", "IT", "Sales", "Marketing");
+            departmentComboBox.setValue("IT");
         }
     }
 
@@ -83,7 +84,7 @@ public class RegisterController {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
-        user.setDepartmentName(department);
+        user.setDepartment(department);
         
         // Set other fields if available, handling potential nulls
         if (fullNameField != null) user.setFullName(fullNameField.getText().trim());
@@ -92,6 +93,9 @@ public class RegisterController {
         if (roleComboBox != null) user.setRole(roleComboBox.getValue());
         if (sexComboBox != null) user.setSex(sexComboBox.getValue());
         if (shiftComboBox != null) user.setShift(shiftComboBox.getValue());
+        
+        // Set default active status
+        user.setActive(true);
 
         // 3. Save to database
         if (userDAO.createUser(user)) {
@@ -110,14 +114,7 @@ public class RegisterController {
 
     @FXML
     private void handleBackToLogin() {
-        try {
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            SceneSwitcher.switchScene(stage, "/view/login.fxml");
-            stage.setTitle("Instant Notification System - Login");
-        } catch (Exception e) {
-            showError("Failed to redirect to login: " + e.getMessage());
-            e.printStackTrace();
-        }
+        Main.switchScene("/view/login.fxml", "Instant Notification System - Login", false);
     }
 
     private void showError(String message) {

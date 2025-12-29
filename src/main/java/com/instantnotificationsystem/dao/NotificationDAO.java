@@ -4,6 +4,7 @@ import com.instantnotificationsystem.config.DBConnection;
 import com.instantnotificationsystem.model.Analytics;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
+import com.instantnotificationsystem.model.UserNotificationDetail;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class NotificationDAO {
         if (notification.getSenderId() <= 0) {
             throw new IllegalStateException("Sender ID is invalid. A real user must be logged in.");
         }
-        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id, scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -27,6 +28,12 @@ public class NotificationDAO {
             pstmt.setBoolean(4, sendSms);
             pstmt.setString(5, notification.getNotificationType());
             pstmt.setInt(6, notification.getSenderId());
+            
+            if (notification.getScheduledAt() != null) {
+                pstmt.setTimestamp(7, Timestamp.valueOf(notification.getScheduledAt()));
+            } else {
+                pstmt.setNull(7, Types.TIMESTAMP);
+            }
             
             if (pstmt.executeUpdate() > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
@@ -58,7 +65,10 @@ public class NotificationDAO {
 
     public List<Notification> getAllNotifications() {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT * FROM notifications ORDER BY created_at DESC";
+        String sql = "SELECT n.*, " +
+                     "(SELECT COUNT(*) FROM user_notifications un JOIN users u ON un.user_id = u.id WHERE un.notification_id = n.id AND un.seen = TRUE AND u.is_active = TRUE) as seen_count, " +
+                     "(SELECT COUNT(*) FROM user_notifications un JOIN users u ON un.user_id = u.id WHERE un.notification_id = n.id AND u.is_active = TRUE) as total_recipients " +
+                     "FROM notifications n ORDER BY created_at DESC";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -72,6 +82,12 @@ public class NotificationDAO {
                 if (timestamp != null) {
                     notification.setSentAt(timestamp.toLocalDateTime());
                 }
+                Timestamp scheduledTimestamp = rs.getTimestamp("scheduled_at");
+                if (scheduledTimestamp != null) {
+                    notification.setScheduledAt(scheduledTimestamp.toLocalDateTime());
+                }
+                notification.setSeenCount(rs.getInt("seen_count"));
+                notification.setTotalRecipients(rs.getInt("total_recipients"));
                 notifications.add(notification);
             }
         } catch (SQLException e) {
@@ -82,7 +98,7 @@ public class NotificationDAO {
     
     public List<Notification> getNotificationsBySeenStatus(boolean isSeen) {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT n.* FROM notifications n JOIN user_notifications un ON n.id = un.notification_id WHERE un.seen = ? ORDER BY n.created_at DESC";
+        String sql = "SELECT n.* FROM notifications n JOIN user_notifications un ON n.id = un.notification_id JOIN users u ON un.user_id = u.id WHERE un.seen = ? AND u.is_active = TRUE ORDER BY n.created_at DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, isSeen);
@@ -103,6 +119,35 @@ public class NotificationDAO {
             e.printStackTrace();
         }
         return notifications;
+    }
+
+    public List<UserNotificationDetail> getUserNotificationDetailsBySeenStatus(boolean isSeen) {
+        List<UserNotificationDetail> details = new ArrayList<>();
+        String sql = "SELECT u.full_name, n.title, un.seen " +
+                     "FROM user_notifications un " +
+                     "JOIN users u ON un.user_id = u.id " +
+                     "JOIN notifications n ON un.notification_id = n.id " +
+                     "WHERE un.seen = ? AND u.is_active = TRUE " +
+                     "ORDER BY n.created_at DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setBoolean(1, isSeen);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                String userName = rs.getString("full_name");
+                String title = rs.getString("title");
+                boolean seen = rs.getBoolean("seen");
+                String status = seen ? "Seen" : "Unseen";
+                
+                details.add(new UserNotificationDetail(userName, title, status));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return details;
     }
 
     public List<Notification> getNotificationsByDeliveryStatus(String status) {
@@ -129,7 +174,7 @@ public class NotificationDAO {
     }
 
     public int getCountBySeenStatus(boolean isSeen) {
-        String sql = "SELECT COUNT(*) FROM user_notifications WHERE seen = ?";
+        String sql = "SELECT COUNT(*) FROM user_notifications un JOIN users u ON un.user_id = u.id WHERE un.seen = ? AND u.is_active = TRUE";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, isSeen);
@@ -151,16 +196,28 @@ public class NotificationDAO {
         return 0;
     }
 
-    public List<Notification> getNotificationsForUser(int userId) {
+    public List<Notification> getUnreadNotificationsForUser(int userId) {
+        return getNotificationsForUserBySeenStatus(userId, false);
+    }
+
+    public List<Notification> getReadNotificationsForUser(int userId) {
+        return getNotificationsForUserBySeenStatus(userId, true);
+    }
+
+    private List<Notification> getNotificationsForUserBySeenStatus(int userId, boolean seen) {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT n.id, n.title, n.message, n.created_at, un.seen, n.notification_type, n.send_email, n.send_sms " +
-                     "FROM notifications n JOIN user_notifications un ON n.id = un.notification_id " +
-                     "WHERE un.user_id = ? ORDER BY n.created_at DESC";
+                     "FROM notifications n " +
+                     "JOIN user_notifications un ON n.id = un.notification_id " +
+                     "JOIN users u ON u.id = un.user_id " +
+                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = ? AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW()) " +
+                     "ORDER BY n.created_at DESC";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, userId);
+            pstmt.setBoolean(2, seen);
             ResultSet rs = pstmt.executeQuery();
             
             while (rs.next()) {
@@ -190,7 +247,7 @@ public class NotificationDAO {
     }
 
     public boolean markNotificationAsSeen(int userId, int notificationId) {
-        String sql = "UPDATE user_notifications SET seen = TRUE WHERE user_id = ? AND notification_id = ?";
+        String sql = "UPDATE user_notifications SET seen = TRUE, seen_at = CURRENT_TIMESTAMP WHERE user_id = ? AND notification_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
@@ -203,7 +260,7 @@ public class NotificationDAO {
     }
 
     public boolean markAllNotificationsAsSeen(int userId) {
-        String sql = "UPDATE user_notifications SET seen = TRUE WHERE user_id = ?";
+        String sql = "UPDATE user_notifications SET seen = TRUE, seen_at = CURRENT_TIMESTAMP WHERE user_id = ? AND seen = FALSE";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
@@ -215,7 +272,10 @@ public class NotificationDAO {
     }
 
     public int getUnreadNotificationCount(int userId) {
-        String sql = "SELECT COUNT(*) FROM user_notifications WHERE user_id = ? AND seen = FALSE";
+        String sql = "SELECT COUNT(*) FROM user_notifications un " +
+                     "JOIN notifications n ON un.notification_id = n.id " +
+                     "JOIN users u ON u.id = un.user_id " +
+                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = FALSE AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW())";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
@@ -230,8 +290,8 @@ public class NotificationDAO {
         String sql = "SELECT " +
                      "(SELECT COUNT(*) FROM notifications) AS sent_count, " +
                      "(SELECT COUNT(*) FROM notifications WHERE status = 'Delivered') AS delivered_count, " +
-                     "(SELECT COUNT(*) FROM user_notifications WHERE seen = TRUE) AS seen_count, " +
-                     "(SELECT COUNT(*) FROM user_notifications WHERE seen = FALSE) AS unseen_count";
+                     "(SELECT COUNT(*) FROM user_notifications un JOIN users u ON un.user_id = u.id WHERE un.seen = TRUE AND u.is_active = TRUE) AS seen_count, " +
+                     "(SELECT COUNT(*) FROM user_notifications un JOIN users u ON un.user_id = u.id WHERE un.seen = FALSE AND u.is_active = TRUE) AS unseen_count";
         
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -250,4 +310,17 @@ public class NotificationDAO {
         }
         return new Analytics(0, 0, 0, 0);
     }
+    
+    public boolean deleteNotificationForUser(int userId, int notificationId) {
+    String sql = "DELETE FROM user_notifications WHERE user_id = ? AND notification_id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, userId);
+        pstmt.setInt(2, notificationId);
+        return pstmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }

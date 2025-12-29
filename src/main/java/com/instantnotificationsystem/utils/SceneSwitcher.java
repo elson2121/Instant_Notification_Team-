@@ -11,37 +11,37 @@ import java.io.IOException;
 
 public class SceneSwitcher {
 
-    public static void switchScene(Stage stage, String fxmlPath) throws IOException {
-        FXMLLoader loader = new FXMLLoader(SceneSwitcher.class.getResource(fxmlPath));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public static void switchToDashboard(Stage stage, String fullName, int userId) throws IOException {
         FXMLLoader loader = new FXMLLoader(SceneSwitcher.class.getResource("/view/user_dashboard.fxml"));
         Parent root = loader.load();
-
         UserDashboardController controller = loader.getController();
-        controller.setUserName(fullName);
-        controller.setUserId(userId);
-
+        controller.initData(fullName, userId);
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(SceneSwitcher.class.getResource("/style.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("User Dashboard");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        stage.sizeToScene();
+        stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 
     public static void switchToAdminDashboard(Stage stage, String fullName, int userId) throws IOException {
         FXMLLoader loader = new FXMLLoader(SceneSwitcher.class.getResource("/view/admin_dashboard.fxml"));
         Parent root = loader.load();
-
         AdminDashboardController controller = loader.getController();
-        // controller.setUserName(fullName); // Admin name is now set in the controller
-        // controller.setUserId(userId); // User ID is now managed by SessionManager
-
+        controller.initData(fullName, userId);
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(SceneSwitcher.class.getResource("/style.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("Admin Dashboard");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        stage.sizeToScene();
+        stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 }

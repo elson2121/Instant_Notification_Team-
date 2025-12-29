@@ -9,11 +9,11 @@
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.instantnotificationsystem.controller.LoginController"
-      prefHeight="700.0" prefWidth="1000.0">
+      style="-fx-background-color: -fx-green-soft;">
 
-    <!-- Left Panel: Blue Gradient -->
+    <!-- Left Panel: Green Gradient -->
     <VBox alignment="CENTER_LEFT" spacing="30" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="500"
-          style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #2563eb, #1d4ed8); -fx-padding: 60;">
+          style="-fx-background-color: -fx-green-deep; -fx-padding: 60;">
         
         <VBox spacing="5">
             <Label text="WELCOME TO" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
@@ -58,7 +58,7 @@
     <StackPane fx:id="formsContainer" HBox.hgrow="ALWAYS" prefWidth="500">
         
         <!-- Login Form -->
-        <VBox fx:id="loginForm" alignment="CENTER" spacing="30" style="-fx-background-color: #f9fafb;">
+        <VBox fx:id="loginForm" alignment="CENTER" spacing="30" style="-fx-background-color: -fx-green-soft;">
             <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
             
             <VBox spacing="5" alignment="CENTER_LEFT" maxWidth="400">
@@ -70,20 +70,20 @@
                 <VBox spacing="8">
                     <Label text="Username or Email" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                     <TextField fx:id="loginUsernameField" promptText="Enter your username" prefHeight="45"
-                               style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                               styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                 </VBox>
 
                 <VBox spacing="8">
                     <HBox alignment="CENTER_LEFT">
                         <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Hyperlink text="Forgot password?" style="-fx-text-fill: #2563eb; -fx-font-size: 12px;"/>
+                        <Hyperlink text="Forgot password?" style="-fx-text-fill: -fx-green-primary; -fx-font-size: 12px;"/>
                     </HBox>
                     <StackPane alignment="CENTER_RIGHT">
                         <PasswordField fx:id="loginPasswordField" promptText="Enter your password" prefHeight="45"
-                                       style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                       styleClass="password-field" style="-fx-border-color: -fx-green-deep;"/>
                         <TextField fx:id="loginPasswordFieldVisible" promptText="Enter your password" prefHeight="45" visible="false"
-                                   style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                   styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                     </StackPane>
                 </VBox>
 
@@ -96,17 +96,17 @@
                 <Label fx:id="loginErrorLabel" textFill="#ef4444" visible="false" wrapText="true"/>
                 
                 <Button text="Sign In" onAction="#handleLogin" prefHeight="45" maxWidth="Infinity"
-                        style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                        styleClass="primary-button"/>
                 
                 <HBox alignment="CENTER" spacing="5">
                     <Label text="Don't have an account?" style="-fx-text-fill: #6b7280;"/>
-                    <Hyperlink text="Register here" onAction="#handleRegister" style="-fx-text-fill: #2563eb; -fx-font-weight: bold;"/>
+                    <Hyperlink text="Register here" onAction="#handleRegister" style="-fx-text-fill: -fx-green-primary; -fx-font-weight: bold;"/>
                 </HBox>
             </VBox>
         </VBox>
 
         <!-- Register Form -->
-        <VBox fx:id="registerForm" visible="false" style="-fx-background-color: white;">
+        <VBox fx:id="registerForm" visible="false" style="-fx-background-color: -fx-green-soft;">
             <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
 
             <!-- Top Bar -->
@@ -126,22 +126,22 @@
                     <VBox spacing="5">
                         <Label text="Full Name *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <TextField fx:id="regFullNameField" promptText="Enter your full name" prefHeight="40"
-                                   style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                   styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Username *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <TextField fx:id="regUsernameField" promptText="Choose a username" prefHeight="40"
-                                   style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                   styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Password *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <StackPane alignment="CENTER_RIGHT">
                             <PasswordField fx:id="regPasswordField" promptText="Create a password" prefHeight="40"
-                                           style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                           styleClass="password-field" style="-fx-border-color: -fx-green-deep;"/>
                             <TextField fx:id="regPasswordFieldVisible" promptText="Create a password" prefHeight="40" visible="false"
-                                       style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                       styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                         </StackPane>
                     </VBox>
 
@@ -149,9 +149,9 @@
                         <Label text="Confirm Password *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <StackPane alignment="CENTER_RIGHT">
                             <PasswordField fx:id="regConfirmPasswordField" promptText="Re-enter your password" prefHeight="40"
-                                           style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                           styleClass="password-field" style="-fx-border-color: -fx-green-deep;"/>
                             <TextField fx:id="regConfirmPasswordFieldVisible" promptText="Re-enter your password" prefHeight="40" visible="false"
-                                       style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                       styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                         </StackPane>
                     </VBox>
 
@@ -160,13 +160,13 @@
                     <VBox spacing="5">
                         <Label text="Phone *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <TextField fx:id="regPhoneField" promptText="Enter your phone number" prefHeight="40"
-                                   style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                   styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <Region VBox.vgrow="ALWAYS"/>
 
                     <Button text="Next" onAction="#handleNextStep" prefHeight="45" maxWidth="Infinity"
-                            style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                            styleClass="primary-button"/>
                 </VBox>
 
                 <!-- Step 2 -->
@@ -174,34 +174,32 @@
                     <VBox spacing="5">
                         <Label text="Employee ID *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <TextField fx:id="regEmployeeIdField" promptText="Enter your employee ID" prefHeight="40"
-                                   style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                   styleClass="text-field" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Role *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <ComboBox fx:id="regRoleComboBox" promptText="Select your role" prefWidth="Infinity" prefHeight="40"
-                                  style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                  styleClass="combo-box" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Sex *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <ComboBox fx:id="regSexComboBox" promptText="Select your sex" prefWidth="Infinity" prefHeight="40"
-                                  style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                  styleClass="combo-box" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Shift *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <ComboBox fx:id="regShiftComboBox" promptText="Select your shift" prefWidth="Infinity" prefHeight="40"
-                                  style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                  styleClass="combo-box" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
 
                     <VBox spacing="5">
                         <Label text="Department *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <ComboBox fx:id="regDepartmentComboBox" promptText="Select your department" prefWidth="Infinity" prefHeight="40"
-                                  style="-fx-background-color: white; -fx-border-color: #60a5fa; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                  styleClass="combo-box" style="-fx-border-color: -fx-green-deep;"/>
                     </VBox>
-
-                    <Label fx:id="regErrorLabel" textFill="#ef4444" visible="false" wrapText="true"/>
 
                     <Region VBox.vgrow="ALWAYS"/>
 
@@ -209,7 +207,7 @@
                         <Button text="Previous" onAction="#handlePrevStep" prefHeight="45" prefWidth="120"
                                 style="-fx-background-color: #9ca3af; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
                         <Button text="Create Account" onAction="#handleCompleteRegistration" prefHeight="45" HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                                styleClass="primary-button"/>
                     </HBox>
                 </VBox>
             </StackPane>

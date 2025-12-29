@@ -10,10 +10,13 @@ public class Notification {
     private String message;
     private boolean seen;
     private LocalDateTime sentAt; // Represents created_at
+    private LocalDateTime scheduledAt; // New field for scheduled delivery
     private List<String> channels = new ArrayList<>();
     private int senderId;
     private String notificationType;
     private String status; // New field for status
+    private int seenCount;
+    private int totalRecipients;
 
     // Getters and Setters
 
@@ -57,6 +60,14 @@ public class Notification {
         this.sentAt = sentAt;
     }
 
+    public LocalDateTime getScheduledAt() {
+        return scheduledAt;
+    }
+
+    public void setScheduledAt(LocalDateTime scheduledAt) {
+        this.scheduledAt = scheduledAt;
+    }
+
     public List<String> getChannels() {
         return channels;
     }
@@ -96,5 +107,21 @@ public class Notification {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getSeenCount() {
+        return seenCount;
+    }
+
+    public void setSeenCount(int seenCount) {
+        this.seenCount = seenCount;
+    }
+
+    public int getTotalRecipients() {
+        return totalRecipients;
+    }
+
+    public void setTotalRecipients(int totalRecipients) {
+        this.totalRecipients = totalRecipients;
     }
 }

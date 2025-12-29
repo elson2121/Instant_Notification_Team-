@@ -44,6 +44,45 @@ public class UserDAO {
         return null;
     }
 
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getUserDetails(int userId) {
+        String sql = "SELECT department_name, role, sex, shift FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setDepartment(rs.getString("department_name"));
+                    user.setRole(rs.getString("role"));
+                    user.setSex(rs.getString("sex"));
+                    user.setShift(rs.getString("shift"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -61,8 +100,19 @@ public class UserDAO {
     }
 
     public boolean createUser(User user) {
-        String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Validation for required fields
+        if (user.getDepartment() == null || user.getDepartment().trim().isEmpty()) {
+            throw new IllegalArgumentException("Department is required.");
+        }
+        if (user.getShift() == null || user.getShift().trim().isEmpty()) {
+            throw new IllegalArgumentException("Shift is required.");
+        }
+        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+            throw new IllegalArgumentException("Role is required.");
+        }
+
+        String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name, is_active) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -71,10 +121,11 @@ public class UserDAO {
             pstmt.setString(3, user.getPassword());
             pstmt.setString(4, user.getPhoneNumber());
             pstmt.setString(5, user.getEmployeeId());
-            pstmt.setString(6, user.getRole());
+            pstmt.setString(6, user.getRole()); // Role is already a String
             pstmt.setString(7, user.getSex());
             pstmt.setString(8, user.getShift());
-            pstmt.setString(9, user.getDepartmentName());
+            pstmt.setString(9, user.getDepartment()); // Department name is stored as String
+            pstmt.setBoolean(10, user.isActive());
             
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -109,7 +160,13 @@ public class UserDAO {
         user.setRole(rs.getString("role"));
         user.setSex(rs.getString("sex"));
         user.setShift(rs.getString("shift"));
-        user.setDepartmentName(rs.getString("department_name"));
+        user.setDepartment(rs.getString("department_name"));
+        // Check if is_active column exists, default to true if not found or null
+        try {
+            user.setActive(rs.getBoolean("is_active"));
+        } catch (SQLException e) {
+            user.setActive(true); // Default to active if column missing
+        }
         return user;
     }
 
@@ -132,7 +189,56 @@ public class UserDAO {
         return users;
     }
 
-    public List<User> getUsersByCriteria(Integer departmentId, String sex, String shift, List<Integer> specificUserIds) {
-        return new ArrayList<>();
+    public List<User> getUsersByCriteria(String department, String role, String sex, String shift) {
+        List<User> users = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (department != null && !department.isEmpty() && !"All Departments".equals(department)) {
+            sql.append(" AND department_name = ?");
+            params.add(department);
+        }
+        if (role != null && !role.isEmpty() && !"All Roles".equals(role)) {
+            sql.append(" AND role = ?");
+            params.add(role);
+        }
+        if (sex != null && !sex.isEmpty() && !"All".equals(sex)) {
+            sql.append(" AND sex = ?");
+            params.add(sex);
+        }
+        if (shift != null && !shift.isEmpty() && !"All Shifts".equals(shift)) {
+            sql.append(" AND shift = ?");
+            params.add(shift);
+        }
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public boolean updateUserStatus(int userId, boolean isActive) {
+        String sql = "UPDATE users SET is_active = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, isActive);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

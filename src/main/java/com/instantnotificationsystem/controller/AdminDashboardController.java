@@ -1,11 +1,12 @@
 package com.instantnotificationsystem.controller;
 
+import com.instantnotificationsystem.Main;
 import com.instantnotificationsystem.dao.NotificationDAO;
 import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
+import com.instantnotificationsystem.model.UserNotificationDetail;
 import com.instantnotificationsystem.service.SessionManager;
-import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +18,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +43,22 @@ public class AdminDashboardController {
     @FXML private VBox dashboardView;
     @FXML private FlowPane statsPane;
     @FXML private TableView<Notification> recentNotificationsTable; // Corrected to use Notification model
+    
+    // New Filter Fields
+    @FXML private ComboBox<String> departmentCombo;
+    @FXML private ComboBox<String> roleCombo;
+    @FXML private ComboBox<String> sexCombo;
+    @FXML private ComboBox<String> shiftCombo;
+    
+    // Scheduling Fields
+    @FXML private DatePicker scheduleDate;
+    @FXML private Spinner<Integer> scheduleTime;
     //</editor-fold>
 
     private UserDAO userDAO;
     private NotificationDAO notificationDAO;
+    private int currentAdminId;
+    private String currentAdminName;
 
     @FXML
     public void initialize() {
@@ -55,6 +72,12 @@ public class AdminDashboardController {
 
         setupSidebarButtons();
         loadDashboardContent();
+    }
+
+    public void initData(String fullName, int userId) {
+        this.currentAdminName = fullName;
+        this.currentAdminId = userId;
+        welcomeLabel.setText("Welcome, " + fullName + "!");
     }
 
     private void setupSidebarButtons() {
@@ -72,21 +95,16 @@ public class AdminDashboardController {
         });
         btnLogout.setOnAction(e -> {
             SessionManager.clear();
-            try {
-                Stage stage = (Stage) btnLogout.getScene().getWindow();
-                SceneSwitcher.switchScene(stage, "/view/login.fxml");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            Main.switchScene("/view/login.fxml", "Instant Notification System - Login", false);
         });
         setActiveButton(btnDashboard);
     }
 
     private void setActiveButton(Button activeButton) {
-        btnDashboard.getStyleClass().remove("active-sidebar-button");
-        btnUsers.getStyleClass().remove("active-sidebar-button");
-        btnNotifications.getStyleClass().remove("active-sidebar-button");
-        activeButton.getStyleClass().add("active-sidebar-button");
+        btnDashboard.getStyleClass().remove("sidebar-button-active");
+        btnUsers.getStyleClass().remove("sidebar-button-active");
+        btnNotifications.getStyleClass().remove("sidebar-button-active");
+        activeButton.getStyleClass().add("sidebar-button-active");
     }
 
     private void showContent(Node content) {
@@ -104,11 +122,13 @@ public class AdminDashboardController {
 
         statsPane.getChildren().clear();
 
-        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "card-green", "👥");
-        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "card-blue", "✉️");
-        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "card-yellow", "🚚");
-        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "card-teal", "👀");
-        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "card-red", "🙈");
+        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "👥");
+        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "✉️");
+        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "🚚");
+        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "👀");
+        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "🙈");
+        StackPane userManagementCard = addStatCard(statsPane, "User Management", "3", "⚙️");
+
 
         usersCard.setOnMouseClicked(e -> {
             setActiveButton(btnUsers);
@@ -130,27 +150,30 @@ public class AdminDashboardController {
             setActiveButton(btnNotifications);
             loadNotificationsByStatus("Unseen");
         });
+        userManagementCard.setOnMouseClicked(e -> {
+            // Navigate to user management view
+            loadUserManagementContent();
+        });
 
         populateRecentNotificationsTable();
     }
 
-    private StackPane addStatCard(Pane parent, String title, String value, String styleClass, String icon) {
+    private StackPane addStatCard(Pane parent, String title, String value, String icon) {
         StackPane card = new StackPane();
-        card.getStyleClass().addAll("stat-card", styleClass);
+        card.getStyleClass().add("stat-card");
         card.setCursor(Cursor.HAND);
 
         Label iconLabel = new Label(icon);
         iconLabel.getStyleClass().add("card-icon");
-        StackPane.setAlignment(iconLabel, Pos.TOP_RIGHT);
+        StackPane.setAlignment(iconLabel, Pos.CENTER);
         StackPane.setMargin(iconLabel, new Insets(15));
 
         VBox textContainer = new VBox(5);
         textContainer.setAlignment(Pos.BOTTOM_LEFT);
         textContainer.setPadding(new Insets(20));
         Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white;");
+        valueLabel.getStyleClass().add("value-label");
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
         textContainer.getChildren().addAll(valueLabel, titleLabel);
 
         card.getChildren().addAll(textContainer, iconLabel);
@@ -167,6 +190,7 @@ public class AdminDashboardController {
             // Correctly define the TableColumn type and set the PropertyValueFactory
             TableColumn<Notification, String> statusCol = new TableColumn<>("Status");
             statusCol.setCellValueFactory(new PropertyValueFactory<>("status")); // FORCE BINDING
+            statusCol.getStyleClass().add("status-column");
             
             statusCol.setCellFactory(column -> new TableCell<>() {
                 @Override
@@ -189,7 +213,42 @@ public class AdminDashboardController {
                     }
                 }
             });
-            recentNotificationsTable.getColumns().addAll(titleCol, statusCol);
+
+            TableColumn<Notification, Void> seenProgressCol = new TableColumn<>("Seen Progress");
+            seenProgressCol.getStyleClass().add("progress-column");
+            seenProgressCol.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                        getStyleClass().removeAll("progress-low", "progress-medium", "progress-high");
+                    } else {
+                        Notification notification = getTableView().getItems().get(getIndex());
+                        int seen = notification.getSeenCount();
+                        int total = notification.getTotalRecipients();
+                        
+                        if (total > 0) {
+                            double percentage = ((double) seen / total) * 100;
+                            setText(String.format("%.1f%%", percentage));
+                            
+                            getStyleClass().removeAll("progress-low", "progress-medium", "progress-high");
+                            if (percentage < 30) {
+                                getStyleClass().add("progress-low");
+                            } else if (percentage <= 70) {
+                                getStyleClass().add("progress-medium");
+                            } else {
+                                getStyleClass().add("progress-high");
+                            }
+                        } else {
+                            setText("0.0%");
+                            getStyleClass().add("progress-low");
+                        }
+                    }
+                }
+            });
+
+            recentNotificationsTable.getColumns().addAll(titleCol, statusCol, seenProgressCol);
         }
 
         // Fetch real notification data from the database
@@ -214,11 +273,47 @@ public class AdminDashboardController {
         if (smsCheckbox.isSelected()) channels.add("SMS");
         newNotification.setChannels(channels);
 
+        // Scheduling Logic
+        if (scheduleDate.getValue() != null) {
+            LocalDate selectedDate = scheduleDate.getValue();
+            
+            // Validation: Check if date is in the past
+            if (selectedDate.isBefore(LocalDate.now())) {
+                new Alert(Alert.AlertType.ERROR, "Cannot schedule notifications for past dates.").showAndWait();
+                return;
+            }
+            
+            int hoursToAdd = scheduleTime.getValue() != null ? scheduleTime.getValue() : 0;
+            
+            if (hoursToAdd == 0) {
+                // Send immediately
+                newNotification.setScheduledAt(null);
+            } else {
+                // Calculate scheduled time
+                LocalDateTime scheduledDateTime;
+                if (selectedDate.equals(LocalDate.now())) {
+                    // If today, add hours to current time
+                    scheduledDateTime = LocalDateTime.now().plusHours(hoursToAdd);
+                } else {
+                    // If future date, start from beginning of that day + hours
+                    scheduledDateTime = selectedDate.atStartOfDay().plusHours(hoursToAdd);
+                }
+                newNotification.setScheduledAt(scheduledDateTime);
+            }
+        }
+
         int notificationId = notificationDAO.createNotification(newNotification);
 
         if (notificationId > 0) {
-            List<User> targetUsers = userDAO.getAllUsers();
+            // Filter Logic
+            String department = departmentCombo.getValue();
+            String role = roleCombo.getValue();
+            String sex = sexCombo.getValue();
+            String shift = shiftCombo.getValue();
+
+            List<User> targetUsers = userDAO.getUsersByCriteria(department, role, sex, shift);
             notificationDAO.createUserNotifications(notificationId, targetUsers);
+            
             new Alert(Alert.AlertType.INFORMATION, "Notification sent successfully!").showAndWait();
             loadDashboardContent();
         } else {
@@ -230,10 +325,50 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin_notifications.fxml"));
             loader.setController(this);
-            VBox notificationView = loader.load();
+            ScrollPane notificationView = loader.load();
+            
+            // Initialize ComboBoxes and Spinner after loading FXML
+            initializeFilterControls();
+            
             showContent(notificationView);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void initializeFilterControls() {
+        if (departmentCombo != null) {
+            departmentCombo.setItems(FXCollections.observableArrayList("All Departments", "HR", "IT", "Sales", "Marketing"));
+            departmentCombo.getSelectionModel().selectFirst();
+        }
+        if (roleCombo != null) {
+            roleCombo.setItems(FXCollections.observableArrayList("All Roles", "Manager", "Employee", "Intern"));
+            roleCombo.getSelectionModel().selectFirst();
+        }
+        if (sexCombo != null) {
+            sexCombo.setItems(FXCollections.observableArrayList("All", "Male", "Female"));
+            sexCombo.getSelectionModel().selectFirst();
+        }
+        if (shiftCombo != null) {
+            shiftCombo.setItems(FXCollections.observableArrayList("All Shifts", "Day", "Night"));
+            shiftCombo.getSelectionModel().selectFirst();
+        }
+        if (scheduleTime != null) {
+            // Changed to 0-48 hours range for "Post After (Hours)"
+            SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 48, 0);
+            scheduleTime.setValueFactory(valueFactory);
+        }
+        if (scheduleDate != null) {
+            scheduleDate.setValue(LocalDate.now());
+            
+            // Disable past dates
+            scheduleDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isBefore(LocalDate.now()));
+                }
+            });
         }
     }
 
@@ -242,7 +377,7 @@ public class AdminDashboardController {
         TableColumn<User, String> nameCol = new TableColumn<>("Full Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         TableColumn<User, String> deptCol = new TableColumn<>("Department");
-        deptCol.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
+        deptCol.setCellValueFactory(new PropertyValueFactory<>("department"));
         usersTable.getColumns().addAll(nameCol, deptCol);
 
         List<User> users;
@@ -257,12 +392,16 @@ public class AdminDashboardController {
         }
         usersTable.setItems(FXCollections.observableArrayList(users));
 
-        VBox userContentView = new VBox(20, new Label(title), usersTable);
-        userContentView.setPadding(new Insets(20));
+        VBox userContentView = createContentViewWithBack(title, usersTable);
         showContent(userContentView);
     }
 
     private void loadNotificationsByStatus(String status) {
+        if ("Seen".equals(status) || "Unseen".equals(status)) {
+            loadSeenUnseenNotifications(status);
+            return;
+        }
+
         TableView<Notification> table = new TableView<>();
         TableColumn<Notification, String> titleCol = new TableColumn<>("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -276,9 +415,6 @@ public class AdminDashboardController {
         if (status == null) {
             notifications = notificationDAO.getAllNotifications();
             title = "All Sent Notifications";
-        } else if ("Seen".equals(status) || "Unseen".equals(status)) {
-            notifications = notificationDAO.getNotificationsBySeenStatus("Seen".equals(status));
-            title = "Notifications: " + status;
         } else {
             notifications = notificationDAO.getNotificationsByDeliveryStatus(status);
             title = "Notifications: " + status;
@@ -286,8 +422,85 @@ public class AdminDashboardController {
 
         table.setItems(FXCollections.observableArrayList(notifications));
 
-        VBox contentView = new VBox(20, new Label(title), table);
-        contentView.setPadding(new Insets(20));
+        VBox contentView = createContentViewWithBack(title, table);
         showContent(contentView);
+    }
+
+    private void loadSeenUnseenNotifications(String status) {
+        TableView<UserNotificationDetail> table = new TableView<>();
+        
+        TableColumn<UserNotificationDetail, String> userCol = new TableColumn<>("User Name");
+        userCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        
+        TableColumn<UserNotificationDetail, String> titleCol = new TableColumn<>("Notification Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("notificationTitle"));
+        
+        TableColumn<UserNotificationDetail, String> statusCol = new TableColumn<>("Status");
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.getStyleClass().add("status-column");
+        statusCol.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    getStyleClass().removeAll("status-seen", "status-unseen");
+                } else {
+                    setText(item);
+                    getStyleClass().removeAll("status-seen", "status-unseen");
+                    if ("Seen".equalsIgnoreCase(item)) {
+                        getStyleClass().add("status-seen");
+                    } else if ("Unseen".equalsIgnoreCase(item)) {
+                        getStyleClass().add("status-unseen");
+                    }
+                }
+            }
+        });
+
+        table.getColumns().addAll(userCol, titleCol, statusCol);
+
+        boolean isSeen = "Seen".equals(status);
+        List<UserNotificationDetail> details = notificationDAO.getUserNotificationDetailsBySeenStatus(isSeen);
+        String title = "Notifications: " + status;
+
+        table.setItems(FXCollections.observableArrayList(details));
+
+        VBox contentView = createContentViewWithBack(title, table);
+        showContent(contentView);
+    }
+
+    private void loadUserManagementContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user_management.fxml"));
+            VBox userManagementView = loader.load();
+            
+            VBox contentView = createContentViewWithBack("User Management", userManagementView);
+            showContent(contentView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private VBox createContentViewWithBack(String title, Node content) {
+        Button backButton = new Button("Back to Overview");
+        backButton.getStyleClass().add("back-button");
+        backButton.setOnAction(e -> {
+            setActiveButton(btnDashboard);
+            loadDashboardContent();
+        });
+
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("content-title");
+        
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        header.getChildren().addAll(titleLabel, spacer, backButton);
+
+        VBox container = new VBox(20, header, content);
+        container.setPadding(new Insets(20));
+        return container;
     }
 }

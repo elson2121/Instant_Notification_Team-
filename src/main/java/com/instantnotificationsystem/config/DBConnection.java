@@ -1,112 +1,85 @@
-// DBConnection.java
 package com.instantnotificationsystem.config;
 
-import java.sql.*;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class DBConnection {
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
+public final class DBConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/instant_notification_system";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "ELSONDI@1234"; // Change this
+    private static final String USER = "root";
+    private static final String PASSWORD = "system";
 
     private static Connection connection = null;
+    private static final Logger LOGGER = Logger.getLogger(DBConnection.class.getName());
 
-    public static Connection getConnection() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                Properties connectionProps = new Properties();
-                connectionProps.put("user", USERNAME);
-                connectionProps.put("password", PASSWORD);
-                connectionProps.put("useSSL", "false");
-                connectionProps.put("serverTimezone", "UTC");
-                connectionProps.put("allowPublicKeyRetrieval", "true");
-
-                connection = DriverManager.getConnection(URL, connectionProps);
-                connection.setAutoCommit(true);
-            }
-        } catch (SQLException e) {
-            System.err.println("Database connection error: " + e.getMessage());
-            throw new RuntimeException("Failed to connect to database", e);
-        }
-        return connection;
+    private DBConnection() {
+        // private constructor to prevent instantiation
     }
 
-    public static boolean testConnection() {
+    public static Connection getConnection() throws SQLException {
+        // Always create a new connection to avoid closed connection issues in multi-threaded environments or long sessions
+        // Connection pooling (like HikariCP) is recommended for production, but for this scope, creating new connections is safer than reusing a closed static one.
         try {
-            getConnection();
-            return true;
-        } catch (Exception e) {
-            return false;
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found.", e);
+            throw new SQLException("MySQL JDBC Driver not found.", e);
         }
     }
 
     public static void initializeTables() {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-
-            String createUsersTable = "CREATE TABLE IF NOT EXISTS users (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                    "full_name VARCHAR(100) NOT NULL, " +
-                    "username VARCHAR(50) NOT NULL UNIQUE, " +
-                    "password VARCHAR(255) NOT NULL, " +
-                    "phone_number VARCHAR(20), " +
-                    "employee_id VARCHAR(20), " +
-                    "role VARCHAR(20) NOT NULL, " +
-                    "sex VARCHAR(10), " +
-                    "shift VARCHAR(20), " +
-                    "department_name VARCHAR(50)" +
-                    ")";
+            
+            // Users Table
+            String createUsersTable = "CREATE TABLE IF NOT EXISTS users ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "full_name VARCHAR(255) NOT NULL,"
+                    + "username VARCHAR(255) NOT NULL UNIQUE,"
+                    + "password VARCHAR(255) NOT NULL,"
+                    + "phone_number VARCHAR(20),"
+                    + "employee_id VARCHAR(50) UNIQUE,"
+                    + "role VARCHAR(50),"
+                    + "sex VARCHAR(10),"
+                    + "shift VARCHAR(20),"
+                    + "department_name VARCHAR(100),"
+                    + "is_active BOOLEAN DEFAULT TRUE"
+                    + ")";
             stmt.execute(createUsersTable);
 
-            // Check for missing columns and add them if necessary
-            DatabaseMetaData meta = conn.getMetaData();
+            // Notifications Table
+            String createNotificationsTable = "CREATE TABLE IF NOT EXISTS notifications ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "title VARCHAR(255),"
+                    + "message TEXT,"
+                    + "sender_id INT,"
+                    + "notification_type VARCHAR(50),"
+                    + "channels VARCHAR(255),"
+                    + "scheduled_at DATETIME,"
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "FOREIGN KEY (sender_id) REFERENCES users(id)"
+                    + ")";
+            stmt.execute(createNotificationsTable);
             
-            // Check department_name
-            try (ResultSet rsCol = meta.getColumns(null, null, "users", "department_name")) {
-                if (!rsCol.next()) {
-                    System.out.println("Adding missing column department_name to users table...");
-                    stmt.execute("ALTER TABLE users ADD COLUMN department_name VARCHAR(50)");
-                }
-            }
-
-            // Create default admin if not exists
-            String checkAdmin = "SELECT COUNT(*) FROM users WHERE username = 'admin'";
-            ResultSet rs = stmt.executeQuery(checkAdmin);
-            if (rs.next() && rs.getInt(1) == 0) {
-                String insertAdmin = "INSERT INTO users (full_name, username, password, role, department_name) " +
-                        "VALUES ('System Administrator', 'admin', 'admin', 'ADMIN', 'IT')";
-                stmt.execute(insertAdmin);
-            }
+            // User Notifications Mapping Table (Many-to-Many)
+            String createUserNotificationsTable = "CREATE TABLE IF NOT EXISTS user_notifications ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "user_id INT,"
+                    + "notification_id INT,"
+                    + "seen BOOLEAN DEFAULT FALSE,"
+                    + "delivery_status VARCHAR(50) DEFAULT 'Sent',"
+                    + "FOREIGN KEY (user_id) REFERENCES users(id),"
+                    + "FOREIGN KEY (notification_id) REFERENCES notifications(id)"
+                    + ")";
+            stmt.execute(createUserNotificationsTable);
 
         } catch (SQLException e) {
-            System.err.println("Table initialization error: " + e.getMessage());
-        }
-    }
-
-    public static void closeConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            System.err.println("Error closing connection: " + e.getMessage());
-        }
-    }
-
-    // Helper method for transactions
-    public static void executeTransaction(Runnable databaseOperations) throws SQLException {
-        Connection conn = getConnection();
-        boolean originalAutoCommit = conn.getAutoCommit();
-
-        try {
-            conn.setAutoCommit(false);
-            databaseOperations.run();
-            conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(originalAutoCommit);
+            LOGGER.log(Level.SEVERE, "Error initializing tables.", e);
         }
     }
 }
