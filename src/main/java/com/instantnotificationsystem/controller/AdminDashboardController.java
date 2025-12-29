@@ -17,15 +17,14 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import com.instantnotificationsystem.service.SMSService;
+import javafx.application.Platform;
 
 public class AdminDashboardController {
 
@@ -39,7 +38,7 @@ public class AdminDashboardController {
     @FXML private TextField subjectField;
     @FXML private TextArea messageArea;
     @FXML private CheckBox emailCheckbox;
-    @FXML private CheckBox smsCheckbox;
+    @FXML private CheckBox smsCheckbox = new CheckBox();
     @FXML private VBox dashboardView;
     @FXML private FlowPane statsPane;
     @FXML private TableView<Notification> recentNotificationsTable; // Corrected to use Notification model
@@ -68,6 +67,11 @@ public class AdminDashboardController {
         if (welcomeLabel != null) {
             User loggedInAdmin = SessionManager.getLoggedInUser();
             welcomeLabel.setText("Welcome, " + (loggedInAdmin != null ? loggedInAdmin.getFullName() : "Administrator") + "!");
+        }
+
+        // Set SMS checkbox to be checked by default
+        if (smsCheckbox != null) {
+            smsCheckbox.setSelected(true);
         }
 
         setupSidebarButtons();
@@ -258,11 +262,26 @@ public class AdminDashboardController {
 
     @FXML
     private void handleSendNotification() {
-        int senderId = 1; // Admin user ID
+        String title = subjectField.getText().trim();
+        String message = messageArea.getText().trim();
+        
+        if (title.isEmpty() || message.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Please fill in both subject and message fields.").showAndWait();
+            return;
+        }
+        
+        if (!emailCheckbox.isSelected() && !smsCheckbox.isSelected()) {
+            new Alert(Alert.AlertType.WARNING, "Please select at least one notification method (Email/SMS).").showAndWait();
+            return;
+        }
+
+        int senderId = SessionManager.getLoggedInUser() != null ? SessionManager.getLoggedInUser().getId() : 1;
         Notification newNotification = new Notification();
-        newNotification.setTitle(subjectField.getText());
-        newNotification.setMessage(messageArea.getText());
+        newNotification.setTitle(title);
+        newNotification.setMessage(message);
         newNotification.setSenderId(senderId);
+        newNotification.setStatus("Sent");
+        newNotification.setSentAt(LocalDateTime.now());
 
         String notificationType = emailCheckbox.isSelected() && smsCheckbox.isSelected() ? "BOTH"
                                 : emailCheckbox.isSelected() ? "Email" : "SMS";
@@ -273,23 +292,79 @@ public class AdminDashboardController {
         if (smsCheckbox.isSelected()) channels.add("SMS");
         newNotification.setChannels(channels);
 
+        // Get target users based on filters
+        String department = departmentCombo.getValue();
+        String role = roleCombo.getValue();
+        String sex = sexCombo.getValue();
+        String shift = shiftCombo.getValue();
+        List<User> targetUsers = userDAO.getUsersByCriteria(
+            "All Departments".equals(department) ? null : department,
+            "All Roles".equals(role) ? null : role,
+            "All".equals(sex) ? null : sex,
+            "All Shifts".equals(shift) ? null : shift
+        );
+
+        if (targetUsers.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No users match the selected criteria.").showAndWait();
+            return;
+        }
+
+        // Create notification in database
         int notificationId = notificationDAO.createNotification(newNotification);
 
         if (notificationId > 0) {
-            // Filter Logic
-            String department = departmentCombo.getValue();
-            String role = roleCombo.getValue();
-            String sex = sexCombo.getValue();
-            String shift = shiftCombo.getValue();
-
-            List<User> targetUsers = userDAO.getUsersByCriteria(department, role, sex, shift);
+            // Create user notification records
             notificationDAO.createUserNotifications(notificationId, targetUsers);
             
-            new Alert(Alert.AlertType.INFORMATION, "Notification sent successfully!").showAndWait();
+            // Send SMS if selected
+            if (smsCheckbox.isSelected()) {
+                sendSmsToUsers(targetUsers, message, notificationId);
+            }
+            
+            // TODO: Implement email sending if emailCheckbox.isSelected()
+            
+            new Alert(Alert.AlertType.INFORMATION, 
+                String.format("Notification sent to %d users successfully!", targetUsers.size()))
+                .showAndWait();
+            
+            // Clear form
+            subjectField.clear();
+            messageArea.clear();
             loadDashboardContent();
         } else {
             new Alert(Alert.AlertType.ERROR, "Failed to save notification.").showAndWait();
         }
+    }
+    
+    private void sendSmsToUsers(List<User> users, String message, int notificationId) {
+        List<String> phoneNumbers = users.stream()
+            .map(User::getPhoneNumber)
+            .filter(phone -> phone != null && !phone.trim().isEmpty())
+            .collect(java.util.stream.Collectors.toList());
+            
+        if (phoneNumbers.isEmpty()) {
+            System.out.println("No valid phone numbers found for SMS notification.");
+            return;
+        }
+        
+        // Send SMS asynchronously
+        CompletableFuture<Boolean> smsFuture = SMSService.sendBulkSMS(phoneNumbers, message);
+        
+        smsFuture.whenComplete((success, ex) -> {
+            if (success) {
+                System.out.println("SMS sent successfully to " + phoneNumbers.size() + " users");
+                // Update notification status in the UI
+                Platform.runLater(() -> {
+                    // Refresh the notifications table
+                    populateRecentNotificationsTable();
+                });
+            } else {
+                System.err.println("Failed to send SMS to some or all users");
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     private void loadSendNotificationContent() {
@@ -300,6 +375,11 @@ public class AdminDashboardController {
             
             // Initialize ComboBoxes and Spinner after loading FXML
             initializeFilterControls();
+            
+            // Ensure SMS is checked by default
+            if (smsCheckbox != null) {
+                smsCheckbox.setSelected(true);
+            }
             
             showContent(notificationView);
         } catch (IOException e) {

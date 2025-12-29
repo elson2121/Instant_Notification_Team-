@@ -5,6 +5,10 @@ import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,6 +28,8 @@ public class RegisterController {
     @FXML private ComboBox<String> shiftComboBox;
     @FXML private ComboBox<String> departmentComboBox;
     @FXML private Label errorLabel;
+    @FXML private HBox phoneValidationIndicator;
+    @FXML private Circle phoneValidationCircle;
 
     private UserDAO userDAO;
 
@@ -32,6 +38,30 @@ public class RegisterController {
         userDAO = new UserDAO();
         setupComboBoxes();
         setupPasswordVisibilityToggle();
+        setupPhoneFieldListener();
+    }
+
+    private void setupPhoneFieldListener() {
+        phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
+            validatePhone(newValue);
+        });
+    }
+
+    private void validatePhone(String phoneNumber) {
+        String processedNumber = phoneNumber.trim();
+        if (!processedNumber.startsWith("+")) {
+            processedNumber = "+251" + processedNumber.replaceAll("[^0-9]", "");
+        }
+
+        if (processedNumber.length() == 13 && processedNumber.startsWith("+251")) {
+            phoneField.setStyle("-fx-border-color: green;");
+            phoneValidationCircle.setFill(Color.GREEN);
+            phoneValidationIndicator.setVisible(true);
+        } else {
+            phoneField.setStyle("-fx-border-color: red;");
+            phoneValidationCircle.setFill(Color.RED);
+            phoneValidationIndicator.setVisible(true);
+        }
     }
 
     private void setupPasswordVisibilityToggle() {
@@ -83,8 +113,14 @@ public class RegisterController {
             return;
         }
 
-        if (!phone.isEmpty() && !phone.startsWith("+251")) {
-            phone = "+251" + phone;
+        if (!phone.isEmpty()) {
+            if (!phone.startsWith("+")) {
+                phone = "+251" + phone.replaceAll("[^0-9]", "");
+            }
+            if (phone.length() != 13) {
+                showError("Invalid phone number. It must be 9 digits long.");
+                return;
+            }
         }
 
         User user = new User();
