@@ -5,6 +5,10 @@ import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,12 +21,15 @@ public class RegisterController {
     @FXML private TextField passwordFieldVisible;
     @FXML private CheckBox showPasswordCheckbox;
     @FXML private TextField phoneField;
+    @FXML private TextField emailField;
     @FXML private TextField employeeIdField;
     @FXML private ComboBox<String> roleComboBox;
     @FXML private ComboBox<String> sexComboBox;
     @FXML private ComboBox<String> shiftComboBox;
     @FXML private ComboBox<String> departmentComboBox;
     @FXML private Label errorLabel;
+    @FXML private HBox phoneValidationIndicator;
+    @FXML private Circle phoneValidationCircle;
 
     private UserDAO userDAO;
 
@@ -31,16 +38,37 @@ public class RegisterController {
         userDAO = new UserDAO();
         setupComboBoxes();
         setupPasswordVisibilityToggle();
+        setupPhoneFieldListener();
+    }
+
+    private void setupPhoneFieldListener() {
+        phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
+            validatePhone(newValue);
+        });
+    }
+
+    private void validatePhone(String phoneNumber) {
+        String processedNumber = phoneNumber.trim();
+        if (!processedNumber.startsWith("+")) {
+            processedNumber = "+251" + processedNumber.replaceAll("[^0-9]", "");
+        }
+
+        if (processedNumber.length() == 13 && processedNumber.startsWith("+251")) {
+            phoneField.setStyle("-fx-border-color: green;");
+            phoneValidationCircle.setFill(Color.GREEN);
+            phoneValidationIndicator.setVisible(true);
+        } else {
+            phoneField.setStyle("-fx-border-color: red;");
+            phoneValidationCircle.setFill(Color.RED);
+            phoneValidationIndicator.setVisible(true);
+        }
     }
 
     private void setupPasswordVisibilityToggle() {
-        // Bind the visibility of the two fields
         passwordFieldVisible.managedProperty().bind(showPasswordCheckbox.selectedProperty());
         passwordFieldVisible.visibleProperty().bind(showPasswordCheckbox.selectedProperty());
         passwordField.managedProperty().bind(showPasswordCheckbox.selectedProperty().not());
         passwordField.visibleProperty().bind(showPasswordCheckbox.selectedProperty().not());
-
-        // Bind the text content of the two fields together
         passwordFieldVisible.textProperty().bindBidirectional(passwordField.textProperty());
     }
 
@@ -69,37 +97,48 @@ public class RegisterController {
 
     @FXML
     private void handleRegister() {
-        // 1. Get text from fields
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
+        String email = emailField.getText().trim();
+        String phone = phoneField.getText().trim();
         String department = departmentComboBox.getValue();
-        
-        // Basic validation
-        if (username.isEmpty() || password.isEmpty()) {
-            showError("Username and Password are required.");
+
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            showError("Username, Password, and Email are required.");
             return;
         }
 
-        // 2. Create User object
+        if (!email.contains("@") || !email.contains(".")) {
+            showError("Please enter a valid email address.");
+            return;
+        }
+
+        if (!phone.isEmpty()) {
+            if (!phone.startsWith("+")) {
+                phone = "+251" + phone.replaceAll("[^0-9]", "");
+            }
+            if (phone.length() != 13) {
+                showError("Invalid phone number. It must be 9 digits long.");
+                return;
+            }
+        }
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
+        user.setEmail(email);
         user.setDepartment(department);
         
-        // Set other fields if available, handling potential nulls
         if (fullNameField != null) user.setFullName(fullNameField.getText().trim());
-        if (phoneField != null) user.setPhoneNumber(phoneField.getText().trim());
+        if (phoneField != null) user.setPhoneNumber(phone);
         if (employeeIdField != null) user.setEmployeeId(employeeIdField.getText().trim());
         if (roleComboBox != null) user.setRole(roleComboBox.getValue());
         if (sexComboBox != null) user.setSex(sexComboBox.getValue());
         if (shiftComboBox != null) user.setShift(shiftComboBox.getValue());
         
-        // Set default active status
         user.setActive(true);
 
-        // 3. Save to database
         if (userDAO.createUser(user)) {
-            // 4. Show success and redirect
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Registration Successful");
             alert.setHeaderText(null);
@@ -108,7 +147,7 @@ public class RegisterController {
 
             handleBackToLogin();
         } else {
-            showError("Registration failed. Username might already exist.");
+            showError("Registration failed. Username or Email might already exist.");
         }
     }
 
@@ -121,9 +160,9 @@ public class RegisterController {
         if (errorLabel != null) {
             errorLabel.setText(message);
             errorLabel.setVisible(true);
-            errorLabel.setStyle("-fx-text-fill: red; -fx-background-color: #fee2e2; -fx-padding: 10; -fx-background-radius: 6;");
+            errorLabel.getStyleClass().remove("status-success");
+            errorLabel.getStyleClass().add("status-failed");
         } else {
-            // Fallback if label is missing
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(message);
             alert.show();

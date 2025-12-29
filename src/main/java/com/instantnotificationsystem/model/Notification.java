@@ -10,7 +10,6 @@ public class Notification {
     private String message;
     private boolean seen;
     private LocalDateTime sentAt; // Represents created_at
-    private LocalDateTime scheduledAt; // New field for scheduled delivery
     private List<String> channels = new ArrayList<>();
     private int senderId;
     private String notificationType;
@@ -58,14 +57,6 @@ public class Notification {
 
     public void setSentAt(LocalDateTime sentAt) {
         this.sentAt = sentAt;
-    }
-
-    public LocalDateTime getScheduledAt() {
-        return scheduledAt;
-    }
-
-    public void setScheduledAt(LocalDateTime scheduledAt) {
-        this.scheduledAt = scheduledAt;
     }
 
     public List<String> getChannels() {

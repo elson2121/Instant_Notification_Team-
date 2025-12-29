@@ -15,7 +15,7 @@ public class NotificationDAO {
         if (notification.getSenderId() <= 0) {
             throw new IllegalStateException("Sender ID is invalid. A real user must be logged in.");
         }
-        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id, scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -28,12 +28,6 @@ public class NotificationDAO {
             pstmt.setBoolean(4, sendSms);
             pstmt.setString(5, notification.getNotificationType());
             pstmt.setInt(6, notification.getSenderId());
-            
-            if (notification.getScheduledAt() != null) {
-                pstmt.setTimestamp(7, Timestamp.valueOf(notification.getScheduledAt()));
-            } else {
-                pstmt.setNull(7, Types.TIMESTAMP);
-            }
             
             if (pstmt.executeUpdate() > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
@@ -81,10 +75,6 @@ public class NotificationDAO {
                 Timestamp timestamp = rs.getTimestamp("created_at");
                 if (timestamp != null) {
                     notification.setSentAt(timestamp.toLocalDateTime());
-                }
-                Timestamp scheduledTimestamp = rs.getTimestamp("scheduled_at");
-                if (scheduledTimestamp != null) {
-                    notification.setScheduledAt(scheduledTimestamp.toLocalDateTime());
                 }
                 notification.setSeenCount(rs.getInt("seen_count"));
                 notification.setTotalRecipients(rs.getInt("total_recipients"));
@@ -210,7 +200,7 @@ public class NotificationDAO {
                      "FROM notifications n " +
                      "JOIN user_notifications un ON n.id = un.notification_id " +
                      "JOIN users u ON u.id = un.user_id " +
-                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = ? AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW()) " +
+                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = ? " +
                      "ORDER BY n.created_at DESC";
         
         try (Connection conn = DBConnection.getConnection();
@@ -275,7 +265,7 @@ public class NotificationDAO {
         String sql = "SELECT COUNT(*) FROM user_notifications un " +
                      "JOIN notifications n ON un.notification_id = n.id " +
                      "JOIN users u ON u.id = un.user_id " +
-                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = FALSE AND (n.scheduled_at IS NULL OR n.scheduled_at <= NOW())";
+                     "WHERE un.user_id = ? AND u.is_active = TRUE AND un.seen = FALSE";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
