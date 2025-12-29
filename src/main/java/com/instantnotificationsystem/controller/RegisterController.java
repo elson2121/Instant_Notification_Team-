@@ -84,7 +84,7 @@ public class RegisterController {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
-        user.setDepartmentName(department);
+        user.setDepartment(department);
         
         // Set other fields if available, handling potential nulls
         if (fullNameField != null) user.setFullName(fullNameField.getText().trim());

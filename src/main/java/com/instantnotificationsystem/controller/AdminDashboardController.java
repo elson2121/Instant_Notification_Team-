@@ -354,7 +354,7 @@ public class AdminDashboardController {
             sexCombo.getSelectionModel().selectFirst();
         }
         if (shiftCombo != null) {
-            shiftCombo.setItems(FXCollections.observableArrayList("All Shifts", "Morning", "Night"));
+            shiftCombo.setItems(FXCollections.observableArrayList("All Shifts", "Day", "Night"));
             shiftCombo.getSelectionModel().selectFirst();
         }
         if (scheduleTime != null) {
@@ -381,7 +381,7 @@ public class AdminDashboardController {
         TableColumn<User, String> nameCol = new TableColumn<>("Full Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         TableColumn<User, String> deptCol = new TableColumn<>("Department");
-        deptCol.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
+        deptCol.setCellValueFactory(new PropertyValueFactory<>("department"));
         usersTable.getColumns().addAll(nameCol, deptCol);
 
         List<User> users;

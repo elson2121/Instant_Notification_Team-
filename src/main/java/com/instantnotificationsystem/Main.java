@@ -46,12 +46,18 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setTitle(title);
 
+            // Reset minimum dimensions to allow smaller screens (like Login)
+            primaryStage.setMinWidth(0);
+            primaryStage.setMinHeight(0);
+
+            // Stage Refresh: Reset boundaries
+            primaryStage.sizeToScene();
+            primaryStage.centerOnScreen();
+
             if (maximized) {
                 primaryStage.setMaximized(true);
             } else {
                 primaryStage.setMaximized(false);
-                primaryStage.sizeToScene();
-                primaryStage.centerOnScreen();
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error loading FXML: " + fxmlPath, e);

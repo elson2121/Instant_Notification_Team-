@@ -20,6 +20,11 @@ public class SceneSwitcher {
         scene.getStylesheets().add(SceneSwitcher.class.getResource("/style.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("User Dashboard");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        stage.sizeToScene();
+        stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 
@@ -32,6 +37,11 @@ public class SceneSwitcher {
         scene.getStylesheets().add(SceneSwitcher.class.getResource("/style.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Admin Dashboard");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        stage.sizeToScene();
+        stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 }

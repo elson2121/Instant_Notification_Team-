@@ -132,7 +132,7 @@ public class LoginController {
         newUser.setRole(regRoleComboBox.getValue());
         newUser.setSex(regSexComboBox.getValue());
         newUser.setShift(regShiftComboBox.getValue());
-        newUser.setDepartmentName(regDepartmentComboBox.getValue());
+        newUser.setDepartment(regDepartmentComboBox.getValue());
         newUser.setActive(true); // New users are active by default
 
         try {

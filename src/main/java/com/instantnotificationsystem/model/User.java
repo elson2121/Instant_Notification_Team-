@@ -85,11 +85,11 @@ public class User {
         this.shift = shift;
     }
 
-    public String getDepartmentName() {
+    public String getDepartment() {
         return departmentName;
     }
 
-    public void setDepartmentName(String departmentName) {
+    public void setDepartment(String departmentName) {
         this.departmentName = departmentName;
     }
 

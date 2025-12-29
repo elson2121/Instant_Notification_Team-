@@ -56,7 +56,7 @@ public class UserManagementController {
         usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         sexCol.setCellValueFactory(new PropertyValueFactory<>("sex"));
-        deptCol.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
+        deptCol.setCellValueFactory(new PropertyValueFactory<>("department"));
 
         // Visual Feedback for Blocked Users
         fullNameCol.setCellFactory(column -> new TableCell<>() {
@@ -186,7 +186,7 @@ public class UserManagementController {
             // ComboBox Filters
             boolean matchesGender = "All".equals(gender) || (user.getSex() != null && user.getSex().equalsIgnoreCase(gender));
             boolean matchesShift = "All".equals(shift) || (user.getShift() != null && user.getShift().equalsIgnoreCase(shift));
-            boolean matchesDept = "All".equals(dept) || (user.getDepartmentName() != null && user.getDepartmentName().equalsIgnoreCase(dept));
+            boolean matchesDept = "All".equals(dept) || (user.getDepartment() != null && user.getDepartment().equalsIgnoreCase(dept));
 
             return matchesSearch && matchesGender && matchesShift && matchesDept;
         });
