@@ -273,35 +273,6 @@ public class AdminDashboardController {
         if (smsCheckbox.isSelected()) channels.add("SMS");
         newNotification.setChannels(channels);
 
-        // Scheduling Logic
-        if (scheduleDate.getValue() != null) {
-            LocalDate selectedDate = scheduleDate.getValue();
-            
-            // Validation: Check if date is in the past
-            if (selectedDate.isBefore(LocalDate.now())) {
-                new Alert(Alert.AlertType.ERROR, "Cannot schedule notifications for past dates.").showAndWait();
-                return;
-            }
-            
-            int hoursToAdd = scheduleTime.getValue() != null ? scheduleTime.getValue() : 0;
-            
-            if (hoursToAdd == 0) {
-                // Send immediately
-                newNotification.setScheduledAt(null);
-            } else {
-                // Calculate scheduled time
-                LocalDateTime scheduledDateTime;
-                if (selectedDate.equals(LocalDate.now())) {
-                    // If today, add hours to current time
-                    scheduledDateTime = LocalDateTime.now().plusHours(hoursToAdd);
-                } else {
-                    // If future date, start from beginning of that day + hours
-                    scheduledDateTime = selectedDate.atStartOfDay().plusHours(hoursToAdd);
-                }
-                newNotification.setScheduledAt(scheduledDateTime);
-            }
-        }
-
         int notificationId = notificationDAO.createNotification(newNotification);
 
         if (notificationId > 0) {

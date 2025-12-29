@@ -100,7 +100,6 @@ public class UserDAO {
     }
 
     public boolean createUser(User user) {
-        // Validation for required fields
         if (user.getDepartment() == null || user.getDepartment().trim().isEmpty()) {
             throw new IllegalArgumentException("Department is required.");
         }
@@ -111,21 +110,22 @@ public class UserDAO {
             throw new IllegalArgumentException("Role is required.");
         }
 
-        String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name, is_active) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (full_name, username, password, email, phone_number, employee_id, role, sex, shift, department_name, is_active) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, user.getFullName());
             pstmt.setString(2, user.getUsername());
             pstmt.setString(3, user.getPassword());
-            pstmt.setString(4, user.getPhoneNumber());
-            pstmt.setString(5, user.getEmployeeId());
-            pstmt.setString(6, user.getRole()); // Role is already a String
-            pstmt.setString(7, user.getSex());
-            pstmt.setString(8, user.getShift());
-            pstmt.setString(9, user.getDepartment()); // Department name is stored as String
-            pstmt.setBoolean(10, user.isActive());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getPhoneNumber());
+            pstmt.setString(6, user.getEmployeeId());
+            pstmt.setString(7, user.getRole());
+            pstmt.setString(8, user.getSex());
+            pstmt.setString(9, user.getShift());
+            pstmt.setString(10, user.getDepartment());
+            pstmt.setBoolean(11, user.isActive());
             
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -155,17 +155,17 @@ public class UserDAO {
         user.setFullName(rs.getString("full_name"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
+        user.setEmail(rs.getString("email"));
         user.setPhoneNumber(rs.getString("phone_number"));
         user.setEmployeeId(rs.getString("employee_id"));
         user.setRole(rs.getString("role"));
         user.setSex(rs.getString("sex"));
         user.setShift(rs.getString("shift"));
         user.setDepartment(rs.getString("department_name"));
-        // Check if is_active column exists, default to true if not found or null
         try {
             user.setActive(rs.getBoolean("is_active"));
         } catch (SQLException e) {
-            user.setActive(true); // Default to active if column missing
+            user.setActive(true);
         }
         return user;
     }

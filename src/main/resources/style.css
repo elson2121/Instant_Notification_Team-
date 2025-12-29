@@ -254,3 +254,7 @@
 .delete-icon:hover {
     -fx-fill: red;
 }
+
+.green-border {
+    -fx-border-color: -fx-green-deep;
+}
