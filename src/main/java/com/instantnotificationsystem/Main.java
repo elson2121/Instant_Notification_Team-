@@ -7,40 +7,54 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main extends Application {
 
     private static Stage primaryStage;
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // Initialize Database
         DBConnection.initializeTables();
 
         primaryStage = stage;
 
         // Load login screen
-        loadFXML("/view/login.fxml", "Instant Notification System - Login");
+        switchScene("/view/login.fxml", "Instant Notification System - Login", false);
 
-        // Set stage properties
-        primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(700);
         primaryStage.show();
     }
 
     // Static method to switch scenes from any controller
-    public static void loadFXML(String fxmlPath, String title) {
+    public static void switchScene(String fxmlPath, String title, boolean maximized) {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(fxmlPath));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource("/resources/style.css").toExternalForm());
+            URL css = Main.class.getResource("/style.css");
+            if (css != null) {
+                scene.getStylesheets().add(css.toExternalForm());
+            } else {
+                LOGGER.log(Level.WARNING, "Could not find stylesheet /style.css");
+            }
 
             primaryStage.setScene(scene);
             primaryStage.setTitle(title);
+
+            if (maximized) {
+                primaryStage.setMaximized(true);
+            } else {
+                primaryStage.setMaximized(false);
+                primaryStage.sizeToScene();
+                primaryStage.centerOnScreen();
+            }
         } catch (Exception e) {
-            System.err.println("Error loading FXML: " + fxmlPath);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error loading FXML: " + fxmlPath, e);
         }
     }
 

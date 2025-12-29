@@ -10,14 +10,14 @@
 }
 
 .sidebar-button:hover {
-    -fx-background-color: #eff6ff;
-    -fx-text-fill: #2D62ED;
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
 }
 
 .sidebar-button:focused, .sidebar-button-active {
-    -fx-background-color: #eff6ff;
-    -fx-text-fill: #2D62ED;
-    -fx-border-color: #2D62ED;
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
+    -fx-border-color: #1a5c2a;
 }
 
 .sidebar-button-logout {

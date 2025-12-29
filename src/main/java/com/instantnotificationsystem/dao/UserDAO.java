@@ -44,6 +44,23 @@ public class UserDAO {
         return null;
     }
 
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -61,8 +78,19 @@ public class UserDAO {
     }
 
     public boolean createUser(User user) {
-        String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Validation for required fields
+        if (user.getDepartmentName() == null || user.getDepartmentName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Department is required.");
+        }
+        if (user.getShift() == null || user.getShift().trim().isEmpty()) {
+            throw new IllegalArgumentException("Shift is required.");
+        }
+        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+            throw new IllegalArgumentException("Role is required.");
+        }
+
+        String sql = "INSERT INTO users (full_name, username, password, phone_number, employee_id, role, sex, shift, department_name, is_active) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -71,10 +99,11 @@ public class UserDAO {
             pstmt.setString(3, user.getPassword());
             pstmt.setString(4, user.getPhoneNumber());
             pstmt.setString(5, user.getEmployeeId());
-            pstmt.setString(6, user.getRole());
+            pstmt.setString(6, user.getRole()); // Role is already a String
             pstmt.setString(7, user.getSex());
             pstmt.setString(8, user.getShift());
-            pstmt.setString(9, user.getDepartmentName());
+            pstmt.setString(9, user.getDepartmentName()); // Department name is stored as String
+            pstmt.setBoolean(10, user.isActive());
             
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -110,6 +139,12 @@ public class UserDAO {
         user.setSex(rs.getString("sex"));
         user.setShift(rs.getString("shift"));
         user.setDepartmentName(rs.getString("department_name"));
+        // Check if is_active column exists, default to true if not found or null
+        try {
+            user.setActive(rs.getBoolean("is_active"));
+        } catch (SQLException e) {
+            user.setActive(true); // Default to active if column missing
+        }
         return user;
     }
 
@@ -170,5 +205,18 @@ public class UserDAO {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public boolean updateUserStatus(int userId, boolean isActive) {
+        String sql = "UPDATE users SET is_active = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, isActive);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

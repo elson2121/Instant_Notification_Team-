@@ -1,12 +1,12 @@
 package com.instantnotificationsystem.controller;
 
+import com.instantnotificationsystem.Main;
 import com.instantnotificationsystem.dao.NotificationDAO;
 import com.instantnotificationsystem.dao.UserDAO;
 import com.instantnotificationsystem.model.Notification;
 import com.instantnotificationsystem.model.User;
 import com.instantnotificationsystem.model.UserNotificationDetail;
 import com.instantnotificationsystem.service.SessionManager;
-import com.instantnotificationsystem.utils.SceneSwitcher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -56,6 +57,8 @@ public class AdminDashboardController {
 
     private UserDAO userDAO;
     private NotificationDAO notificationDAO;
+    private int currentAdminId;
+    private String currentAdminName;
 
     @FXML
     public void initialize() {
@@ -69,6 +72,12 @@ public class AdminDashboardController {
 
         setupSidebarButtons();
         loadDashboardContent();
+    }
+
+    public void initData(String fullName, int userId) {
+        this.currentAdminName = fullName;
+        this.currentAdminId = userId;
+        welcomeLabel.setText("Welcome, " + fullName + "!");
     }
 
     private void setupSidebarButtons() {
@@ -86,21 +95,16 @@ public class AdminDashboardController {
         });
         btnLogout.setOnAction(e -> {
             SessionManager.clear();
-            try {
-                Stage stage = (Stage) btnLogout.getScene().getWindow();
-                SceneSwitcher.switchScene(stage, "/view/login.fxml");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            Main.switchScene("/view/login.fxml", "Instant Notification System - Login", false);
         });
         setActiveButton(btnDashboard);
     }
 
     private void setActiveButton(Button activeButton) {
-        btnDashboard.getStyleClass().remove("active-sidebar-button");
-        btnUsers.getStyleClass().remove("active-sidebar-button");
-        btnNotifications.getStyleClass().remove("active-sidebar-button");
-        activeButton.getStyleClass().add("active-sidebar-button");
+        btnDashboard.getStyleClass().remove("sidebar-button-active");
+        btnUsers.getStyleClass().remove("sidebar-button-active");
+        btnNotifications.getStyleClass().remove("sidebar-button-active");
+        activeButton.getStyleClass().add("sidebar-button-active");
     }
 
     private void showContent(Node content) {
@@ -118,11 +122,13 @@ public class AdminDashboardController {
 
         statsPane.getChildren().clear();
 
-        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "card-green", "👥");
-        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "card-blue", "✉️");
-        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "card-yellow", "🚚");
-        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "card-teal", "👀");
-        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "card-red", "🙈");
+        StackPane usersCard = addStatCard(statsPane, "Total Users", String.valueOf(userDAO.getTotalUserCount()), "👥", false);
+        StackPane sentCard = addStatCard(statsPane, "Notifications Sent", String.valueOf(notificationDAO.getSentCount()), "✉️", false);
+        StackPane deliveredCard = addStatCard(statsPane, "Total Delivered", String.valueOf(notificationDAO.getCountByDeliveryStatus("Delivered")), "🚚", false);
+        StackPane seenCard = addStatCard(statsPane, "Total Seen", String.valueOf(notificationDAO.getCountBySeenStatus(true)), "👀", false);
+        StackPane unseenCard = addStatCard(statsPane, "Total Unseen", String.valueOf(notificationDAO.getCountBySeenStatus(false)), "🙈", false);
+        StackPane userManagementCard = addStatCard(statsPane, "User Management", "Manage", "⚙️", true);
+
 
         usersCard.setOnMouseClicked(e -> {
             setActiveButton(btnUsers);
@@ -144,13 +150,21 @@ public class AdminDashboardController {
             setActiveButton(btnNotifications);
             loadNotificationsByStatus("Unseen");
         });
+        userManagementCard.setOnMouseClicked(e -> {
+            // Navigate to user management view
+            loadUserManagementContent();
+        });
 
         populateRecentNotificationsTable();
     }
 
-    private StackPane addStatCard(Pane parent, String title, String value, String styleClass, String icon) {
+    private StackPane addStatCard(Pane parent, String title, String value, String icon, boolean isManageCard) {
         StackPane card = new StackPane();
-        card.getStyleClass().addAll("stat-card", styleClass);
+        if (isManageCard) {
+            card.getStyleClass().add("manage-card");
+        } else {
+            card.getStyleClass().add("stat-card");
+        }
         card.setCursor(Cursor.HAND);
 
         Label iconLabel = new Label(icon);
@@ -265,10 +279,31 @@ public class AdminDashboardController {
 
         // Scheduling Logic
         if (scheduleDate.getValue() != null) {
-            LocalDate date = scheduleDate.getValue();
-            int hour = scheduleTime.getValue() != null ? scheduleTime.getValue() : 0;
-            LocalDateTime scheduledDateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
-            newNotification.setScheduledAt(scheduledDateTime);
+            LocalDate selectedDate = scheduleDate.getValue();
+            
+            // Validation: Check if date is in the past
+            if (selectedDate.isBefore(LocalDate.now())) {
+                new Alert(Alert.AlertType.ERROR, "Cannot schedule notifications for past dates.").showAndWait();
+                return;
+            }
+            
+            int hoursToAdd = scheduleTime.getValue() != null ? scheduleTime.getValue() : 0;
+            
+            if (hoursToAdd == 0) {
+                // Send immediately
+                newNotification.setScheduledAt(null);
+            } else {
+                // Calculate scheduled time
+                LocalDateTime scheduledDateTime;
+                if (selectedDate.equals(LocalDate.now())) {
+                    // If today, add hours to current time
+                    scheduledDateTime = LocalDateTime.now().plusHours(hoursToAdd);
+                } else {
+                    // If future date, start from beginning of that day + hours
+                    scheduledDateTime = selectedDate.atStartOfDay().plusHours(hoursToAdd);
+                }
+                newNotification.setScheduledAt(scheduledDateTime);
+            }
         }
 
         int notificationId = notificationDAO.createNotification(newNotification);
@@ -294,7 +329,7 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin_notifications.fxml"));
             loader.setController(this);
-            VBox notificationView = loader.load();
+            ScrollPane notificationView = loader.load();
             
             // Initialize ComboBoxes and Spinner after loading FXML
             initializeFilterControls();
@@ -323,8 +358,21 @@ public class AdminDashboardController {
             shiftCombo.getSelectionModel().selectFirst();
         }
         if (scheduleTime != null) {
-            SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12);
+            // Changed to 0-48 hours range for "Post After (Hours)"
+            SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 48, 0);
             scheduleTime.setValueFactory(valueFactory);
+        }
+        if (scheduleDate != null) {
+            scheduleDate.setValue(LocalDate.now());
+            
+            // Disable past dates
+            scheduleDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isBefore(LocalDate.now()));
+                }
+            });
         }
     }
 
@@ -424,6 +472,18 @@ public class AdminDashboardController {
 
         VBox contentView = createContentViewWithBack(title, table);
         showContent(contentView);
+    }
+
+    private void loadUserManagementContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user_management.fxml"));
+            VBox userManagementView = loader.load();
+            
+            VBox contentView = createContentViewWithBack("User Management", userManagementView);
+            showContent(contentView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private VBox createContentViewWithBack(String title, Node content) {

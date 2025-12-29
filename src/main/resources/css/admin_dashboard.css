@@ -21,30 +21,24 @@
 }
 
 .sidebar-button:hover {
-    -fx-background-color: #F3F4F6;
-    -fx-text-fill: #1D4ED8;
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
 }
 
 .active-sidebar-button {
-    -fx-background-color: #E0E7FF;
-    -fx-text-fill: #1D4ED8;
-    -fx-border-color: #1D4ED8;
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
+    -fx-border-color: #1a5c2a;
 }
 
 .stat-card {
     -fx-background-radius: 12;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-background-color: linear-gradient(to right, #2a8c4a, #1a5c2a);
 }
 
-.card-green { -fx-background-color: #10B981; }
-.card-blue { -fx-background-color: #3B82F6; }
-.card-yellow { -fx-background-color: #F59E0B; }
-.card-teal { -fx-background-color: #14B8A6; }
-.card-red { -fx-background-color: #EF4444; }
-
 .card-icon {
-    -fx-font-size: 32px;
-    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-fill: white;
 }
 
 .table-view .column-header-background {
@@ -69,7 +63,7 @@
     -fx-font-weight: bold;
 }
 .status-sent {
-    -fx-text-fill: #007bff; /* Bold Blue */
+    -fx-text-fill: #28a745; /* Bold Green */
     -fx-font-weight: bold;
 }
 .status-failed {

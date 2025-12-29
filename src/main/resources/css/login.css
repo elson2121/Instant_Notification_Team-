@@ -3,7 +3,7 @@
 }
 
 .glass-button {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-color: rgba(20, 82, 45, 0.2);
     -fx-text-fill: white;
     -fx-font-size: 1.1em;
     -fx-font-weight: bold;
@@ -14,7 +14,7 @@
 }
 
 .glass-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-color: rgba(20, 82, 45, 0.3);
 }
 
 .action-pane-container {
@@ -24,7 +24,7 @@
 }
 
 .primary-button {
-    -fx-background-color: linear-gradient(to right, #4A00E0, #8E2DE2);
+    -fx-background-color: linear-gradient(to right, #2a8c4a, #1a5c2a);
     -fx-text-fill: white;
     -fx-font-size: 1.2em;
     -fx-font-weight: bold;
@@ -45,5 +45,5 @@
 }
 
 .text-field:focused, .password-field:focused {
-    -fx-border-color: #4A00E0;
+    -fx-border-color: #1a5c2a;
 }

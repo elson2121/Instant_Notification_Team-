@@ -67,10 +67,17 @@ public class LoginController {
     }
 
     private void setupComboBoxes() {
-        regRoleComboBox.getItems().addAll("User", "Admin");
-        regSexComboBox.getItems().addAll("Male", "Female", "Other");
-        regShiftComboBox.getItems().addAll("Day Shift", "Night Shift", "Flexible");
-        regDepartmentComboBox.getItems().addAll("IT", "HR", "Finance", "Operations", "Sales");
+        regRoleComboBox.getItems().clear();
+        regRoleComboBox.getItems().addAll("Manager", "Employee", "Intern");
+        
+        regSexComboBox.getItems().clear();
+        regSexComboBox.getItems().addAll("Male", "Female");
+        
+        regShiftComboBox.getItems().clear();
+        regShiftComboBox.getItems().addAll("Day", "Night");
+        
+        regDepartmentComboBox.getItems().clear();
+        regDepartmentComboBox.getItems().addAll("IT", "HR", "Sales", "Marketing");
     }
 
     @FXML
@@ -98,6 +105,10 @@ public class LoginController {
         User user = userDAO.getUserByUsernameAndPassword(username, password);
 
         if (user != null) {
+            if (!user.isActive()) {
+                showError("Your account has been blocked. Please contact the administrator.", true);
+                return;
+            }
             SessionManager.setUser(user);
             loadDashboard(user);
         } else {
@@ -112,26 +123,6 @@ public class LoginController {
             return;
         }
 
-        String selectedShift = regShiftComboBox.getValue();
-        String finalShiftValue;
-
-        switch (selectedShift) {
-            case "Day Shift":
-                finalShiftValue = "Day";
-                break;
-            case "Night Shift":
-                finalShiftValue = "Night";
-                break;
-            case "Flexible":
-                finalShiftValue = "Flexible";
-                break;
-            default:
-                showError("Invalid shift selected. Please choose from the list.", false);
-                return;
-        }
-
-        System.out.println("Final Shift Value: " + finalShiftValue);
-
         User newUser = new User();
         newUser.setFullName(regFullNameField.getText());
         newUser.setUsername(regUsernameField.getText());
@@ -140,8 +131,9 @@ public class LoginController {
         newUser.setEmployeeId(regEmployeeIdField.getText());
         newUser.setRole(regRoleComboBox.getValue());
         newUser.setSex(regSexComboBox.getValue());
-        newUser.setShift(finalShiftValue);
+        newUser.setShift(regShiftComboBox.getValue());
         newUser.setDepartmentName(regDepartmentComboBox.getValue());
+        newUser.setActive(true); // New users are active by default
 
         try {
             if (userDAO.createUser(newUser)) {

@@ -5,70 +5,68 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.instantnotificationsystem.controller.UserDashboardController"
-            prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../css/user_dashboard.css"
-            style="-fx-background-color: #f9fafb;">
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.instantnotificationsystem.controller.UserDashboardController" stylesheets="@../css/user.css" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <BorderPane style="-fx-background-color: #f9fafb;" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
-    <!-- Top Header with Notification Bell -->
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: white; -fx-padding: 15 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-            <Label text="INSTANT NOTIFICATION SYSTEM" style="-fx-text-fill: #111827; -fx-font-weight: bold; -fx-font-size: 18px;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <HBox alignment="CENTER" spacing="25">
-                <StackPane fx:id="notificationBell" onMouseClicked="#handleBellClick" style="-fx-cursor: hand;">
-                    <Button text="🔔" style="-fx-font-size: 20px; -fx-background-color: transparent;"/>
-                    <Label fx:id="notificationBadge" text="0" visible="false"
-                           style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 1 5; -fx-background-radius: 10;"
-                           StackPane.alignment="TOP_RIGHT" translateX="10" translateY="-5"/>
-                </StackPane>
+        <!-- Top Header with Notification Bell -->
+        <top>
+            <AnchorPane>
+                <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-background" style="-fx-padding: 15 30;" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                    <Label text="INSTANT NOTIFICATION SYSTEM" styleClass="header-text" style="-fx-font-size: 18px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="25" AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="30.0">
+                    <StackPane fx:id="notificationBell" onMouseClicked="#handleBellClick" style="-fx-cursor: hand;">
+                        <Button text="🔔" style="-fx-font-size: 20px; -fx-background-color: transparent;"/>
+                        <Label fx:id="notificationBadge" text="0" visible="false" styleClass="notification-bell-badge"
+                               StackPane.alignment="TOP_RIGHT" translateX="10" translateY="-5"/>
+                    </StackPane>
 
-                <VBox alignment="CENTER_RIGHT">
-                    <Label fx:id="welcomeLabel" text="Welcome" style="-fx-text-fill: #111827; -fx-font-weight: bold;"/>
-                </VBox>
-            </HBox>
-        </HBox>
-    </top>
-
-    <!-- Left Sidebar -->
-    <left>
-        <VBox spacing="10" prefWidth="250" style="-fx-background-color: white; -fx-padding: 30 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);">
-            <Button fx:id="btnDashboard" text="📊  Dashboard" onAction="#handleDashboard" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
-            <Button fx:id="btnNotifications" text="🔔  Notifications" onAction="#handleNotifications" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
-            <Button fx:id="btnMyNotifications" text="📩  My Notifications" onAction="#handleMyNotifications" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
-
-            <Region VBox.vgrow="ALWAYS"/>
-            <Button fx:id="btnLogout" text="🚪  Logout" onAction="#handleLogout" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button-logout"/>
-        </VBox>
-    </left>
-
-    <!-- Main Content -->
-    <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
-            <VBox spacing="25" style="-fx-padding: 30;">
-
-                <!-- Single Row: Expanded Notifications & Date Card -->
-                <HBox spacing="25">
-                    <!-- My Notifications Panel - EXPANDED with 20px radius -->
-                    <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-                        <Label text="My Notifications" style="-fx-text-fill: #111827; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="650" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
-                    </VBox>
-
-                    <!-- Date Card -->
-                    <VBox prefWidth="300" spacing="20">
-                        <!-- Today Card with EXACT #2D62ED and 20px radius -->
-                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: linear-gradient(to bottom, #2D62ED, #5A88FF); -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 5);">
-                            <Label text="TODAY" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
-                            <Label fx:id="dateLabel" text="Monday, Oct 23, 2024" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold; wrap-text: true; -fx-text-alignment: center;"/>
-                        </VBox>
+                    <VBox alignment="CENTER_RIGHT">
+                        <Label fx:id="welcomeLabel" text="Welcome" styleClass="header-text"/>
                     </VBox>
                 </HBox>
+            </AnchorPane>
+        </top>
 
+        <!-- Left Sidebar -->
+        <left>
+            <VBox spacing="10" prefWidth="250" minWidth="250" maxWidth="250" style="-fx-background-color: white; -fx-padding: 30 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);">
+                <Button fx:id="btnDashboard" text="📊  Dashboard" onAction="#handleDashboard" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+                <Button fx:id="btnNotifications" text="🔔  Notifications" onAction="#handleNotifications" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+                <Button fx:id="btnHistory" text="📩  History" onAction="#handleHistory" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+                <Button fx:id="btnLogout" text="🚪  Logout" onAction="#handleLogout" maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button-logout"/>
             </VBox>
-        </ScrollPane>
-    </center>
+        </left>
 
-</BorderPane>
+        <!-- Main Content -->
+        <center>
+            <ScrollPane fitToWidth="true" fitToHeight="true" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <VBox spacing="25" alignment="CENTER" style="-fx-padding: 30;">
+
+                    <!-- Single Row: Expanded Notifications & Date Card -->
+                    <HBox spacing="25">
+                        <!-- My Notifications Panel - EXPANDED with 20px radius -->
+                        <VBox HBox.hgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                            <Label text="Notifications" styleClass="header-text" style="-fx-font-size: 18px;"/>
+                            <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="650" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+                        </VBox>
+
+                        <!-- Date Card -->
+                        <VBox prefWidth="300" spacing="20">
+                            <!-- Today Card with EXACT #28a745 and 20px radius -->
+                            <VBox alignment="CENTER" spacing="5" style="-fx-background-color: linear-gradient(to bottom, #28a745, #218838); -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(40, 167, 69, 0.3), 10, 0, 0, 5);">
+                                <Label text="TODAY" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
+                                <Label fx:id="dateLabel" text="Monday, Oct 23, 2024" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold; wrap-text: true; -fx-text-alignment: center;"/>
+                            </VBox>
+                        </VBox>
+                    </HBox>
+
+                </VBox>
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+</AnchorPane>

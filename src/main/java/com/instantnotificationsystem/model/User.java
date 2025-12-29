@@ -11,6 +11,7 @@ public class User {
     private String sex;
     private String shift;
     private String departmentName;
+    private boolean isActive;
 
     public int getId() {
         return id;
@@ -90,5 +91,13 @@ public class User {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
