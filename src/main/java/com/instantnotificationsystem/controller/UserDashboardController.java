@@ -317,7 +317,8 @@ public class UserDashboardController {
         if (scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdown();
         }
-        Main.switchScene("/view/login.fxml", "Instant Notification System - Login", false);
+        // Use the new switchScene method with maximized=false for login
+        Main.switchScene("/view/login.fxml", "Instant Notification System - Login");
     }
 
     private void markAsSeen(int notificationId) {

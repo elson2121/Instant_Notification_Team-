@@ -32,14 +32,14 @@
 /* --- Form Fields --- */
 .combo-box {
     -fx-background-color: white;
-    -fx-border-color: #1a5c2a; /* Dark Green */
+    -fx-border-color: #2a8c4a; /* Dark Green */
     -fx-border-radius: 10;
     -fx-background-radius: 10;
 }
 
 .text-field, .password-field {
     -fx-background-color: white;
-    -fx-border-color: #1a5c2a; /* Dark Green */
+    -fx-border-color: #2a8c4a; /* Dark Green */
     -fx-border-radius: 10;
     -fx-background-radius: 10;
 }

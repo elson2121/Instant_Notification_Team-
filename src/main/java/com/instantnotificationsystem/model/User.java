@@ -5,15 +5,37 @@ public class User {
     private String fullName;
     private String username;
     private String password;
-    private String email;
-    private String phoneNumber;
-    private String employeeId;
     private String role;
+    private String department;
+    private String phoneNumber;
+    private String email;
     private String sex;
     private String shift;
-    private String departmentName;
     private boolean isActive;
+    private String employeeId; // Employee ID field added
 
+    // Constructors
+    public User() {
+    }
+
+    public User(int id, String fullName, String username, String password, String role,
+                String department, String phoneNumber, String email,
+                String sex, String shift, boolean isActive, String employeeId) {
+        this.id = id;
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.department = department;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.sex = sex;
+        this.shift = shift;
+        this.isActive = isActive;
+        this.employeeId = employeeId; // Employee ID initialized
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -46,12 +68,20 @@ public class User {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getRole() {
+        return role;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getPhoneNumber() {
@@ -62,20 +92,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getEmployeeId() {
-        return employeeId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSex() {
@@ -94,19 +116,34 @@ public class User {
         this.shift = shift;
     }
 
-    public String getDepartment() {
-        return departmentName;
-    }
-
-    public void setDepartment(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
     public boolean isActive() {
         return isActive;
     }
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
+                ", department='" + department + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isActive=" + isActive +
+                ", employeeId='" + employeeId + '\'' +
+                '}';
     }
 }

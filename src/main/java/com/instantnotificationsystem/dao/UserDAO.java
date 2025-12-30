@@ -13,7 +13,7 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, username);
             pstmt.setString(2, password);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -31,7 +31,7 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, username);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -44,11 +44,62 @@ public class UserDAO {
         return null;
     }
 
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isEmployeeIdExists(String employeeId) {
+        String sql = "SELECT COUNT(*) FROM users WHERE employee_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, employeeId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public User getUserById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -62,10 +113,10 @@ public class UserDAO {
     }
 
     public User getUserDetails(int userId) {
-        String sql = "SELECT department_name, role, sex, shift FROM users WHERE id = ?";
+        String sql = "SELECT department_name, role, sex, shift, email, phone_number, employee_id FROM users WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -74,6 +125,9 @@ public class UserDAO {
                     user.setRole(rs.getString("role"));
                     user.setSex(rs.getString("sex"));
                     user.setShift(rs.getString("shift"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhoneNumber(rs.getString("phone_number"));
+                    user.setEmployeeId(rs.getString("employee_id"));
                     return user;
                 }
             }
@@ -85,11 +139,11 @@ public class UserDAO {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users ORDER BY full_name";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            
+
             while (rs.next()) {
                 users.add(mapResultSetToUser(rs));
             }
@@ -99,7 +153,23 @@ public class UserDAO {
         return users;
     }
 
-    public boolean createUser(User user) {
+    public boolean insertUser(User user) {
+        // Check if email already exists
+        if (isEmailExists(user.getEmail())) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+
+        // Check if username already exists
+        if (getUserByUsername(user.getUsername()) != null) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        // Check if employee ID already exists
+        if (isEmployeeIdExists(user.getEmployeeId())) {
+            throw new IllegalArgumentException("Employee ID already registered");
+        }
+
+        // Validate required fields
         if (user.getDepartment() == null || user.getDepartment().trim().isEmpty()) {
             throw new IllegalArgumentException("Department is required.");
         }
@@ -109,26 +179,45 @@ public class UserDAO {
         if (user.getRole() == null || user.getRole().trim().isEmpty()) {
             throw new IllegalArgumentException("Role is required.");
         }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required.");
+        }
+        if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone number is required.");
+        }
+        if (user.getEmployeeId() == null || user.getEmployeeId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Employee ID is required.");
+        }
 
-        String sql = "INSERT INTO users (full_name, username, password, email, phone_number, employee_id, role, sex, shift, department_name, is_active) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // SQL INSERT query including email and employee_id columns
+        String sql = "INSERT INTO users (full_name, username, password, email, phone_number, role, sex, shift, department_name, is_active, employee_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             pstmt.setString(1, user.getFullName());
             pstmt.setString(2, user.getUsername());
-            pstmt.setString(3, user.getPassword());
+            pstmt.setString(3, user.getPassword()); // Note: Should be hashed in production!
             pstmt.setString(4, user.getEmail());
             pstmt.setString(5, user.getPhoneNumber());
-            pstmt.setString(6, user.getEmployeeId());
-            pstmt.setString(7, user.getRole());
-            pstmt.setString(8, user.getSex());
-            pstmt.setString(9, user.getShift());
-            pstmt.setString(10, user.getDepartment());
-            pstmt.setBoolean(11, user.isActive());
-            
+            pstmt.setString(6, user.getRole());
+            pstmt.setString(7, user.getSex());
+            pstmt.setString(8, user.getShift());
+            pstmt.setString(9, user.getDepartment());
+            pstmt.setBoolean(10, user.isActive());
+            pstmt.setString(11, user.getEmployeeId());
+
             int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setId(generatedKeys.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -157,11 +246,11 @@ public class UserDAO {
         user.setPassword(rs.getString("password"));
         user.setEmail(rs.getString("email"));
         user.setPhoneNumber(rs.getString("phone_number"));
-        user.setEmployeeId(rs.getString("employee_id"));
         user.setRole(rs.getString("role"));
         user.setSex(rs.getString("sex"));
         user.setShift(rs.getString("shift"));
         user.setDepartment(rs.getString("department_name"));
+        user.setEmployeeId(rs.getString("employee_id"));
         try {
             user.setActive(rs.getBoolean("is_active"));
         } catch (SQLException e) {
@@ -173,8 +262,8 @@ public class UserDAO {
     public List<User> getUsersByNotificationSeenStatus(boolean seen) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT DISTINCT u.* FROM users u " +
-                     "JOIN user_notifications un ON u.id = un.user_id " +
-                     "WHERE un.seen = ?";
+                "JOIN user_notifications un ON u.id = un.user_id " +
+                "WHERE un.seen = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, seen);
@@ -213,11 +302,11 @@ public class UserDAO {
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
-            
+
             for (int i = 0; i < params.size(); i++) {
                 pstmt.setObject(i + 1, params.get(i));
             }
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     users.add(mapResultSetToUser(rs));
@@ -240,5 +329,22 @@ public class UserDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<User> getUsersByEmailDomain(String domain) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE email LIKE ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%@" + domain);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 }

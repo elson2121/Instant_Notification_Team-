@@ -15,7 +15,7 @@ public class AuthService {
         if (userDAO.getUserByUsername(user.getUsername()) != null) {
             return false; // Username already exists
         }
-        return userDAO.createUser(user);
+        return userDAO.insertUser(user);
     }
 
     public User authenticate(String username, String password) {
