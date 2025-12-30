@@ -99,7 +99,8 @@ public class AdminDashboardController {
         });
         btnLogout.setOnAction(e -> {
             SessionManager.clear();
-            Main.switchScene("/view/login.fxml", "Instant Notification System - Login", false);
+            // Use the new switchScene method with maximized=false for login
+            Main.switchScene("/view/login.fxml", "Instant Notification System - Login");
         });
         setActiveButton(btnDashboard);
     }
@@ -524,6 +525,12 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user_management.fxml"));
             VBox userManagementView = loader.load();
+            
+            // Responsive Roots
+            if (userManagementView instanceof Region) {
+                ((Region) userManagementView).setPrefWidth(Region.USE_COMPUTED_SIZE);
+                ((Region) userManagementView).setPrefHeight(Region.USE_COMPUTED_SIZE);
+            }
             
             VBox contentView = createContentViewWithBack("User Management", userManagementView);
             showContent(contentView);
