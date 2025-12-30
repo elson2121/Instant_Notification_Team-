@@ -276,7 +276,7 @@ public class RegisterController {
         try {
             // Insert into database
             if (userDAO.insertUser(user)) {
-                showSuccessAndRedirect(email, formattedPhone);
+                showSuccessAndRedirect(username);
             } else {
                 showError("Registration failed. Please try again.");
             }
@@ -416,21 +416,15 @@ public class RegisterController {
         errorLabel.setStyle("-fx-background-color: #fee2e2; -fx-padding: 10; -fx-background-radius: 6;");
     }
 
-    private void showSuccessAndRedirect(String email, String phone) {
+    private void showSuccessAndRedirect(String username) {
         // Create custom success dialog
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Registration Successful");
         alert.setHeaderText("🎉 Account Created Successfully!");
 
         String content = String.format(
-                "Your account has been registered successfully!\n\n" +
-                        "Account Details:\n" +
-                        "• Email: %s\n" +
-                        "• Phone: %s\n" +
-                        "• Infobip notifications will be sent to your email\n" +
-                        "• Phone is formatted for Infobip API compatibility\n\n" +
-                        "Click OK to proceed to login.",
-                email, phone
+                "Account created for %s. SMS and Email notifications enabled.",
+                username
         );
 
         alert.setContentText(content);
