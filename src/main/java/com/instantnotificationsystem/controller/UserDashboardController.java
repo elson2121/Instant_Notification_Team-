@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -43,11 +44,10 @@ public class UserDashboardController {
     @FXML private StackPane notificationsCard;
     @FXML private VBox historyCard;
 
-    // User Info Labels
-    @FXML private Label lblDepartment;
-    @FXML private Label lblRole;
-    @FXML private Label lblSex;
-    @FXML private Label lblShift;
+    @FXML private ComboBox<String> cmbDepartment;
+    @FXML private ComboBox<String> cmbShift;
+    @FXML private ComboBox<String> roleComboBox;
+    @FXML private ComboBox<String> cmbGender;
 
     @FXML private ScrollPane profileView;
     @FXML private VBox notificationsView;
@@ -57,10 +57,10 @@ public class UserDashboardController {
     private int currentUserId;
     private String currentUserName;
     private ScheduledExecutorService scheduler;
-    
+
     // Track notifications seen in the current session to keep them in the list until refresh
     private List<Notification> sessionSeenNotifications = new ArrayList<>();
-    
+
     private enum ViewMode {
         DASHBOARD, NOTIFICATIONS, HISTORY
     }
@@ -69,7 +69,7 @@ public class UserDashboardController {
     public void initialize() {
         notificationDAO = new NotificationDAO();
         userDAO = new UserDAO();
-        
+
         // Session Fetch: Access the currently logged-in user's ID from your UserSession or Auth class.
         User loggedInUser = SessionManager.getLoggedInUser();
         if (loggedInUser != null) {
@@ -78,12 +78,12 @@ public class UserDashboardController {
             updateWelcomeMessage();
             loadUserProfile();
         }
-        
+
         setupNotificationList();
-        
+
         // Default View: Ensure that when the user first logs in, the "Dashboard" profile is the first thing they see
         handleDashboard();
-        
+
         startRealTimeUpdates();
     }
 
@@ -101,17 +101,52 @@ public class UserDashboardController {
         if (currentUserId > 0) {
             User user = userDAO.getUserDetails(currentUserId);
             if (user != null) {
+                // Populate ComboBoxes
+                cmbDepartment.setItems(FXCollections.observableArrayList("IT", "HR", "Finance", "Marketing"));
+                cmbShift.setItems(FXCollections.observableArrayList("Day", "Night"));
+                roleComboBox.setItems(FXCollections.observableArrayList("Admin", "Manager", "Employee"));
+                cmbGender.setItems(FXCollections.observableArrayList("Male", "Female"));
+
                 // UI Update: Set the text of the profile labels to match the results from the database.
-                if (lblDepartment != null) lblDepartment.setText(user.getDepartment() != null ? user.getDepartment() : "Not Set");
-                if (lblRole != null) lblRole.setText(user.getRole() != null ? user.getRole() : "Not Set");
-                if (lblSex != null) lblSex.setText(user.getSex() != null ? user.getSex() : "Not Set");
-                if (lblShift != null) lblShift.setText(user.getShift() != null ? user.getShift() : "Not Set");
-            } else {
-                if (lblDepartment != null) lblDepartment.setText("Not Set");
-                if (lblRole != null) lblRole.setText("Not Set");
-                if (lblSex != null) lblSex.setText("Not Set");
-                if (lblShift != null) lblShift.setText("Not Set");
+                cmbDepartment.setValue(user.getDepartment() != null ? user.getDepartment() : "Not Set");
+                roleComboBox.setValue(user.getRole() != null ? user.getRole() : "Not Set");
+                cmbGender.setValue(user.getSex() != null ? user.getSex() : "Not Set");
+                cmbShift.setValue(user.getShift() != null ? user.getShift() : "Not Set");
             }
+        }
+    }
+
+    @FXML
+    private void handleUpdateProfile() {
+        String department = cmbDepartment.getValue();
+        String shift = cmbShift.getValue();
+        String role = roleComboBox.getValue();
+        String gender = cmbGender.getValue();
+
+        if (department == null || department.equals("Not Set") || shift == null || shift.equals("Not Set") || role == null || role.equals("Not Set") || gender == null || gender.equals("Not Set")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Update Failed");
+            alert.setHeaderText("Invalid Information");
+            alert.setContentText("Please select a valid department, shift, role, and gender.");
+            alert.showAndWait();
+            return;
+        }
+
+        boolean success = userDAO.updateUserProfile(currentUserId, department, shift, role, gender);
+
+        if (success) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Profile Updated");
+            alert.setContentText("Your profile has been successfully updated.");
+            alert.showAndWait();
+            loadUserProfile(); // Reload the profile to show the updated data
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Update Failed");
+            alert.setHeaderText("Database Error");
+            alert.setContentText("Could not update your profile. Please try again later.");
+            alert.showAndWait();
         }
     }
 
@@ -178,7 +213,7 @@ public class UserDashboardController {
             default:
                 List<Notification> unreadNotifications = notificationDAO.getUnreadNotificationsForUser(currentUserId);
                 notifications = new ArrayList<>();
-                
+
                 // Add unread messages, excluding any that are locally seen (to avoid duplicates)
                 for (Notification n : unreadNotifications) {
                     boolean isLocallySeen = sessionSeenNotifications.stream().anyMatch(sn -> sn.getId() == n.getId());
@@ -186,33 +221,33 @@ public class UserDashboardController {
                         notifications.add(n);
                     }
                 }
-                
+
                 // Add locally seen messages
                 notifications.addAll(sessionSeenNotifications);
-                
+
                 // Sort by date descending
                 notifications.sort((n1, n2) -> {
                     if (n1.getSentAt() == null) return 1;
                     if (n2.getSentAt() == null) return -1;
                     return n2.getSentAt().compareTo(n1.getSentAt());
                 });
-                
+
                 title = "New Notifications";
                 break;
         }
-        
+
         if (listTitle != null) listTitle.setText(title);
-        
+
         int index = notificationsListView.getSelectionModel().getSelectedIndex();
-        
+
         notificationsListView.setItems(FXCollections.observableArrayList(notifications));
-        
+
         if (notifications.isEmpty()) {
             Label placeholder = new Label("No notifications to display");
             placeholder.setStyle("-fx-text-fill: #9ca3af;");
             notificationsListView.setPlaceholder(placeholder);
         }
-        
+
         if (index >= 0 && index < notifications.size()) {
             notificationsListView.getSelectionModel().select(index);
         }
@@ -280,7 +315,7 @@ public class UserDashboardController {
                         messageText.setStyle("-fx-fill: #9ca3af;");
                         deleteButton.setVisible(true);
                     }
-                    
+
                     deleteButton.setOnAction(event -> {
                         if (notificationDAO.deleteNotificationForUser(currentUserId, notification.getId())) {
                             loadDataForCurrentView();
@@ -299,13 +334,13 @@ public class UserDashboardController {
                 // Mark as seen locally
                 selectedNotification.setSeen(true);
                 sessionSeenNotifications.add(selectedNotification);
-                
+
                 // Trigger DB update
                 markAsSeen(selectedNotification.getId());
-                
+
                 // Refresh UI to update styles
                 notificationsListView.refresh();
-                
+
                 // Update badge
                 updateNotificationBadge();
             }

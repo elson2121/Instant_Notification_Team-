@@ -331,6 +331,22 @@ public class UserDAO {
         }
     }
 
+    public boolean updateUserProfile(int userId, String department, String shift, String role, String gender) {
+        String sql = "UPDATE users SET department_name = ?, shift = ?, role = ?, sex = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, department);
+            pstmt.setString(2, shift);
+            pstmt.setString(3, role);
+            pstmt.setString(4, gender);
+            pstmt.setInt(5, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<User> getUsersByEmailDomain(String domain) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE email LIKE ?";

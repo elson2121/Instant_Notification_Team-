@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.instantnotificationsystem.controller.UserDashboardController" stylesheets="@../css/user_dashboard.css" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
     <BorderPane style="-fx-background-color: #f9fafb;" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -54,21 +64,26 @@
                     <StackPane VBox.vgrow="ALWAYS">
                         <!-- User Profile View -->
                         <ScrollPane fx:id="profileView" fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
-                            <VBox alignment="CENTER" styleClass="stat-card" maxWidth="800">
+                            <VBox alignment="CENTER" style="-fx-background-color: #d1e7dd; -fx-background-radius: 20;" maxWidth="800">
                                 <GridPane hgap="20" vgap="15" style="-fx-padding: 20;">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100" />
                                         <ColumnConstraints hgrow="ALWAYS" />
                                     </columnConstraints>
-                                    <Label text="🏢 Department" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                                    <Label fx:id="lblDepartment" text="Not Set" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                                    <Label text="💼 Role" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                                    <Label fx:id="lblRole" text="Not Set" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                    <Label text="⚧ Gender" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                                    <Label fx:id="lblSex" text="Not Set" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                    <Label text="⏰ Current Shift" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                                    <Label fx:id="lblShift" text="Not Set" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                    <Label text="🏢 Department" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                    <ComboBox fx:id="cmbDepartment" promptText="Select Department" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                    <Label text="💼 Role" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                    <ComboBox fx:id="roleComboBox" promptText="Select Role" style="-fx-background-color: white; -fx-border-color: #0a4a25; -fx-pref-width: 200;" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                    <Label text="⚧ Gender" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                    <ComboBox fx:id="cmbGender" promptText="Select Gender" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                    <Label text="⏰ Current Shift" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                    <ComboBox fx:id="cmbShift" promptText="Select Shift" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                                 </GridPane>
+                                <Button text="Update Profile" onAction="#handleUpdateProfile" style="-fx-background-color: #0a4a25; -fx-text-fill: white;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                                    <VBox.margin>
+                                        <Insets top="20" bottom="20" left="20" right="20" />
+                                    </VBox.margin>
+                                </Button>
                             </VBox>
                         </ScrollPane>
 
