@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="020501dc-fc42-4b97-96f8-330d450088ca" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config.properties.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/config/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/config/DBConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/dao/NotificationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/dao/NotificationDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/service/InfobipEmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/service/InfobipEmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/service/InfobipSMSService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/service/InfobipSMSService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +31,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;desk&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;yondev&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Ela/Desktop/Instant-Notification-System&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,

@@ -1,6 +1,5 @@
 package com.instantnotificationsystem.service;
 
-import com.google.gson.Gson;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +7,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +19,10 @@ public class InfobipSMSService {
     private static final Logger LOGGER = Logger.getLogger(InfobipSMSService.class.getName());
 
     private final HttpClient httpClient;
-    private final Gson gson;
     private final String apiKey;
 
     public InfobipSMSService() {
         this.httpClient = HttpClient.newHttpClient();
-        this.gson = new Gson();
         this.apiKey = loadApiKey();
     }
 
@@ -49,18 +43,7 @@ public class InfobipSMSService {
 
     public void sendSMS(String to, String message) {
         try {
-            Map<String, Object> destination = new HashMap<>();
-            destination.put("to", to);
-
-            Map<String, Object> messagePayload = new HashMap<>();
-            messagePayload.put("from", SENDER_NAME);
-            messagePayload.put("destinations", Collections.singletonList(destination));
-            messagePayload.put("text", message);
-
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("messages", Collections.singletonList(messagePayload));
-
-            String jsonPayload = gson.toJson(payload);
+            String jsonPayload = buildJsonPayload(to, message);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(INFOBIP_API_URL))
@@ -80,5 +63,30 @@ public class InfobipSMSService {
         } catch (Exception e) {
             System.err.println("Error creating SMS request: " + e.getMessage());
         }
+    }
+
+    private String buildJsonPayload(String to, String message) {
+        return "{"
+                + "\"messages\": ["
+                + "{"
+                + "\"from\": \"" + SENDER_NAME + "\","
+                + "\"destinations\": ["
+                + "{\"to\": \"" + to + "\"}"
+                + "],"
+                + "\"text\": \"" + escapeJson(message) + "\""
+                + "}"
+                + "]"
+                + "}";
+    }
+
+    private String escapeJson(String text) {
+        if (text == null) return "";
+        return text.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\b", "\\b")
+                .replace("\f", "\\f")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }
