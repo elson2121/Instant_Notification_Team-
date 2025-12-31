@@ -1,0 +1,72 @@
+.root {
+    -fx-font-family: 'System';
+    -fx-background-color: #F3F4F6;
+}
+
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 5, 0);
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 15 25;
+    -fx-alignment: baseline-left;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-color: transparent;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
+}
+
+.active-sidebar-button {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #1a5c2a;
+    -fx-border-color: #1a5c2a;
+}
+
+.stat-card {
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-background-color: linear-gradient(to right, #2a8c4a, #1a5c2a);
+}
+
+.card-icon {
+    -fx-fill: white;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F9FAFB;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 1px 2px 0;
+}
+
+.table-cell {
+    -fx-padding: 12px;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 1px 1px 0;
+    -fx-alignment: CENTER; /* Center-align text in all cells */
+}
+
+.status-delivered {
+    -fx-text-fill: #28a745; /* Bold Green */
+    -fx-font-weight: bold;
+}
+.status-sent {
+    -fx-text-fill: #28a745; /* Bold Green */
+    -fx-font-weight: bold;
+}
+.status-failed {
+    -fx-text-fill: #dc3545; /* Bold Red */
+    -fx-font-weight: bold;
+}

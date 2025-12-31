@@ -1,0 +1,265 @@
+/* =====================================================
+   GLOBAL CORPORATE GREEN THEME — JavaFX
+   ===================================================== */
+
+/* ---------- COLOR TOKENS ---------- */
+.root {
+    -fx-font-family: "Inter", "Segoe UI", "System";
+    -fx-font-smoothing-type: lcd;
+    -fx-base-bg: #f0f4f1;
+
+    -fx-green-primary: #2a8c4a;
+    -fx-green-deep: #1a5c2a;
+    -fx-green-soft: #d4edda;
+    -fx-green-muted: #6b8f75;
+
+    -fx-text-main: #374151;
+    -fx-heading-text: #1a3d25;
+}
+
+/* ---------- BACKGROUND ---------- */
+.root {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #ffffff, -fx-base-bg);
+}
+
+/* ---------- HEADINGS ---------- */
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    -fx-text-fill: -fx-heading-text;
+}
+
+.content-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-green-primary;
+}
+
+/* ---------- BUTTONS ---------- */
+.button, .primary-button, .glass-button {
+    -fx-background-radius: 14;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 12 28;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(
+        to right,
+        -fx-green-primary,
+        -fx-green-deep
+    );
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 15, 0, 0, 8);
+}
+
+/* Glass Button */
+.glass-button {
+    -fx-background-color: rgba(42, 140, 74, 0.25);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 15, 0, 0, 8);
+}
+
+.glass-button:hover {
+    -fx-background-color: rgba(42, 140, 74, 0.35);
+}
+
+/* ---------- INPUTS ---------- */
+.text-field, .password-field, .combo-box, .date-picker {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e1e8e2;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+.text-field:focused, .password-field:focused, .combo-box:focused, .date-picker:focused {
+    -fx-border-color: -fx-green-primary;
+    -fx-border-width: 2;
+}
+
+/* ---------- STATUS TEXT ---------- */
+.status-success {
+    -fx-text-fill: -fx-green-primary;
+    -fx-font-weight: bold;
+}
+
+.status-failed {
+    -fx-text-fill: -fx-green-muted;
+    -fx-font-weight: bold;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+    -fx-background-color: white;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #e1e8e2;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-green-muted;
+    -fx-font-weight: bold;
+    -fx-padding: 14 24;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-color: transparent;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #f0f4f1;
+    -fx-text-fill: -fx-green-deep;
+}
+
+.sidebar-button-active {
+    -fx-background-color: #f0f9f1;
+    -fx-background-radius: 12;
+    -fx-text-fill: -fx-green-deep;
+    -fx-border-color: #2a8c4a;
+    -fx-border-width: 0 0 0 4;
+}
+
+.sidebar-button-logout {
+    -fx-text-fill: -fx-green-muted;
+    -fx-border-color: -fx-green-soft;
+    -fx-border-width: 1px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.sidebar-button-logout:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #ef4444;
+    -fx-border-color: #ef4444;
+}
+
+/* ---------- TOP BAR ---------- */
+.header-green {
+    -fx-background-color: rgba(42, 140, 74, 0.15);
+}
+
+.welcome-label {
+    -fx-text-fill: -fx-green-deep;
+    -fx-font-weight: bold;
+}
+
+/* ---------- CARDS ---------- */
+.stat-card {
+    -fx-background-color: #f0f9f1; /* Light Mint Green */
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: rgba(0, 0, 0, 0.05);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.stat-card .label {
+    -fx-text-fill: -fx-green-deep;
+}
+
+.stat-card .value-label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a5c2a; /* Deep Corporate Green */
+}
+
+.manage-card {
+    -fx-background-color: linear-gradient(to right, #2a8c4a, #1a5c2a);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.manage-card .label {
+    -fx-text-fill: white;
+}
+
+.stat-card:hover, .manage-card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-border-color: -fx-green-primary;
+}
+
+.card-icon {
+    -fx-text-fill: -fx-green-deep;
+}
+
+/* ---------- TABLE ---------- */
+.table-view {
+    -fx-border-color: -fx-green-soft;
+    -fx-border-width: 2px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f0f9f1;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-green-deep;
+    -fx-font-weight: bold;
+}
+
+.status-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.progress-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.progress-low {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.progress-medium {
+    -fx-text-fill: orange;
+    -fx-font-weight: bold;
+}
+
+.progress-high {
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}
+
+.status-seen {
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}
+
+.status-unseen {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+/* ---------- NOTIFICATION LIST ---------- */
+.notification-list-cell {
+    -fx-background-radius: 15px;
+    -fx-padding: 12px;
+}
+
+.delete-icon {
+    -fx-fill: -fx-green-muted;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.delete-icon:hover {
+    -fx-fill: red;
+}
+
+.green-border {
+    -fx-border-color: -fx-green-deep;
+}
+
+.login-form-panel {
+    -fx-background-color: #d1e7dd;
+    -fx-background-size: cover;
+}

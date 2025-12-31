@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.instantnotificationsystem.controller.UserManagementController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <HBox spacing="15.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search by Username or Phone" HBox.hgrow="ALWAYS" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-padding: 10;" />
+
+        <ComboBox fx:id="genderFilter" promptText="Gender" style="-fx-background-radius: 10; -fx-border-radius: 10;" />
+        <ComboBox fx:id="shiftFilter" promptText="Shift" style="-fx-background-radius: 10; -fx-border-radius: 10;" />
+        <ComboBox fx:id="departmentFilter" promptText="Department" style="-fx-background-radius: 10; -fx-border-radius: 10;" />
+    </HBox>
+
+    <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+        <columns>
+            <TableColumn fx:id="fullNameCol" text="Full Name" prefWidth="150" />
+            <TableColumn fx:id="usernameCol" text="Username" prefWidth="100" />
+            <TableColumn fx:id="phoneCol" text="Phone Number" prefWidth="120" />
+            <TableColumn fx:id="sexCol" text="Gender" prefWidth="80" />
+            <TableColumn fx:id="deptCol" text="Department" prefWidth="120" />
+            <TableColumn fx:id="actionsCol" text="Actions" prefWidth="200" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+</VBox>

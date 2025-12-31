@@ -1,0 +1,155 @@
+/* dashboard_styles.css */
+
+/* Main styles */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #F8FAFC;
+}
+
+/* Header */
+.header {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-padding: 15 30;
+}
+
+.header-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.welcome-label {
+    -fx-text-fill: #111827;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 0);
+    -fx-padding: 30 15;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
+    -fx-alignment: BASELINE_LEFT;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
+}
+
+.active-sidebar-button {
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
+    -fx-font-weight: bold;
+}
+
+.logout-button {
+    -fx-text-fill: #ef4444;
+}
+
+.logout-button:hover {
+    -fx-background-color: #FEF2F2;
+    -fx-text-fill: #DC2626;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+    -fx-padding: 20;
+}
+
+/* Today Card with vibrant blue */
+.today-card {
+    -fx-background-color: #2D62ED; /* Vibrant blue from login page */
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 98, 237, 0.3), 10, 0, 0, 5);
+    -fx-padding: 30;
+}
+
+.today-label {
+    -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+}
+
+.date-label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.year-label {
+    -fx-text-fill: rgba(255,255,255,0.9);
+    -fx-font-size: 18px;
+}
+
+/* Notification List */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+}
+
+.list-cell {
+    -fx-background-color: white;
+    -fx-padding: 10px;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+    -fx-text-fill: #374151;
+}
+
+.list-cell:odd {
+    -fx-background-color: white;
+}
+
+.list-cell:hover {
+    -fx-background-color: #F9FAFB;
+    -fx-cursor: hand;
+}
+
+.list-cell:selected {
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #2D62ED;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar:vertical .thumb:hover, .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #94a3b8;
+}

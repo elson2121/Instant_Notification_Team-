@@ -1,0 +1,76 @@
+/* --- General --- */
+.root {
+    -fx-font-family: 'System';
+    -fx-background-color: #f8f9fa;
+}
+
+/* --- Headers --- */
+.header-text {
+    -fx-text-fill: #1e7e34; /* Dark Green */
+    -fx-font-weight: bold;
+}
+
+.header-background {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+/* --- Buttons --- */
+.button-primary {
+    -fx-background-color: #28a745; /* Primary Green */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.button-primary:hover {
+    -fx-background-color: #218838; /* Darker Green */
+}
+
+/* --- Form Fields --- */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #2a8c4a; /* Dark Green */
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #2a8c4a; /* Dark Green */
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* --- Notification List --- */
+.notification-list-cell {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.notification-sender {
+    -fx-font-weight: bold;
+    -fx-text-fill: #28a745; /* Primary Green */
+}
+
+.notification-new-badge {
+    -fx-background-color: #28a745; /* Primary Green */
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 6px;
+    -fx-background-radius: 5;
+}
+
+.notification-bell-badge {
+    -fx-background-color: #28a745; /* Primary Green */
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 1 5;
+    -fx-background-radius: 10;
+}
