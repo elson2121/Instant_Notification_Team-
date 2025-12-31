@@ -8,14 +8,15 @@ import java.util.List;
 
 public class UserDAO {
 
-    public User getUserByUsernameAndPassword(String username, String password) {
+    public User getUserByIdentifierAndPassword(String identifier, String password) {
         // In a real app, you should hash the password before comparing!
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(1, identifier);
+            pstmt.setString(2, identifier);
+            pstmt.setString(3, password);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToUser(rs);
@@ -324,6 +325,22 @@ public class UserDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, isActive);
             pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUserProfile(int userId, String department, String shift, String role, String gender) {
+        String sql = "UPDATE users SET department_name = ?, shift = ?, role = ?, sex = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, department);
+            pstmt.setString(2, shift);
+            pstmt.setString(3, role);
+            pstmt.setString(4, gender);
+            pstmt.setInt(5, userId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -258,3 +258,8 @@
 .green-border {
     -fx-border-color: -fx-green-deep;
 }
+
+.login-form-panel {
+    -fx-background-color: #d1e7dd;
+    -fx-background-size: cover;
+}

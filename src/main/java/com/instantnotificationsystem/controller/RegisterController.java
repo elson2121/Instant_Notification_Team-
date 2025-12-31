@@ -47,6 +47,7 @@ public class RegisterController {
         setupComboBoxes();
         setupEventHandlers();
         setupPhoneFormatting();
+        setupRealTimeValidation();
 
         // Apply initial green border styling
         applyGreenBorder(emailField);
@@ -99,11 +100,28 @@ public class RegisterController {
     private void setupPhoneFormatting() {
         // Auto-format phone for Infobip as user types
         phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty() && !newValue.startsWith("+")) {
-                formatPhoneNumber();
-            }
             validatePhoneInRealTime();
         });
+    }
+
+    private void setupRealTimeValidation() {
+        // Full Name: No numbers allowed
+        fullNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.matches(".*\\d.*")) {
+                setFieldErrorStyle(fullNameField);
+            } else {
+                applyGreenBorder(fullNameField);
+            }
+        });
+
+        // Phone Number: Numeric only, with optional +251 or 0 prefix, starting with 9 or 7
+        phoneField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("(\\+251|0)?[79]?\\d{0,8}")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     private void validateEmailInRealTime() {
@@ -122,21 +140,6 @@ public class RegisterController {
         // Note: Database check might be heavy for real-time validation
         // Consider doing this only on form submission or with debouncing
         applyGreenBorder(emailField);
-    }
-
-    private void formatPhoneNumber() {
-        String phone = phoneField.getText().trim();
-
-        // Remove any non-digit characters except leading +
-        phone = phone.replaceAll("[^\\d+]", "");
-
-        if (phone.startsWith("0") && phone.length() == 10) {
-            // Convert 09xxxxxxxx to +2519xxxxxxx
-            phoneField.setText("+251" + phone.substring(1));
-        } else if (phone.length() == 9 && (phone.startsWith("9") || phone.startsWith("7"))) {
-            // Convert 9xxxxxxx to +2519xxxxxxx
-            phoneField.setText("+251" + phone);
-        }
     }
 
     private void validatePhoneInRealTime() {
@@ -167,7 +170,7 @@ public class RegisterController {
 
     private void setFieldErrorStyle(Control field) {
         field.setStyle(
-                "-fx-border-color: #e74c3c;" +
+                "-fx-border-color: red;" +
                         "-fx-border-width: 2px;" +
                         "-fx-border-radius: 10px;" +
                         "-fx-background-radius: 10px;" +
