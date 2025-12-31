@@ -89,8 +89,6 @@
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
                         <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                         <TextField fx:id="phoneField" promptText="9 or 7 followed by 8 digits" styleClass="text-field, green-border"/>
-                        <Label text="✓ Formatted for Infobip API: +251XXXXXXXXX"
-                               style="-fx-text-fill: #27ae60; -fx-font-size: 11px; -fx-font-style: italic; -fx-padding: 2 0 0 0;"/>
                     </VBox>
 
                     <!-- Employment Info Section -->

@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="020501dc-fc42-4b97-96f8-330d450088ca" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/UserDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/css/user_dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/user_dashboard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/user_dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/user_dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/instantnotificationsystem/controller/RegisterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/admin_notifications.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/admin_notifications.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/register.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/register.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
