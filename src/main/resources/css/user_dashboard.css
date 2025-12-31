@@ -69,7 +69,7 @@
 
 /* Profile Card Styling */
 .stat-card {
-    -fx-background-color: #155724; /* Corporate Green */
+    -fx-background-color: #d1e7dd; /* Light green theme */
     -fx-background-radius: 15;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
     -fx-padding: 25;
@@ -78,10 +78,67 @@
 .profile-header {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #d4edda; /* Light green text */
+    -fx-text-fill: #0a4a25; /* Dark green text */
 }
 
 .profile-data {
     -fx-font-size: 14px;
-    -fx-text-fill: white;
+    -fx-text-fill: #0a4a25; /* Dark green text */
+}
+
+/* Notifications and History Feed Styling */
+.notifications-view {
+    -fx-background-color: #d1e7dd;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
+.notifications-list-view {
+    -fx-background-color: #d1e7dd;
+}
+
+.notification-cell {
+    -fx-background-color: #e2f0e9;
+    -fx-border-color: #0a4a25;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-margin: 5 0;
+}
+
+.notification-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 17px;
+    -fx-text-fill: #0a4a25;
+}
+
+.notification-message {
+    -fx-fill: #0a4a25;
+}
+
+.notification-timestamp {
+    -fx-font-size: 11px;
+    -fx-text-fill: #0a4a25;
+}
+
+/* Scrollbar Styling */
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #0a4a25;
+    -fx-background-radius: 5em;
 }

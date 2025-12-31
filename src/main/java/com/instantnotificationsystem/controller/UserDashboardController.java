@@ -22,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.time.format.DateTimeFormatter;
@@ -200,6 +201,8 @@ public class UserDashboardController {
 
         profileView.setVisible(false);
         notificationsView.setVisible(true);
+        notificationsView.setStyle("-fx-background-color: #d1e7dd;");
+
 
         List<Notification> notifications;
         String title;
@@ -278,6 +281,10 @@ public class UserDashboardController {
                 mainContent.setPadding(new Insets(15));
                 contentBox.getChildren().addAll(titleLabel, messageText, channelBox, timestampLabel);
                 setGraphic(mainContent);
+                getStyleClass().add("notification-cell");
+                titleLabel.getStyleClass().add("notification-title");
+                messageText.getStyleClass().add("notification-message");
+                timestampLabel.getStyleClass().add("notification-timestamp");
             }
 
             @Override
@@ -290,29 +297,27 @@ public class UserDashboardController {
                 } else {
                     titleLabel.setText(notification.getTitle());
                     messageText.setText(notification.getMessage());
+                    titleLabel.setTextFill(Color.web("#0a4a25"));
+                    messageText.setFill(Color.web("#0a4a25"));
+                    timestampLabel.setTextFill(Color.web("#0a4a25"));
 
                     channelBox.getChildren().clear();
                     for (String channel : notification.getChannels()) {
                         Label channelLabel = new Label(channel);
-                        channelLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #5A88FF; -fx-background-color: #eff6ff; -fx-padding: 3 8; -fx-background-radius: 6;");
+                        channelLabel.setStyle("-fx-background-color: white; -fx-text-fill: #0a4a25; -fx-padding: 3 8; -fx-background-radius: 6;");
                         channelBox.getChildren().add(channelLabel);
                     }
 
                     if (notification.getSentAt() != null) {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy 'at' hh:mm a");
                         timestampLabel.setText(notification.getSentAt().format(formatter));
-                        timestampLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #9ca3af;");
                     } else {
                         timestampLabel.setText("");
                     }
 
                     if (!notification.isSeen()) {
-                        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-text-fill: #2D62ED;");
-                        messageText.setStyle("-fx-fill: #374151;");
                         deleteButton.setVisible(false);
                     } else {
-                        titleLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 17px; -fx-text-fill: #6b7280;");
-                        messageText.setStyle("-fx-fill: #9ca3af;");
                         deleteButton.setVisible(true);
                     }
 

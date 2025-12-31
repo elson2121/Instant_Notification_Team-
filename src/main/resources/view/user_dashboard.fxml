@@ -22,8 +22,11 @@
         <!-- Top Header -->
         <top>
             <AnchorPane>
-                <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-background" style="-fx-padding: 15 30;" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                    <Label text="INSTANT NOTIFICATION SYSTEM" styleClass="header-text" style="-fx-font-size: 18px;"/>
+                <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-background" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                    <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                    </padding>
+                    <Label text="INSTANT NOTIFICATION SYSTEM" styleClass="header-text" />
                     <Region HBox.hgrow="ALWAYS"/>
                 </HBox>
                 <HBox alignment="CENTER" spacing="25" AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="30.0">
@@ -64,19 +67,19 @@
                     <StackPane VBox.vgrow="ALWAYS">
                         <!-- User Profile View -->
                         <ScrollPane fx:id="profileView" fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
-                            <VBox alignment="CENTER" style="-fx-background-color: #d1e7dd; -fx-background-radius: 20;" maxWidth="800">
+                            <VBox alignment="CENTER" styleClass="stat-card" maxWidth="800">
                                 <GridPane hgap="20" vgap="15" style="-fx-padding: 20;">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100" />
                                         <ColumnConstraints hgrow="ALWAYS" />
                                     </columnConstraints>
-                                    <Label text="🏢 Department" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                    <Label text="🏢 Department" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                                     <ComboBox fx:id="cmbDepartment" promptText="Select Department" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                                    <Label text="💼 Role" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                                    <ComboBox fx:id="roleComboBox" promptText="Select Role" style="-fx-background-color: white; -fx-border-color: #0a4a25; -fx-pref-width: 200;" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                    <Label text="⚧ Gender" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                    <Label text="💼 Role" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                    <ComboBox fx:id="roleComboBox" promptText="Select Role" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                    <Label text="⚧ Gender" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                                     <ComboBox fx:id="cmbGender" promptText="Select Gender" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                    <Label text="⏰ Current Shift" style="-fx-text-fill: #0a4a25;" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                    <Label text="⏰ Current Shift" styleClass="profile-header" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                                     <ComboBox fx:id="cmbShift" promptText="Select Shift" styleClass="profile-data" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                                 </GridPane>
                                 <Button text="Update Profile" onAction="#handleUpdateProfile" style="-fx-background-color: #0a4a25; -fx-text-fill: white;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
@@ -88,9 +91,9 @@
                         </ScrollPane>
 
                         <!-- Notifications/History View -->
-                        <VBox fx:id="notificationsView" VBox.vgrow="ALWAYS" spacing="15" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-                            <Label fx:id="listTitle" text="All Notifications" styleClass="header-text" style="-fx-font-size: 18px;"/>
-                            <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" prefHeight="550" style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+                        <VBox fx:id="notificationsView" styleClass="notifications-view" VBox.vgrow="ALWAYS" spacing="15">
+                            <Label fx:id="listTitle" text="All Notifications" styleClass="header-text" />
+                            <ListView fx:id="notificationsListView" styleClass="notifications-list-view" VBox.vgrow="ALWAYS" prefHeight="550" />
                         </VBox>
                     </StackPane>
                 </VBox>
