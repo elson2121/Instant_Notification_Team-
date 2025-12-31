@@ -15,19 +15,15 @@ public class NotificationDAO {
         if (notification.getSenderId() <= 0) {
             throw new IllegalStateException("Sender ID is invalid. A real user must be logged in.");
         }
-        String sql = "INSERT INTO notifications (title, message, send_email, send_sms, notification_type, sender_id) VALUES (?, ?, ?, ?, ?, ?)";
+        // Modified to exclude channel columns which are missing in the DB
+        String sql = "INSERT INTO notifications (title, message, notification_type, sender_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
-            boolean sendEmail = notification.getChannels().contains("Email");
-            boolean sendSms = notification.getChannels().contains("SMS");
-
             pstmt.setString(1, notification.getTitle());
             pstmt.setString(2, notification.getMessage());
-            pstmt.setBoolean(3, sendEmail);
-            pstmt.setBoolean(4, sendSms);
-            pstmt.setString(5, notification.getNotificationType());
-            pstmt.setInt(6, notification.getSenderId());
+            pstmt.setString(3, notification.getNotificationType());
+            pstmt.setInt(4, notification.getSenderId());
             
             if (pstmt.executeUpdate() > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
@@ -196,7 +192,8 @@ public class NotificationDAO {
 
     private List<Notification> getNotificationsForUserBySeenStatus(int userId, boolean seen) {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT n.id, n.title, n.message, n.created_at, un.seen, n.notification_type, n.send_email, n.send_sms " +
+        // Modified to exclude channel columns which are missing in the DB
+        String sql = "SELECT n.id, n.title, n.message, n.created_at, un.seen, n.notification_type " +
                      "FROM notifications n " +
                      "JOIN user_notifications un ON n.id = un.notification_id " +
                      "JOIN users u ON u.id = un.user_id " +
@@ -219,14 +216,8 @@ public class NotificationDAO {
                 notification.setSeen(rs.getBoolean("seen"));
                 notification.setNotificationType(rs.getString("notification_type"));
 
-                List<String> channels = new ArrayList<>();
-                if (rs.getBoolean("send_email")) {
-                    channels.add("Email");
-                }
-                if (rs.getBoolean("send_sms")) {
-                    channels.add("SMS");
-                }
-                notification.setChannels(channels);
+                // Channels are not available in DB, so we set an empty list
+                notification.setChannels(new ArrayList<>());
                 
                 notifications.add(notification);
             }
@@ -237,7 +228,8 @@ public class NotificationDAO {
     }
 
     public boolean markNotificationAsSeen(int userId, int notificationId) {
-        String sql = "UPDATE user_notifications SET seen = TRUE, seen_at = CURRENT_TIMESTAMP WHERE user_id = ? AND notification_id = ?";
+        // Modified to exclude seen_at column which is missing in the DB
+        String sql = "UPDATE user_notifications SET seen = TRUE WHERE user_id = ? AND notification_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
@@ -250,7 +242,8 @@ public class NotificationDAO {
     }
 
     public boolean markAllNotificationsAsSeen(int userId) {
-        String sql = "UPDATE user_notifications SET seen = TRUE, seen_at = CURRENT_TIMESTAMP WHERE user_id = ? AND seen = FALSE";
+        // Modified to exclude seen_at column which is missing in the DB
+        String sql = "UPDATE user_notifications SET seen = TRUE WHERE user_id = ? AND seen = FALSE";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);

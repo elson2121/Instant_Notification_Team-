@@ -1,34 +1,75 @@
 package com.instantnotificationsystem.config;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public final class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/instant_notification_system";
-    private static final String USER = "root";
-    private static final String PASSWORD = "system";
-
-    private static Connection connection = null;
     private static final Logger LOGGER = Logger.getLogger(DBConnection.class.getName());
+    private static Connection connection = null;
+    private static final String CONFIG_FILE = "config.properties";
 
     private DBConnection() {
         // private constructor to prevent instantiation
     }
 
+    public static Connection getConnection(boolean includeDbName) throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            try {
+                Properties properties = new Properties();
+                try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+                    properties.load(input);
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Configuration file not found! Please check " + CONFIG_FILE + ".", e);
+                    throw new SQLException("Configuration file not found!", e);
+                }
+
+                String url = properties.getProperty("db.url");
+                String user = properties.getProperty("db.user");
+                String password = properties.getProperty("db.password");
+
+                if (url == null || user == null || password == null) {
+                    throw new SQLException("Database credentials are not configured properly in " + CONFIG_FILE);
+                }
+                
+                if (!includeDbName) {
+                    // Connect without specifying the database name
+                    url = url.substring(0, url.lastIndexOf('/'));
+                }
+
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                connection = DriverManager.getConnection(url, user, password);
+            } catch (ClassNotFoundException e) {
+                LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found.", e);
+                throw new SQLException("MySQL JDBC Driver not found.", e);
+            }
+        }
+        return connection;
+    }
+
     public static Connection getConnection() throws SQLException {
-        // Always create a new connection to avoid closed connection issues in multi-threaded environments or long sessions
-        // Connection pooling (like HikariCP) is recommended for production, but for this scope, creating new connections is safer than reusing a closed static one.
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException e) {
-            LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found.", e);
-            throw new SQLException("MySQL JDBC Driver not found.", e);
+        return getConnection(true);
+    }
+
+    public static void setupDatabase() {
+        try (Connection conn = getConnection(false);
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS notification_system");
+            // Close the connection without the db name
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+            connection = null; // Reset connection to be re-established with the db name
+            initializeTables();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error setting up database.", e);
         }
     }
 
@@ -60,7 +101,11 @@ public final class DBConnection {
                     + "message TEXT,"
                     + "sender_id INT,"
                     + "notification_type VARCHAR(50),"
-                    + "channels VARCHAR(255),"
+                    + "send_email BOOLEAN DEFAULT FALSE,"
+                    + "send_sms BOOLEAN DEFAULT FALSE,"
+                    + "send_telegram BOOLEAN DEFAULT FALSE,"
+                    + "send_push BOOLEAN DEFAULT FALSE,"
+                    + "send_dashboard BOOLEAN DEFAULT FALSE,"
                     + "scheduled_at DATETIME,"
                     + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                     + "FOREIGN KEY (sender_id) REFERENCES users(id)"

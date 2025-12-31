@@ -1,6 +1,9 @@
 package com.instantnotificationsystem.service;
 
 import com.google.gson.Gson;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,19 +11,40 @@ import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InfobipSMSService {
     private static final String INFOBIP_BASE_URL = "https://gr6xp8.api.infobip.com";
-    private static final String API_KEY = "47833b1572b0b798e95284d5c872c485-52497ecb-ddba-4c00-b07a-fcda073442f4";
     private static final String INFOBIP_API_URL = INFOBIP_BASE_URL + "/sms/2/text/advanced";
     private static final String SENDER_NAME = "Sami"; // Or your registered sender name
+    private static final String CONFIG_FILE = "config.properties";
+    private static final Logger LOGGER = Logger.getLogger(InfobipSMSService.class.getName());
 
     private final HttpClient httpClient;
     private final Gson gson;
+    private final String apiKey;
 
     public InfobipSMSService() {
         this.httpClient = HttpClient.newHttpClient();
         this.gson = new Gson();
+        this.apiKey = loadApiKey();
+    }
+
+    private String loadApiKey() {
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+            properties.load(input);
+            String key = properties.getProperty("infobip.api.key");
+            if (key == null || key.trim().isEmpty()) {
+                throw new IOException("API key not found in " + CONFIG_FILE);
+            }
+            return key;
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to load API key from " + CONFIG_FILE, e);
+            throw new RuntimeException("Failed to load API key", e);
+        }
     }
 
     public void sendSMS(String to, String message) {
@@ -40,7 +64,7 @@ public class InfobipSMSService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(INFOBIP_API_URL))
-                    .header("Authorization", "App " + API_KEY)
+                    .header("Authorization", "App " + apiKey)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
                     .build();
