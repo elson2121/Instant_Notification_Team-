@@ -39,7 +39,7 @@ public class RegisterController {
 
     // Ethiopian phone pattern for Infobip
     private static final Pattern PHONE_PATTERN =
-            Pattern.compile("^(\\+251)?[79]\\d{8}$");
+            Pattern.compile("^(\\+251|0)[79]\\d{8}$");
 
     @FXML
     public void initialize() {
@@ -114,10 +114,10 @@ public class RegisterController {
             }
         });
 
-        // Phone Number: Numeric only, with optional +251 prefix, starting with 9 or 7
+        // Phone Number: Numeric only, with optional +251 or 0 prefix, starting with 9 or 7
         phoneField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
-            if (newText.matches("(\\+251)?[79]?\\d{0,8}")) {
+            if (newText.matches("(\\+251|0)?[79]?\\d{0,8}")) {
                 return change;
             }
             return null;

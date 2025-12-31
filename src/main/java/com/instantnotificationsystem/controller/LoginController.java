@@ -37,16 +37,16 @@ public class LoginController {
 
     @FXML
     private void handleLogin() {
-        String username = loginUsernameField.getText();
+        String identifier = loginUsernameField.getText();
         String password = loginPasswordField.isVisible() ? loginPasswordField.getText() : loginPasswordFieldVisible.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            showError("Please enter username and password");
+        if (identifier.isEmpty() || password.isEmpty()) {
+            showError("Please enter username/email and password");
             return;
         }
 
         // Hardcoded Admin Login - Updated password to "admin1"
-        if ("admin".equals(username) && "admin1".equals(password)) {
+        if ("admin".equals(identifier) && "admin1".equals(password)) {
             User adminUser = new User();
             adminUser.setId(1); // Assuming Admin ID is 1
             adminUser.setFullName("Administrator");
@@ -57,7 +57,7 @@ public class LoginController {
             return;
         }
 
-        User user = userDAO.getUserByUsernameAndPassword(username, password);
+        User user = userDAO.getUserByIdentifierAndPassword(identifier, password);
 
         if (user != null) {
             if (!user.isActive()) {
@@ -67,7 +67,7 @@ public class LoginController {
             SessionManager.setUser(user);
             loadDashboard(user);
         } else {
-            showError("Invalid username or password");
+            showError("Invalid username/email or password");
         }
     }
 

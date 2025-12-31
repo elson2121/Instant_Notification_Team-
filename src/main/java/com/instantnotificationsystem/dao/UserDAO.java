@@ -8,14 +8,15 @@ import java.util.List;
 
 public class UserDAO {
 
-    public User getUserByUsernameAndPassword(String username, String password) {
+    public User getUserByIdentifierAndPassword(String identifier, String password) {
         // In a real app, you should hash the password before comparing!
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(1, identifier);
+            pstmt.setString(2, identifier);
+            pstmt.setString(3, password);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToUser(rs);
